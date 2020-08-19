@@ -1,0 +1,9 @@
+{
+  "name": "ApplicationAssistant",
+  "version": "1.0.0",
+  "description": "Assistant for tracking job applications, company contacts, skills",
+  "main": "server.js",
+  "repository": "https://github.com/titanian229/applicationassistant",
+  "author": "JamesLee <48775473+titanian229@users.noreply.github.com>",
+  "license": "MIT"
+}
