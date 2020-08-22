@@ -1,7 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+
 import Navbar from './components/Navbar';
+
+import Applications from './pages/Applications';
+import Application from './pages/Application'
 
 const theme = createMuiTheme({
     palette: {
@@ -71,15 +75,29 @@ const theme = createMuiTheme({
     },
 });
 
+const useStyles = makeStyles((theme) => ({
+    mainContainer: {
+        paddingTop: theme.spacing(7)
+    },
+}))
+
 function App() {
+    const classes = useStyles()
     return (
         <ThemeProvider theme={theme}>
-            <Router>
-                <Navbar />
-                <Switch>
-                    <Route exact path="/"></Route>
-                </Switch>
-            </Router>
+            <div className={classes.mainContainer}>
+                <Router>
+                    <Navbar />
+                    <Switch>
+                        <Route exact path="/applications">
+                            <Applications />
+                        </Route>
+                        <Route path='/applications/:id'>
+                            <Application />
+                        </Route>
+                    </Switch>
+                </Router>
+            </div>
         </ThemeProvider>
     );
 }
