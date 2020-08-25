@@ -27,17 +27,19 @@ import {
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
+
 import changeHandler from '../../utils/handleChange';
 
 const InterviewAddition = (props) => {
     const defaultInterview = {
         date: null,
         interviewType: 'phone',
-        interviewContactNames: [],
         notes: '',
     };
     const [values, setValues] = useState(defaultInterview);
     const handleChange = changeHandler(values, setValues);
+
+    
 
     return (
         <>
@@ -64,12 +66,13 @@ const InterviewAddition = (props) => {
                     onChange={handleChange('interviewType')}
                     label="Interview Type"
                 >
-                    <MenuItem value='email'>Email</MenuItem>
-                    <MenuItem value='phone'>Phone</MenuItem>
-                    <MenuItem value='inperson'>In Person</MenuItem>
-                    <MenuItem value='teleconference'>Teleconference</MenuItem>
+                    <MenuItem value="email">Email</MenuItem>
+                    <MenuItem value="phone">Phone</MenuItem>
+                    <MenuItem value="inperson">In Person</MenuItem>
+                    <MenuItem value="teleconference">Teleconference</MenuItem>
                 </Select>
             </FormControl>
+            
             <InputField multiline rows={3} name="notes" label="Interview Notes" {...{ values, handleChange }} />
         </>
     );

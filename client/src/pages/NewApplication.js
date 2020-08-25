@@ -29,7 +29,9 @@ import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../components/InputField';
 import InterviewInformation from '../components/InterviewInformation';
 import InterviewAddition from '../components/InterviewAddition';
-import changeHandler from '../utils/handleChange'
+import ContactChooser from '../components/ContactChooser';
+import ContactListItem from '../components/ContactListItem';
+import changeHandler from '../utils/handleChange';
 
 const useStyles = makeStyles((theme) => ({
     primaryInputBox: {
@@ -75,30 +77,34 @@ const NewApplication = () => {
     };
 
     const [values, setValues] = useState(defaultValues);
+    const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
 
-    const handleTextChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+    const handleChange = changeHandler(values, setValues);
+
+    const setSelectedContact = (selectedContactChoice) => {
+        setContactsChooserOpen(false);
+
+        if (!selectedContactChoice) return;
+
+        if (selectedContactChoice === 'addContact') {
+            // TODO display add contact dialog, then populate this list
+            return;
+        }
+
+        // checking not a duplicate
+        if (values.contacts.map(contact => contact._id).includes(selectedContactChoice._id)) return
+
+        let contacts = values.contacts;
+        contacts.push(selectedContactChoice);
+        setValues({ ...values, contacts });
+        // TODO make sure I process this on save to just the ID of the contact
     };
 
-    const handleChange = changeHandler(values, setValues)
-
-
-    // const handleChange = (prop, type = 'text') => {
-    //     switch (type) {
-    //         case 'text':
-    //             return (event) => setValues({ ...values, [prop]: event.target.value });
-    //             break;
-    //         case 'date':
-    //             return (date) => setValues({ ...values, [prop]: date });
-    //             break;
-    //         case 'check':
-    //             return (event) => setValues({ ...values, [prop]: event.target.checked });
-    //             break;
-    //         default:
-    //             console.log('Handle change handler had no case');
-    //             break;
-    //     }
-    // };
+    const removeContact = (contactID) => {
+        let contacts = values.contacts;
+        contacts = contacts.filter((contact) => contact._id !== contactID);
+        setValues({ ...values, contacts });
+    };
 
     return (
         <div>
@@ -245,6 +251,15 @@ const NewApplication = () => {
                         Add Interview
                     </Button>
                 </Box>
+                <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
+
+                <List dense={true}>
+                    {values.contacts.map((contact) => (
+                        <ContactListItem handleRemove={removeContact} {...contact} />
+                    ))}
+                </List>
+                <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
+                <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
             </Grid>
         </div>
     );
