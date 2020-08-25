@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom'
 import { makeStyles, lighten } from '@material-ui/core/styles';
 import {
     Typography,
@@ -20,8 +21,10 @@ import {
     ListItem,
     ListItemText,
     Divider,
+    Fab,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
 
@@ -36,6 +39,11 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
     },
     applicationsContainer: {},
+    fab: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+    },
 }));
 
 const filterOptions = ['Wishlist', 'Applied', 'Interviewed', 'Heard back'];
@@ -73,7 +81,8 @@ const applicationMockData = [
     },
     {
         _id: 'post',
-        businessName: 'StarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleet',
+        businessName:
+            'StarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleet',
         roleTitle: 'Full stack developer',
         requirementsNote: 'Requires 2 years of python',
         postLink: 'https://www.google.ca',
@@ -115,6 +124,9 @@ const Applications = (props) => {
 
     return (
         <div>
+            <Fab component={Link} to='/newapplication' className={classes.fab} color="primary" aria-label="add">
+                <AddIcon />
+            </Fab>
             <div className={classes.filterHeader}>
                 <TextField
                     className={classes.searchField}

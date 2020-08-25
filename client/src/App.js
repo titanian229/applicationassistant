@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 
 import Applications from './pages/Applications';
 import Application from './pages/Application'
+import NewApplication from './pages/NewApplication'
 
 const theme = createMuiTheme({
     palette: {
@@ -94,6 +95,9 @@ function App() {
                         </Route>
                         <Route path='/applications/:id'>
                             <Application />
+                        </Route>
+                        <Route exact path='/newapplication'>
+                            <NewApplication />
                         </Route>
                     </Switch>
                 </Router>
