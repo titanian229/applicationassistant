@@ -67,20 +67,15 @@ const NewApplication = () => {
         resumes: [],
         contacts: [],
         todos: [],
-        showAddInterview: false,
-    };
-
-    const defaultInterviewInfo = {
-        date: null,
-        interviewType: 'phone',
-        notes: '',
     };
 
     const [values, setValues] = useState(defaultValues);
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
+    const [showAddInterview, setShowAddInterview] = useState(false);
 
     const handleChange = changeHandler(values, setValues);
 
+    // Contacts
     const setSelectedContact = (selectedContactChoice) => {
         setContactsChooserOpen(false);
 
@@ -92,7 +87,7 @@ const NewApplication = () => {
         }
 
         // checking not a duplicate
-        if (values.contacts.map(contact => contact._id).includes(selectedContactChoice._id)) return
+        if (values.contacts.map((contact) => contact._id).includes(selectedContactChoice._id)) return;
 
         let contacts = values.contacts;
         contacts.push(selectedContactChoice);
@@ -105,6 +100,31 @@ const NewApplication = () => {
         contacts = contacts.filter((contact) => contact._id !== contactID);
         setValues({ ...values, contacts });
     };
+
+    //Interviews
+    const addInterview = (interview) => {
+        setShowAddInterview(false);
+        let interviewsArray = values.interviewsArray;
+        if (!interview._id){
+            // Adding a temp ID to be replaced by the DB ID later
+            interview._id = interviewsArray.length + 1
+        }
+        interviewsArray.push(interview);
+        setValues({ ...values, interviewsArray });
+        console.log(values.interviewsArray)
+    };
+
+    const removeInterview = (interviewID) => {
+        let interviewsArray = values.interviewsArray;
+        interviewsArray = interviewsArray.filter(interview => interview._id != interviewID);
+        setValues({ ...values, interviewsArray });
+    };
+
+    // Saving to DB
+    const handleSaveInterview = () => {
+        // TODO Remove id from each interview
+        // TODO add to DB, return message to user of successs or failure
+    }
 
     return (
         <div>
@@ -235,10 +255,15 @@ const NewApplication = () => {
                     borderRadius={5}
                     borderColor="secondary.light"
                 >
-                    {values.interviewsArray.map((interview, index) => (
-                        <InterviewInformation interview={interview} key={index} index={index} />
-                    ))}
-                    {values.showAddInterview > 0 && <InterviewAddition />}
+                    {values.interviewsArray.length > 0 && (
+                        <Typography variant='subtitle2'>Interviews</Typography>
+                    )}
+                    <List dense={true}>
+                        {values.interviewsArray.map((interview, index) => (
+                            <InterviewInformation handleRemove={removeInterview} {...interview} />
+                        ))}
+                    </List>
+                    {showAddInterview && <InterviewAddition saveInterview={addInterview} handleCancel={() => setShowAddInterview(false)} />}
                     {/* ADD INTERVIEW
                         Push an empty default value set to the array of interviews,
                         let the edit mode of the interview information field handle it,
@@ -247,9 +272,7 @@ const NewApplication = () => {
                         have a boolean for adding one, when the boolean is true show addition
                         when save is hit or cancel in the addition field, push
                     */}
-                    <Button onClick={() => setValues({ ...values, showAddInterview: !values.showAddInterview })}>
-                        Add Interview
-                    </Button>
+                    {!showAddInterview && <Button onClick={() => setShowAddInterview(true)}>Add Interview</Button>}
                 </Box>
                 <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
 

@@ -38,8 +38,12 @@ const InterviewAddition = (props) => {
     };
     const [values, setValues] = useState(defaultInterview);
     const handleChange = changeHandler(values, setValues);
+    const { saveInterview, handleCancel } = props;
 
-    
+    const handleSave = () => {
+        if (values.date === null) return;
+        saveInterview(values);
+    };
 
     return (
         <>
@@ -72,8 +76,12 @@ const InterviewAddition = (props) => {
                     <MenuItem value="teleconference">Teleconference</MenuItem>
                 </Select>
             </FormControl>
-            
+
             <InputField multiline rows={3} name="notes" label="Interview Notes" {...{ values, handleChange }} />
+            <Grid container justify='center'>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+            </Grid>
         </>
     );
 };
