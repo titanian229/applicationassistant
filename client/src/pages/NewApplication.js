@@ -23,26 +23,95 @@ import {
     FormControlLabel,
     Switch,
     Divider,
+    Tab,
+    Tabs,
+    Accordion as MuiAccordion,
+    AccordionSummary as MuiAccordionSummary,
+    AccordionDetails,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../components/InputField';
 import InterviewInformation from '../components/InterviewInformation';
 import InterviewAddition from '../components/InterviewAddition';
 import ContactChooser from '../components/ContactChooser';
 import ContactListItem from '../components/ContactListItem';
+import ResumeChooser from '../components/ResumeChooser';
+import ResumeListItem from '../components/ResumeListItem';
+import TodoListItem from '../components/TodoListItem';
+import TodoNew from '../components/TodoNew';
+
+import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
+import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
+import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
+import WorkIcon from '@material-ui/icons/WorkTwoTone';
+
 import changeHandler from '../utils/handleChange';
+
+// const TabPanel = (props) => {
+//     const { children, value, index, ...other } = props;
+
+//     return (
+//         <div
+//             role="tabpanel"
+//             hidden={value !== index}
+//             id={`tabpanel-${index}`}
+//             aria-labelledby={`tab-${index}`}
+//             {...other}
+//         >
+//             {value === index && <>{children}</>}
+//         </div>
+//     );
+// };
+
+const Accordion = withStyles({
+    root: {
+        border: '1px solid rgba(0, 0, 0, .125)',
+        boxShadow: 'none',
+        '&:not(:last-child)': {
+            borderBottom: 0,
+        },
+        '&:before': {
+            display: 'none',
+        },
+        '&$expanded': {
+            margin: 'auto',
+        },
+    },
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        backgroundColor: 'rgba(0, 0, 0, .03)',
+        borderBottom: '1px solid rgba(0, 0, 0, .125)',
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
 
 const useStyles = makeStyles((theme) => ({
     primaryInputBox: {
         backgroundColor: theme.palette.secondary.light,
         color: theme.palette.getContrastText(theme.palette.secondary.light),
         padding: theme.spacing(1),
+        margin: theme.spacing(1, 0),
     },
     secondaryInputBox: {
         backgroundColor: theme.palette.primary.light,
         color: theme.palette.getContrastText(theme.palette.primary.light),
         padding: theme.spacing(1),
+        margin: theme.spacing(1, 0),
     },
     inputBoxInput: {
         marginTop: theme.spacing(1),
@@ -67,12 +136,16 @@ const NewApplication = () => {
         resumes: [],
         contacts: [],
         todos: [],
+        notes: '',
     };
 
     const [values, setValues] = useState(defaultValues);
+    const [currentTab, setCurrentTab] = useState(0);
+    const [showAddInterview, setShowAddInterview] = useState(true);
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
-    const [showAddInterview, setShowAddInterview] = useState(false);
-
+    const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
+    const [todoNewOpen, setTodoNewOpen] = useState(false);
+    const [expandedAccordion, setExpandedAccordion] = useState('primary');
     const handleChange = changeHandler(values, setValues);
 
     // Contacts
@@ -101,42 +174,118 @@ const NewApplication = () => {
         setValues({ ...values, contacts });
     };
 
+    // Resumes
+    const setSelectedResume = (selectedResumeChoice) => {
+        setResumesChooserOpen(false);
+
+        if (!selectedResumeChoice) return;
+
+        if (selectedResumeChoice === 'addResume') {
+            // TODO display add resume dialog, then populate this list
+            return;
+        }
+
+        // checking not a duplicate
+        if (values.resumes.map((resume) => resume._id).includes(selectedResumeChoice._id)) return;
+
+        let resumes = values.resumes;
+        resumes.push(selectedResumeChoice);
+        setValues({ ...values, resumes });
+        // TODO make sure I process this on save to just the ID of the resume
+    };
+
+    const removeResume = (resumeID) => {
+        let resumes = values.resumes;
+        resumes = resumes.filter((resume) => resume._id !== resumeID);
+        setValues({ ...values, resumes });
+    };
+
+    // Todos
+    const saveTodo = (todo) => {
+        setTodoNewOpen(false);
+        if (!todo) return;
+
+        if (!todo._id) {
+            todo._id = values.todos.length + 1;
+        }
+
+        let todos = values.todos;
+        todos.push(todo);
+        setValues({ ...values, todos });
+    };
+
+    const removeTodo = (todoID) => {
+        let todos = values.todos;
+        todos = todos.filter((todo) => todo._id !== todoID);
+        setValues({ ...values, todos });
+    };
+
     //Interviews
     const addInterview = (interview) => {
         setShowAddInterview(false);
         let interviewsArray = values.interviewsArray;
-        if (!interview._id){
+        if (!interview._id) {
             // Adding a temp ID to be replaced by the DB ID later
-            interview._id = interviewsArray.length + 1
+            interview._id = interviewsArray.length + 1;
         }
         interviewsArray.push(interview);
         setValues({ ...values, interviewsArray });
-        console.log(values.interviewsArray)
+        console.log(values.interviewsArray);
     };
 
     const removeInterview = (interviewID) => {
         let interviewsArray = values.interviewsArray;
-        interviewsArray = interviewsArray.filter(interview => interview._id != interviewID);
+        interviewsArray = interviewsArray.filter((interview) => interview._id != interviewID);
         setValues({ ...values, interviewsArray });
     };
 
     // Saving to DB
-    const handleSaveInterview = () => {
+    const handleSave = () => {
         // TODO Remove id from each interview
+        let applicationData = JSON.parse(JSON.stringify(values));
+        applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
+            delete interview._id;
+            return interview;
+        });
+        applicationData.todos = applicationData.todos.map((todo) => {
+            delete todo._id;
+            return todo;
+        });
+        console.log('handleSave -> applicationData', applicationData);
         // TODO add to DB, return message to user of successs or failure
-    }
+    };
+
+    const handleChangeTab = (event, newValue) => {
+        setCurrentTab(newValue);
+    };
+
+    const handleChangeAccordion = (panel) => (event, isExpanded) => {
+        setExpandedAccordion(isExpanded ? panel : false);
+    };
 
     return (
         <div>
-            <Grid container direction="column">
-                <Box
-                    className={classes.primaryInputBox}
-                    display="flex"
-                    flexDirection="column"
-                    border={1}
-                    borderRadius={5}
-                    borderColor="primary.light"
+            {/* <Paper>
+                <Tabs
+                    value={currentTab}
+                    centered
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={handleChangeTab}
                 >
+                    <Tab label="Details" icon={<WorkIcon />} />
+                    <Tab label="Contacts" icon={<ContactsIcon />} />
+                    <Tab label="Resumes" icon={<DescriptionIcon />} />
+                    <Tab label="Todos/Reminders" icon={<AddAlertIcon />} />
+                </Tabs>
+            </Paper> */}
+            {/* <Accordion expanded={expandedAccordion === 'primary'} onChange={handleChangeAccordion('primary')}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="details-content" id="details-header">
+                    Details
+                </AccordionSummary>
+                <AccordionDetails> */}
+            <Grid container direction="column">
+                <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <TextField
                         className={classes.inputBoxInput}
                         onChange={handleChange('businessName')}
@@ -156,6 +305,7 @@ const NewApplication = () => {
                         required
                     />
                 </Box>
+                {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
                         margin="normal"
@@ -180,14 +330,8 @@ const NewApplication = () => {
                     {...{ values, handleChange }}
                 />
                 <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
-                <Box
-                    className={classes.primaryInputBox}
-                    display="flex"
-                    flexDirection="column"
-                    border={1}
-                    borderRadius={5}
-                    borderColor="primary.light"
-                >
+                <InputField multiline rows={4} name="notes" label="Notes" {...{ values, handleChange }} />
+                <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <FormGroup row>
                         <FormControlLabel
                             control={
@@ -217,14 +361,7 @@ const NewApplication = () => {
                         </MuiPickersUtilsProvider>
                     )}
                 </Box>
-                <Box
-                    className={classes.primaryInputBox}
-                    display="flex"
-                    flexDirection="column"
-                    border={1}
-                    borderRadius={5}
-                    borderColor="primary.light"
-                >
+                <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <FormGroup row>
                         <FormControlLabel
                             control={
@@ -247,24 +384,40 @@ const NewApplication = () => {
                         />
                     )}
                 </Box>
-                <Box
-                    className={classes.secondaryInputBox}
-                    display="flex"
-                    flexDirection="column"
-                    border={1}
-                    borderRadius={5}
-                    borderColor="secondary.light"
+            </Grid>
+            {/* </AccordionDetails>
+            </Accordion> */}
+            <Accordion expanded={expandedAccordion === 'interviews'} onChange={handleChangeAccordion('interviews')}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="interviews-content"
+                    id="interviews-header"
                 >
-                    {values.interviewsArray.length > 0 && (
-                        <Typography variant='subtitle2'>Interviews</Typography>
-                    )}
-                    <List dense={true}>
-                        {values.interviewsArray.map((interview, index) => (
-                            <InterviewInformation handleRemove={removeInterview} {...interview} />
-                        ))}
-                    </List>
-                    {showAddInterview && <InterviewAddition saveInterview={addInterview} handleCancel={() => setShowAddInterview(false)} />}
-                    {/* ADD INTERVIEW
+                    <Typography variant="h6">Interviews</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container direction="column">
+                        {/* <Box
+                            className={classes.secondaryInputBox}
+                            display="flex"
+                            flexDirection="column"
+                            borderRadius={5}
+                        > */}
+                        {/* {values.interviewsArray.length > 0 && <Typography variant="subtitle2">Interviews</Typography>} */}
+                        {values.interviewsArray.length > 0 && (
+                            <List dense={true}>
+                                {values.interviewsArray.map((interview, index) => (
+                                    <InterviewInformation handleRemove={removeInterview} {...interview} />
+                                ))}
+                            </List>
+                        )}
+                        {showAddInterview && (
+                            <InterviewAddition
+                                saveInterview={addInterview}
+                                handleCancel={() => setShowAddInterview(false)}
+                            />
+                        )}
+                        {/* ADD INTERVIEW
                         Push an empty default value set to the array of interviews,
                         let the edit mode of the interview information field handle it,
                         editing it in the array.  When save is pushed, add it
@@ -272,17 +425,70 @@ const NewApplication = () => {
                         have a boolean for adding one, when the boolean is true show addition
                         when save is hit or cancel in the addition field, push
                     */}
-                    {!showAddInterview && <Button onClick={() => setShowAddInterview(true)}>Add Interview</Button>}
-                </Box>
-                <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
+                        {!showAddInterview && <Button onClick={() => setShowAddInterview(true)}>Add Interview</Button>}
+                        {/* </Box> */}
+                        {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
 
-                <List dense={true}>
-                    {values.contacts.map((contact) => (
-                        <ContactListItem handleRemove={removeContact} {...contact} />
-                    ))}
-                </List>
-                <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
-                <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
+            <Accordion expanded={expandedAccordion === 'contacts'} onChange={handleChangeAccordion('contacts')}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="contacts-content" id="contacts-header">
+                    <Typography variant="h6">Contacts</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container direction="column">
+                        <List dense={true}>
+                            {values.contacts.map((contact) => (
+                                <ContactListItem handleRemove={removeContact} {...contact} />
+                            ))}
+                        </List>
+                        <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
+                        <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+
+            <Accordion expanded={expandedAccordion === 'resumes'} onChange={handleChangeAccordion('resumes')}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="resumes-content" id="resumes-header">
+                    <Typography variant="h6">Resumes</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container direction="column">
+                        {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
+                        <List dense={true}>
+                            {values.resumes.map((resume) => (
+                                <ResumeListItem handleRemove={removeResume} {...resume} />
+                            ))}
+                        </List>
+                        <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button>
+                        <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} />
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+            {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
+
+            <Accordion expanded={expandedAccordion === 'todos'} onChange={handleChangeAccordion('todos')}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="todos-content" id="todos-header">
+                    <Typography variant="h6">Todos</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container direction="column">
+                        <List dense={true}>
+                            {values.todos.map((todo, index) => (
+                                <TodoListItem handleRemove={removeTodo} key={index} {...todo} />
+                            ))}
+                        </List>
+                        <Button onClick={() => setTodoNewOpen(true)}>Add Todo/Reminder</Button>
+                        <TodoNew open={todoNewOpen} saveTodo={saveTodo} />
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+            <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
+            <Grid container direction="column">
+                <Button onClick={handleSave} variant="contained" color="primary">
+                    Save Application
+                </Button>
             </Grid>
         </div>
     );

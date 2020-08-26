@@ -5,16 +5,18 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/sty
 import Navbar from './components/Navbar';
 
 import Applications from './pages/Applications';
-import Application from './pages/Application'
-import NewApplication from './pages/NewApplication'
+import Application from './pages/Application';
+import NewApplication from './pages/NewApplication';
 
 const theme = createMuiTheme({
     palette: {
         primary: {
             main: '#820263',
+            light: '#CC9BC0',
         },
         secondary: {
             main: '#198203',
+            light: '#BFFFB3',
         },
     },
     // breakpoints: {
@@ -78,12 +80,12 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
-        paddingTop: theme.spacing(7)
+        paddingTop: theme.spacing(7),
     },
-}))
+}));
 
 function App() {
-    const classes = useStyles()
+    const classes = useStyles();
     return (
         <ThemeProvider theme={theme}>
             <div className={classes.mainContainer}>
@@ -93,10 +95,10 @@ function App() {
                         <Route exact path="/applications">
                             <Applications />
                         </Route>
-                        <Route path='/applications/:id'>
+                        <Route path="/applications/:id">
                             <Application />
                         </Route>
-                        <Route exact path='/newapplication'>
+                        <Route exact path="/newapplication">
                             <NewApplication />
                         </Route>
                     </Switch>

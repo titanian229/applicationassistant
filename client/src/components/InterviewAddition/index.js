@@ -28,6 +28,12 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+
 import changeHandler from '../../utils/handleChange';
 
 const InterviewAddition = (props) => {
@@ -76,6 +82,7 @@ const InterviewAddition = (props) => {
                     <MenuItem value="teleconference">Teleconference</MenuItem>
                 </Select>
             </FormControl>
+            {/* // TODO add in rating from mat ui labs for impression ranking */}
 
             <InputField multiline rows={3} name="notes" label="Interview Notes" {...{ values, handleChange }} />
             <Grid container justify='center'>
