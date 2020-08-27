@@ -28,6 +28,7 @@ import {
     Accordion as MuiAccordion,
     AccordionSummary as MuiAccordionSummary,
     AccordionDetails,
+    Badge,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -41,11 +42,13 @@ import ResumeChooser from '../components/ResumeChooser';
 import ResumeListItem from '../components/ResumeListItem';
 import TodoListItem from '../components/TodoListItem';
 import TodoNew from '../components/TodoNew';
+import ContactNew from '../components/ContactNew'
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import WorkIcon from '@material-ui/icons/WorkTwoTone';
+import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import changeHandler from '../utils/handleChange';
 
@@ -117,6 +120,12 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
+    badgeIcon: {
+        marginRight: theme.spacing(4),
+    },
+    spaceTop: {
+        marginTop: theme.spacing(1)
+    },
 }));
 
 const NewApplication = () => {
@@ -145,8 +154,14 @@ const NewApplication = () => {
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
     const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
+    const [contactNewOpen, setContactNewOpen] = useState(false)
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
     const handleChange = changeHandler(values, setValues);
+
+    const handleReset = () => {
+        // TODO add confirmation before wipe
+        setValues(defaultValues);
+    };
 
     // Contacts
     const setSelectedContact = (selectedContactChoice) => {
@@ -156,6 +171,7 @@ const NewApplication = () => {
 
         if (selectedContactChoice === 'addContact') {
             // TODO display add contact dialog, then populate this list
+            setContactNewOpen(true)
             return;
         }
 
@@ -167,6 +183,15 @@ const NewApplication = () => {
         setValues({ ...values, contacts });
         // TODO make sure I process this on save to just the ID of the contact
     };
+
+    const saveContact = (contact) => {
+        setContactNewOpen(false)
+        if (!contact) return
+        if (!contact._id) contact._id = values.contacts.length + 1
+        let contacts = values.contacts
+        contacts.push(contact)
+        setValues({...values, contacts})
+    }
 
     const removeContact = (contactID) => {
         let contacts = values.contacts;
@@ -387,12 +412,15 @@ const NewApplication = () => {
             </Grid>
             {/* </AccordionDetails>
             </Accordion> */}
-            <Accordion expanded={expandedAccordion === 'interviews'} onChange={handleChangeAccordion('interviews')}>
+            <Accordion className={classes.spaceTop} expanded={expandedAccordion === 'interviews'} onChange={handleChangeAccordion('interviews')}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="interviews-content"
                     id="interviews-header"
                 >
+                    <Badge badgeContent={values.interviewsArray.length} color="primary" className={classes.badgeIcon}>
+                        <ForumOutlinedIcon />
+                    </Badge>
                     <Typography variant="h6">Interviews</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -434,6 +462,9 @@ const NewApplication = () => {
 
             <Accordion expanded={expandedAccordion === 'contacts'} onChange={handleChangeAccordion('contacts')}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="contacts-content" id="contacts-header">
+                    <Badge badgeContent={values.contacts.length} color="primary" className={classes.badgeIcon}>
+                        <ContactsIcon />
+                    </Badge>
                     <Typography variant="h6">Contacts</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -445,12 +476,16 @@ const NewApplication = () => {
                         </List>
                         <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
                         <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
+                        <ContactNew open={contactNewOpen} saveContact={saveContact} businessName={values.businessName} />
                     </Grid>
                 </AccordionDetails>
             </Accordion>
 
             <Accordion expanded={expandedAccordion === 'resumes'} onChange={handleChangeAccordion('resumes')}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="resumes-content" id="resumes-header">
+                    <Badge badgeContent={values.resumes.length} color="primary" className={classes.badgeIcon}>
+                        <DescriptionIcon />
+                    </Badge>
                     <Typography variant="h6">Resumes</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -470,6 +505,9 @@ const NewApplication = () => {
 
             <Accordion expanded={expandedAccordion === 'todos'} onChange={handleChangeAccordion('todos')}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="todos-content" id="todos-header">
+                    <Badge badgeContent={values.todos.length} color="primary" className={classes.badgeIcon}>
+                        <AddAlertIcon />
+                    </Badge>
                     <Typography variant="h6">Todos</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -485,7 +523,10 @@ const NewApplication = () => {
                 </AccordionDetails>
             </Accordion>
             <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
-            <Grid container direction="column">
+            <Grid container justify="space-evenly" alignItems="center">
+                <Button onClick={handleReset} variant="contained" color="secondary">
+                    Reset
+                </Button>
                 <Button onClick={handleSave} variant="contained" color="primary">
                     Save Application
                 </Button>

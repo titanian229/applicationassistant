@@ -4,19 +4,34 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/sty
 
 import Navbar from './components/Navbar';
 
+import { orange, deepPurple } from '@material-ui/core/colors/';
+
 import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
+import Message from './components/Message';
+import Home from './pages/Home'
+import { GlobalStore } from './components/GlobalStore';
+// primary: {
+//     main: '#820263',
+//     light: '#CC9BC0',
+// },
+// secondary: {
+//     main: '#198203',
+//     light: '#BFFFB3',
+// },
 
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: '#820263',
-            light: '#CC9BC0',
+            main: orange[500],
+            light: orange[300],
+            dark: orange[700],
         },
         secondary: {
-            main: '#198203',
-            light: '#BFFFB3',
+            main: deepPurple[300],
+            light: deepPurple[100],
+            dark: deepPurple[500],
         },
     },
     // breakpoints: {
@@ -88,22 +103,28 @@ function App() {
     const classes = useStyles();
     return (
         <ThemeProvider theme={theme}>
-            <div className={classes.mainContainer}>
-                <Router>
-                    <Navbar />
-                    <Switch>
-                        <Route exact path="/applications">
-                            <Applications />
-                        </Route>
-                        <Route path="/applications/:id">
-                            <Application />
-                        </Route>
-                        <Route exact path="/newapplication">
-                            <NewApplication />
-                        </Route>
-                    </Switch>
-                </Router>
-            </div>
+            <GlobalStore>
+                <div className={classes.mainContainer}>
+                    <Router>
+                        <Navbar />
+                        <Message />
+                        <Switch>
+                            <Route exact path='/'>
+                                <Home />
+                            </Route>
+                            <Route exact path="/applications">
+                                <Applications />
+                            </Route>
+                            <Route path="/applications/:id">
+                                <Application />
+                            </Route>
+                            <Route exact path="/newapplication">
+                                <NewApplication />
+                            </Route>
+                        </Switch>
+                    </Router>
+                </div>
+            </GlobalStore>
         </ThemeProvider>
     );
 }

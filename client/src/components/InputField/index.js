@@ -33,8 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const InputField = (props) => {
     const classes = useStyles();
-    const { name, type, handleChange, values, label, required, multiline, rows, className } = props;
-
+    const { name, type, handleChange, values, label, required, multiline, rows, className, ...rest } = props;
     return (
         <TextField
             className={clsx(classes.inputField, className)}
@@ -46,6 +45,7 @@ const InputField = (props) => {
             required={required}
             rows={rows || undefined}
             multiline={multiline || false}
+            {...{rest}}
         />
     );
 };
