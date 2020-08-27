@@ -9,10 +9,13 @@ const changeHandler = (values, setValues) => (prop, type = 'text') => {
         case 'check':
             return (event) => setValues({ ...values, [prop]: event.target.checked });
             break;
+        case 'select':
+            return (event) => setValues({ ...values, [prop]: event.target.value });
+            break;
         default:
             console.log('Handle change handler had no case');
             break;
     }
 };
 
-export default changeHandler
+export default changeHandler;

@@ -12,66 +12,29 @@ import {
     IconButton,
     InputAdornment,
     TextField,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    Avatar,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+    FormControl,
+    Select,
+    InputLabel,
+    MenuItem,
 } from '@material-ui/core';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import PhoneIcon from '@material-ui/icons/Phone';
 import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
+import MethodEdit from './MethodEdit';
+import MethodDisplay from './MethodDisplay';
 import changeHandler from '../../utils/handleChange';
-
-const useContactStyles = makeStyles((theme) => ({
-    textField: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-    },
-    container: {
-        padding: theme.spacing(1),
-        marginTop: theme.spacing(2),
-        backgroundColor: theme.palette.secondary.light,
-        borderRadius: 5,
-    },
-}));
-
-const MethodEdit = (props) => {
-    const { methodName, methodLabel, methodIcon, details, saveMethod } = props;
-    const classes = useContactStyles();
-    const defaultValues = {
-        type: methodName,
-        details: details || '',
-    };
-    const [values, setValues] = useState(defaultValues);
-    const handleChange = changeHandler(values, setValues);
-
-    const handleSave = () => {
-        if (values.details === '') return;
-        saveMethod(values);
-    };
-
-    const handleClose = () => {
-        saveMethod();
-    };
-
-    return (
-        <Grid container className={classes.container} direction="column">
-            <TextField
-                name="details"
-                label={methodLabel}
-                className={classes.textField}
-                onChange={handleChange('details')}
-                value={values.details}
-                type="text"
-                variant="outlined"
-                InputProps={{
-                    startAdornment: <InputAdornment position="start">{methodIcon}</InputAdornment>,
-                }}
-            />
-            <ConfirmationButtons {...{ handleSave, handleClose }} />
-        </Grid>
-    );
-};
 
 const ContactNew = (props) => {
     const { businessName, open, saveContact } = props;
@@ -89,6 +52,7 @@ const ContactNew = (props) => {
 
     const handleClose = () => {
         setAdditionArea('');
+        setValues(defaultValues);
         saveContact();
     };
 
@@ -96,6 +60,7 @@ const ContactNew = (props) => {
         if (values.name === '' || values.businessName === '') return;
         // TODO warn user why failed, change fields to error
         // TODO send request to server to save, if success then propogate farther, add in responsive button
+        setAdditionArea('');
         saveContact(values);
         setValues(defaultValues);
     };
@@ -104,7 +69,33 @@ const ContactNew = (props) => {
         setAdditionArea('');
         if (!method) return;
         let contactMethods = values.contactMethods;
+        if (!method._id) method._id = contactMethods.length + 1;
+        //check if save or update
+        if (contactMethods.map((method) => method._id).includes(method._id)) {
+            contactMethods = contactMethods.filter((existingMethod) => existingMethod._id !== method._id);
+        }
         contactMethods.push(method);
+        setValues({ ...values, contactMethods });
+    };
+
+    const handleEditMethod = (method) => {
+        // Show edit, populate edit with the details of this one, remove this one from the existing values
+        setAdditionArea(
+            <MethodEdit
+                saveMethod={handleSaveMethod}
+                methodName={method.type}
+                // methodLabel={{}}
+                methodIcon={<AlternateEmailIcon />}
+                {...method}
+            />
+        );
+    };
+
+    const handleRemoveMethod = (method) => {
+        let contactMethods = values.contactMethods;
+        contactMethods = contactMethods.filter(
+            (existingMethod) => !(existingMethod.details === method.details && existingMethod.type === method.type)
+        );
         setValues({ ...values, contactMethods });
     };
 
@@ -113,36 +104,21 @@ const ContactNew = (props) => {
             case 'email':
                 return (event) => {
                     setAdditionArea(
-                        <MethodEdit
-                            saveMethod={handleSaveMethod}
-                            methodName="email"
-                            methodLabel="Email Address"
-                            methodIcon={<AlternateEmailIcon />}
-                        />
+                        <MethodEdit saveMethod={handleSaveMethod} methodName="email" methodLabel="Email Address" />
                     );
                 };
                 break;
             case 'phone':
                 return (event) => {
                     setAdditionArea(
-                        <MethodEdit
-                            saveMethod={handleSaveMethod}
-                            methodName="email"
-                            methodLabel="Email Address"
-                            methodIcon={<AlternateEmailIcon />}
-                        />
+                        <MethodEdit saveMethod={handleSaveMethod} methodName="phone" methodLabel="Phone Number" />
                     );
                 };
                 break;
             case 'address':
                 return (event) => {
                     setAdditionArea(
-                        <MethodEdit
-                            saveMethod={handleSaveMethod}
-                            methodName="email"
-                            methodLabel="Email Address"
-                            methodIcon={<AlternateEmailIcon />}
-                        />
+                        <MethodEdit saveMethod={handleSaveMethod} methodName="address" methodLabel="Address" />
                     );
                 };
                 break;
@@ -162,8 +138,16 @@ const ContactNew = (props) => {
                     <InputField name="name" label="Name" {...{ values, handleChange }} />
                     <InputField name="businessName" label="Company" {...{ values, handleChange }} />
                     <InputField name="roleTitle" label="Role" {...{ values, handleChange }} />
-                    {/* List of existing, with ability to edit/delete them */}
-                    {/* three icon buttons to add new ones of each type  */}
+                    <List dense={true}>
+                        {values.contactMethods.map((method, index) => (
+                            <MethodDisplay
+                                key={index}
+                                handleRemove={handleRemoveMethod}
+                                handleEdit={handleEditMethod}
+                                {...method}
+                            />
+                        ))}
+                    </List>
                     {additionArea}
 
                     <Grid container justify="space-evenly">
