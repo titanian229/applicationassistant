@@ -105,7 +105,7 @@ function App() {
     const classes = useStyles();
     return (
         <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3} preventDuplicate>
+            <SnackbarProvider maxSnack={3} preventDuplicate anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
                 <GlobalStore>
                     <div className={classes.mainContainer}>
                         <Router>

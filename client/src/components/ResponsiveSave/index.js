@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const ResponsiveSave = (props) => {
     const classes = useStyles();
     const [globalStore] = useGlobalStore()
-    const {onClick} = props
+    const {onClick, buttonText} = props
 
     return (
         <div className={classes.wrapper}>
@@ -50,7 +50,7 @@ const ResponsiveSave = (props) => {
                 disabled={globalStore.loading}
                 onClick={onClick}
             >
-                Save
+                {buttonText || 'Save' }
             </Button>
             {globalStore.loading && <CircularProgress size={24} className={classes.buttonProgress} />}
         </div>

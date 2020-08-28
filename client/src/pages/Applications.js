@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {Link} from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles, lighten } from '@material-ui/core/styles';
 import {
     Typography,
@@ -27,6 +27,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
+import { useGlobalStore } from '../components/GlobalStore';
+import API from '../utils/API';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -102,12 +104,27 @@ const applicationMockData = [
 const Applications = (props) => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
+    const [globalStore, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
     const emptyValues = {
         search: '',
         filter: [],
     };
     const [values, setValues] = useState(emptyValues);
-    const [applicationData, setApplicationData] = useState(applicationMockData);
+    const [applicationData, setApplicationData] = useState([]);
+
+    const fetchApplications = async () => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.getApplications();
+        processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverResponse.applications) {
+            setApplicationData(serverResponse.applications);
+        }
+    };
+
+    useEffect(() => {
+        fetchApplications();
+    }, []);
 
     const handleChange = (property) => (event) => {
         setValues({ ...values, [property]: event.target.value });
@@ -124,7 +141,7 @@ const Applications = (props) => {
 
     return (
         <div>
-            <Fab component={Link} to='/newapplication' className={classes.fab} color="primary" aria-label="add">
+            <Fab component={Link} to="/newapplication" className={classes.fab} color="primary" aria-label="add">
                 <AddIcon />
             </Fab>
             <div className={classes.filterHeader}>
@@ -175,7 +192,7 @@ const Applications = (props) => {
             <Divider />
             <Grid container className={classes.applicationsContainer}>
                 {applicationData.map((application) => (
-                    <Application applicationData={application} key={application.businessName + application.roleTitle} />
+                    <Application applicationData={application} key={application._id} />
                 ))}
             </Grid>
         </div>

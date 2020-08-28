@@ -99,8 +99,6 @@ function GlobalStore(props) {
             enqueueSnackbar(message, options);
             return;
         }
-        console.log('Error within processServerResponse');
-        return 'Error';
     };
 
     return (

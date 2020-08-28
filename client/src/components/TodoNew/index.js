@@ -34,14 +34,15 @@ const TodoNew = (props) => {
     };
 
     const handleSave = async () => {
-        if (values.name === '') {
+        const todoValues = JSON.parse(JSON.stringify(values))
+        if (todoValues.name === '') {
             // dispatch({ do: 'displayMessage', message: { text: 'Todo must have text', type: 'warning' } });
             sendMessage('Todo must have text', {variant: "error", key: 'todotextmissing'})
             return
         }
-        if (values.date === null) delete values.date;
+        if (todoValues.date === null) delete todoValues.date;
         dispatch({do: 'setLoading', loading: true})
-        const serverResponse = await API.post('/api/todos', values)
+        const serverResponse = await API.post('/api/todos', todoValues)
         processServerResponse(serverResponse)
         dispatch({do: 'setLoading', loading: false})
         if (serverResponse.todo){

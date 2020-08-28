@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import {
     Typography,
     Grid,
@@ -49,10 +49,19 @@ const useStyles = makeStyles((theme) => ({
     avatarColour: {
         color: theme.palette.getContrastText(theme.palette.secondary.main),
         backgroundColor: theme.palette.secondary.main,
-      },
+    },
 }));
 
-const parseDate = (date) => date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+const parseDate = (date) => {
+    if (date === '' || !date) return '';
+    try {
+        const dateObj = new Date(date)
+        return dateObj.getFullYear() + '/' + (dateObj.getMonth() + 1) + '/' + dateObj.getDate();
+    } catch (err) {
+        console.log("Date error", err)
+        return ''
+    }
+};
 
 const Application = (props) => {
     const classes = useStyles();
@@ -61,6 +70,7 @@ const Application = (props) => {
         businessName,
         roleTitle,
         requirementsNote,
+        notes,
         postLink,
         dateFound,
         foundWhereNote,
@@ -69,9 +79,10 @@ const Application = (props) => {
         interviewsArray,
         haveResearched,
         haveResearchedNotes,
-        associatedResumesArray,
-        associatedContactsArray,
-        associatedTodosRemindersArray,
+        resumes,
+        contacts,
+        todos,
+        createdAt,
     } = props.applicationData;
 
     const statusArray = (
@@ -82,7 +93,7 @@ const Application = (props) => {
         </div>
     );
 
-    const statusDate = (interviewsArray.length > 0 && interviewsArray[0].date) || appliedDate || dateFound || '';
+    const statusDate = parseDate((interviewsArray.length > 0 && interviewsArray[0].date) || appliedDate || dateFound || '');
 
     return (
         <Card className={classes.applicationCard}>
@@ -100,7 +111,7 @@ const Application = (props) => {
                             <Typography variant="subtitle2">{roleTitle}</Typography>
                             {statusDate && (
                                 <Typography variant="body2" color="textSecondary" component="p">
-                                    {parseDate(statusDate)}
+                                    {statusDate}
                                 </Typography>
                             )}
                         </>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
     Typography,
@@ -44,6 +45,7 @@ import TodoListItem from '../components/TodoListItem';
 import TodoNew from '../components/TodoNew';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
+import ResponsiveSave from '../components/ResponsiveSave'
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -52,7 +54,8 @@ import WorkIcon from '@material-ui/icons/WorkTwoTone';
 import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import changeHandler from '../utils/handleChange';
-import API from '../utils/API'
+import API from '../utils/API';
+import { useGlobalStore } from '../components/GlobalStore';
 
 // const TabPanel = (props) => {
 //     const { children, value, index, ...other } = props;
@@ -132,6 +135,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NewApplication = () => {
     const classes = useStyles();
+    const history = useHistory();
     const defaultValues = {
         businessName: '',
         roleTitle: '',
@@ -151,7 +155,7 @@ const NewApplication = () => {
     };
 
     const [values, setValues] = useState(defaultValues);
-    const [currentTab, setCurrentTab] = useState(0);
+    // const [currentTab, setCurrentTab] = useState(0);
     const [showAddInterview, setShowAddInterview] = useState(true);
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
     const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
@@ -160,6 +164,7 @@ const NewApplication = () => {
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
     const handleChange = changeHandler(values, setValues);
+    const [, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
 
     const handleReset = () => {
         // TODO add confirmation before wipe
@@ -173,7 +178,6 @@ const NewApplication = () => {
         if (!selectedContactChoice) return;
 
         if (selectedContactChoice === 'addContact') {
-            // TODO display add contact dialog, then populate this list
             setContactNewOpen(true);
             return;
         }
@@ -184,7 +188,6 @@ const NewApplication = () => {
         let contacts = values.contacts;
         contacts.push(selectedContactChoice);
         setValues({ ...values, contacts });
-        // TODO make sure I process this on save to just the ID of the contact
     };
 
     const saveContact = (contact) => {
@@ -219,7 +222,6 @@ const NewApplication = () => {
         let resumes = values.resumes;
         resumes.push(selectedResumeChoice);
         setValues({ ...values, resumes });
-        // TODO make sure I process this on save to just the ID of the resume
     };
 
     const saveResume = (resume) => {
@@ -277,28 +279,29 @@ const NewApplication = () => {
     };
 
     // Saving to DB
-    const handleSave = () => {
-        // TODO Remove id from each interview
+    const handleSave = async () => {
         let applicationData = JSON.parse(JSON.stringify(values));
         // Removing the temporary IDs created, so they're replaced on the server by UUIDs.
         applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
             delete interview._id;
             return interview;
         });
-        applicationData.todos = applicationData.todos.map((todo) => {
-            delete todo._id;
-            return todo;
-        });
-        applicationData.resumes = applicationData.resumes.map(resume => {
-            if (String(resume._id).length < 5) delete resume._id
-            return resume
-        })
-        applicationData.contacts = applicationData.contacts.map(contact => {
-            if (String(contact._id).length < 5) delete contact._id
-            return contact
-        })
-        console.log('handleSave -> applicationData', applicationData);
-        // TODO add to DB, return message to user of successs or failure
+        applicationData.todos = applicationData.todos.map((todo) => ({ _id: todo._id }));
+        applicationData.resumes = applicationData.resumes.map((resume) => ({ _id: resume._id }));
+        applicationData.contacts = applicationData.contacts.map((contact) => ({ _id: contact._id }));
+
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.post('/api/applications', applicationData);
+        processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+
+        if (serverResponse.application) {
+            setValues(defaultValues);
+            setTimeout(() => {
+                console.log('SUCCESS MOVING TO NEXT PAGE');
+                history.push('/applications')
+            }, 4000);
+        }
     };
 
     // const handleChangeTab = (event, newValue) => {
@@ -557,9 +560,10 @@ const NewApplication = () => {
                 <Button onClick={handleReset} variant="contained" color="secondary">
                     Reset
                 </Button>
-                <Button onClick={handleSave} variant="contained" color="primary">
+                {/* <Button onClick={handleSave} variant="contained" color="primary">
                     Save Application
-                </Button>
+                </Button> */}
+                <ResponsiveSave onClick={handleSave} buttonText='Save Application' />
             </Grid>
         </div>
     );
