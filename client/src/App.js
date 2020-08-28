@@ -6,11 +6,13 @@ import Navbar from './components/Navbar';
 
 import { orange, deepPurple } from '@material-ui/core/colors/';
 
+import { SnackbarProvider } from 'notistack';
+
 import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
 import Message from './components/Message';
-import Home from './pages/Home'
+import Home from './pages/Home';
 import { GlobalStore } from './components/GlobalStore';
 // primary: {
 //     main: '#820263',
@@ -103,28 +105,30 @@ function App() {
     const classes = useStyles();
     return (
         <ThemeProvider theme={theme}>
-            <GlobalStore>
-                <div className={classes.mainContainer}>
-                    <Router>
-                        <Navbar />
-                        <Message />
-                        <Switch>
-                            <Route exact path='/'>
-                                <Home />
-                            </Route>
-                            <Route exact path="/applications">
-                                <Applications />
-                            </Route>
-                            <Route path="/applications/:id">
-                                <Application />
-                            </Route>
-                            <Route exact path="/newapplication">
-                                <NewApplication />
-                            </Route>
-                        </Switch>
-                    </Router>
-                </div>
-            </GlobalStore>
+            <SnackbarProvider maxSnack={3} preventDuplicate>
+                <GlobalStore>
+                    <div className={classes.mainContainer}>
+                        <Router>
+                            <Navbar />
+                            <Message />
+                            <Switch>
+                                <Route exact path="/">
+                                    <Home />
+                                </Route>
+                                <Route exact path="/applications">
+                                    <Applications />
+                                </Route>
+                                <Route path="/applications/:id">
+                                    <Application />
+                                </Route>
+                                <Route exact path="/newapplication">
+                                    <NewApplication />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </div>
+                </GlobalStore>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 }

@@ -35,6 +35,8 @@ import ConfirmationButtons from '../ConfirmationButtons';
 import MethodEdit from './MethodEdit';
 import MethodDisplay from './MethodDisplay';
 import changeHandler from '../../utils/handleChange';
+import API from '../../utils/API';
+import { useGlobalStore } from '../GlobalStore';
 
 const ContactNew = (props) => {
     const { businessName, open, saveContact } = props;
@@ -47,6 +49,7 @@ const ContactNew = (props) => {
     };
     const [values, setValues] = useState(defaultValues);
     const [additionArea, setAdditionArea] = useState('');
+    const [, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
 
     const handleChange = changeHandler(values, setValues);
 
@@ -56,13 +59,21 @@ const ContactNew = (props) => {
         saveContact();
     };
 
-    const handleSave = () => {
-        if (values.name === '' || values.businessName === '') return;
-        // TODO warn user why failed, change fields to error
-        // TODO send request to server to save, if success then propogate farther, add in responsive button
-        setAdditionArea('');
-        saveContact(values);
-        setValues(defaultValues);
+    const handleSave = async () => {
+        if (values.name === '' || values.businessName === '') {
+            sendMessage('Contact requires a name and business', { variant: 'error', key: 'missingbizandname' });
+            return
+        }
+
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.post('/api/contacts', values);
+        processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverResponse.contact) {
+            setAdditionArea('');
+            saveContact(serverResponse.contact);
+            setValues(defaultValues);
+        }
     };
 
     const handleSaveMethod = (method) => {

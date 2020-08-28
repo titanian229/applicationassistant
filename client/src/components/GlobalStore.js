@@ -1,5 +1,7 @@
 //This is a place we can keep any global settings.  Themes, functions, whatever
 import React, { useContext, useReducer, createContext } from 'react';
+import processServerResponse from '../utils/processServerResponse';
+import { useSnackbar } from 'notistack';
 
 const defaultGlobalStore = {
     message: { text: '', type: '' },
@@ -11,6 +13,8 @@ const defaultGlobalStore = {
     loading: false,
 };
 
+let previousMessage = { text: '', time: undefined };
+
 const GlobalData = createContext();
 
 function dispatcher(state, action) {
@@ -21,10 +25,12 @@ function dispatcher(state, action) {
                 console.log('message dispatch called with no message');
                 return state;
             }
+            previousMessage = { text: action.message.text, time: Date.now() };
             newState.message.type = action.message.type || 'info';
             newState.message.text = action.message.text;
             return newState;
         case 'clearMessage':
+            console.log('clearing message');
             newState.message = defaultGlobalStore.message;
             return newState;
         case 'processServerResponse':
@@ -65,10 +71,44 @@ function dispatcher(state, action) {
     }
 }
 
+const sharedFunctions = {
+    processServerResponse,
+};
+
+const formatMessage = (message, variant) => {
+    return { message, options: { key: message, variant } };
+};
+
 function GlobalStore(props) {
     const [globalData, dispatch] = useReducer(dispatcher, defaultGlobalStore);
+    const { enqueueSnackbar } = useSnackbar();
 
-    return <GlobalData.Provider value={[globalData, dispatch]} {...props} />;
+    const processServerResponse = (serverResponse) => {
+        if (!serverResponse) {
+            const { message, options } = formatMessage('The server is not responding', 'error');
+            enqueueSnackbar(message, options);
+            return;
+        }
+        if (serverResponse.error) {
+            const { message, options } = formatMessage(serverResponse.error, 'error');
+            enqueueSnackbar(message, options);
+            return;
+        }
+        if (serverResponse.message) {
+            const { message, options } = formatMessage(serverResponse.message, serverResponse.messageType || 'success');
+            enqueueSnackbar(message, options);
+            return;
+        }
+        console.log('Error within processServerResponse');
+        return 'Error';
+    };
+
+    return (
+        <GlobalData.Provider
+            value={[globalData, dispatch, { sendMessage: enqueueSnackbar, processServerResponse }]}
+            {...props}
+        />
+    );
 }
 
 function useGlobalStore() {

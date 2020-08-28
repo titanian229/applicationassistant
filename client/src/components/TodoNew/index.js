@@ -14,6 +14,9 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 import changeHandler from '../../utils/handleChange';
+import API from '../../utils/API'
+import {useGlobalStore} from '../GlobalStore'
+import ConfirmationButtons from '../ConfirmationButtons'
 
 const TodoNew = (props) => {
     const { open, saveTodo } = props;
@@ -24,17 +27,27 @@ const TodoNew = (props) => {
     // TODO add the associated contact or application in whatever element creates this component
     const [values, setValues] = useState(defaultValues);
     const handleChange = changeHandler(values, setValues);
+    const [, dispatch, {processServerResponse, sendMessage}] = useGlobalStore()
 
     const handleClose = () => {
         saveTodo();
     };
 
-    const handleSave = () => {
-        if (values.name === '') return;
-        if (values.date === null)
-        delete values.date
-        saveTodo(values);
-        setValues(defaultValues)
+    const handleSave = async () => {
+        if (values.name === '') {
+            // dispatch({ do: 'displayMessage', message: { text: 'Todo must have text', type: 'warning' } });
+            sendMessage('Todo must have text', {variant: "error", key: 'todotextmissing'})
+            return
+        }
+        if (values.date === null) delete values.date;
+        dispatch({do: 'setLoading', loading: true})
+        const serverResponse = await API.post('/api/todos', values)
+        processServerResponse(serverResponse)
+        dispatch({do: 'setLoading', loading: false})
+        if (serverResponse.todo){
+            saveTodo(serverResponse.todo);
+            setValues(defaultValues);
+        }
     };
 
     return (
@@ -43,8 +56,8 @@ const TodoNew = (props) => {
             <DialogContent>
                 <DialogContentText>Add a todo, with an optional date for a reminder</DialogContentText>
                 {/* <TextField autoFocus margin="dense" id="name" label="Email Address" type="email" fullWidth /> */}
-                <Grid container direction='column'>
-                    <InputField name="name" label="Todo" {...{ values, handleChange }}/>
+                <Grid container direction="column">
+                    <InputField name="name" label="Todo" {...{ values, handleChange }} />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             margin="normal"
@@ -62,12 +75,7 @@ const TodoNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                    Cancel
-                </Button>
-                <Button onClick={handleSave} color="primary">
-                    Save
-                </Button>
+                <ConfirmationButtons {...{handleClose, handleSave}} />
             </DialogActions>
         </Dialog>
     );
