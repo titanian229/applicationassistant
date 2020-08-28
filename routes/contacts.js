@@ -4,20 +4,32 @@ module.exports = (router) => {
     router.get('/api/contacts', async ({ headers }, res) => {
         try {
             // const { session } = headers;
-            
-
-            res.status(200).send('Route not yet implemented');
+            const contacts = await db.Contact.find();
+            res.status(200).send({ contacts });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/contacts', async ({ headers }, res) => {
+    router.post('/api/contacts', async ({ headers, body }, res) => {
+        const { name, roleTitle, businessName, contactMethods, notes } = body;
         try {
             // const { session } = headers;
-            
+            if (!name) {
+                res.status(400).send({ error: 'Contact must have a name' });
+                return;
+            }
 
-            res.status(200).send('Route not yet implemented');
+            try {
+                const contact = await db.Contact.create({ name, roleTitle, businessName, contactMethods, notes });
+                res.status(200).send({ message: 'Successfully added contact', contact });
+                return;
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: err });
+            }
+
+            res.status(200).send({ message: 'Route not yet implemented' });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
@@ -26,7 +38,6 @@ module.exports = (router) => {
     router.put('/api/contacts', async ({ headers }, res) => {
         try {
             // const { session } = headers;
-            
 
             res.status(200).send('Route not yet implemented');
         } catch (err) {
@@ -37,7 +48,6 @@ module.exports = (router) => {
     router.delete('/api/contacts', async ({ headers }, res) => {
         try {
             // const { session } = headers;
-            
 
             res.status(200).send('Route not yet implemented');
         } catch (err) {
@@ -48,7 +58,6 @@ module.exports = (router) => {
     // router.get('/api/applications', async ({ headers }, res) => {
     //     try {
     //         // const { session } = headers;
-            
 
     //         res.status(200).send('Route not yet implemented');
     //     } catch (err) {
@@ -56,5 +65,4 @@ module.exports = (router) => {
     //         res.status(500).send({ error: 'Something went wrong with the server' });
     //     }
     // });
-    
 };

@@ -17,7 +17,7 @@ const contactSchema = new Schema(
             {
                 type: {
                     type: String,
-                    enum: ['cell', 'office', 'email', 'address']
+                    enum: ['cell', 'office', 'home', 'email', 'address'],
                 },
                 details: String,
             },
@@ -26,7 +26,7 @@ const contactSchema = new Schema(
         associatedTodos: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'todo',
+                ref: 'Todo',
             },
         ],
     },

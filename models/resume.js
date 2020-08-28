@@ -17,7 +17,7 @@ const resumeSchema = new Schema(
         associatedApplications: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'application',
+                ref: 'Application',
             },
         ],
     },

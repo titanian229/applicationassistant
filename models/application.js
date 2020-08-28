@@ -59,19 +59,19 @@ const applicationSchema = new Schema(
         resumes: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'resume',
+                ref: 'Resume',
             },
         ],
         contacts: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'contact',
+                ref: 'Contact',
             },
         ],
         todos: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'todo',
+                ref: 'Todo',
             },
         ],
     },

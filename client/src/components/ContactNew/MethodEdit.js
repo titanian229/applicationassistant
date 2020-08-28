@@ -41,6 +41,7 @@ const MethodEdit = (props) => {
         details: details || '',
         _id: _id || undefined,
     };
+    // TODO REFACTOR to have several methods, remove phoneType, use methodName instead
 
     useEffect(() => {
         //This watches for the edit button being clicked to reset values

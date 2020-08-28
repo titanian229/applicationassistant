@@ -12,12 +12,12 @@ const todoSchema = new Schema(
         },
         associatedContact: {
             type: Schema.Types.ObjectId,
-            ref: 'contact',
+            ref: 'Contact',
         },
 
         associatedApplication: {
             type: Schema.Types.ObjectId,
-            ref: 'application',
+            ref: 'Application',
         },
     },
     {

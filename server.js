@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-// const routes = require('./routes');
+const routes = require('./routes');
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
@@ -27,7 +27,7 @@ app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 
-// app.use(routes);
+app.use(routes);
 
 app.use(express.static('client/build'));
 app.get('*', (req, res) => {

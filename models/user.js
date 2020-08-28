@@ -22,25 +22,25 @@ const userSchema = new Schema(
         applications: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'application',
+                ref: 'Application',
             },
         ],
         todos: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'todo',
+                ref: 'Todo',
             },
         ],
         resumes: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'resume',
+                ref: 'Resume',
             },
         ],
         contacts: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'contact',
+                ref: 'Contact',
             },
         ],
     },
