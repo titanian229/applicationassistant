@@ -15,7 +15,10 @@ const contactSchema = new Schema(
         },
         contactMethods: [
             {
-                name: String,
+                type: {
+                    type: String,
+                    enum: ['cell', 'office', 'email', 'address']
+                },
                 details: String,
             },
         ],

@@ -14,6 +14,9 @@ const applicationSchema = new Schema(
         requirementsNote: {
             type: String,
         },
+        notes: {
+            type: String,
+        },
         postLink: {
             type: String,
         },
@@ -34,15 +37,15 @@ const applicationSchema = new Schema(
             {
                 date: { type: Date },
                 interviewType: { type: String, enum: ['email', 'phone', 'inperson', 'teleconference'] },
-                interviewContactsNames: {
-                    type: String,
-                },
-                interviewContacts: [
-                    {
-                        type: Schema.Types.ObjectId,
-                        ref: 'contact',
-                    },
-                ],
+                // interviewContactsNames: {
+                //     type: String,
+                // },
+                // interviewContacts: [
+                //     {
+                //         type: Schema.Types.ObjectId,
+                //         ref: 'contact',
+                //     },
+                // ],
                 notes: String,
             },
         ],

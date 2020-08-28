@@ -5,6 +5,10 @@ const resumeSchema = new Schema(
     {
         name: {
             type: String,
+            required: true,
+        },
+        notes: {
+            type: String
         },
         link: {
             type: String,

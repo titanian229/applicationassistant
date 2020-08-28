@@ -42,8 +42,8 @@ import ResumeChooser from '../components/ResumeChooser';
 import ResumeListItem from '../components/ResumeListItem';
 import TodoListItem from '../components/TodoListItem';
 import TodoNew from '../components/TodoNew';
-import ContactNew from '../components/ContactNew'
-import ResumeNew from '../components/ResumeNew'
+import ContactNew from '../components/ContactNew';
+import ResumeNew from '../components/ResumeNew';
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(4),
     },
     spaceTop: {
-        marginTop: theme.spacing(1)
+        marginTop: theme.spacing(1),
     },
 }));
 
@@ -155,8 +155,8 @@ const NewApplication = () => {
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
     const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
-    const [contactNewOpen, setContactNewOpen] = useState(false)
-    const [resumeNewOpen, setResumeNewOpen] = useState(false)
+    const [contactNewOpen, setContactNewOpen] = useState(false);
+    const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
     const handleChange = changeHandler(values, setValues);
 
@@ -173,7 +173,7 @@ const NewApplication = () => {
 
         if (selectedContactChoice === 'addContact') {
             // TODO display add contact dialog, then populate this list
-            setContactNewOpen(true)
+            setContactNewOpen(true);
             return;
         }
 
@@ -187,13 +187,13 @@ const NewApplication = () => {
     };
 
     const saveContact = (contact) => {
-        setContactNewOpen(false)
-        if (!contact) return
-        if (!contact._id) contact._id = values.contacts.length + 1
-        let contacts = values.contacts
-        contacts.push(contact)
-        setValues({...values, contacts})
-    }
+        setContactNewOpen(false);
+        if (!contact) return;
+        if (!contact._id) contact._id = values.contacts.length + 1;
+        let contacts = values.contacts;
+        contacts.push(contact);
+        setValues({ ...values, contacts });
+    };
 
     const removeContact = (contactID) => {
         let contacts = values.contacts;
@@ -208,7 +208,7 @@ const NewApplication = () => {
         if (!selectedResumeChoice) return;
 
         if (selectedResumeChoice === 'addResume') {
-            setResumeNewOpen(true)
+            setResumeNewOpen(true);
             return;
         }
 
@@ -222,13 +222,13 @@ const NewApplication = () => {
     };
 
     const saveResume = (resume) => {
-        setResumeNewOpen(false)
-        if (!resume) return
-        let resumes = values.resumes
-        if (!resume._id) resume._id = resumes.length + 1
-        resumes.push(resume)
-        setValues({...values, resumes})
-    }
+        setResumeNewOpen(false);
+        if (!resume) return;
+        let resumes = values.resumes;
+        if (!resume._id) resume._id = resumes.length + 1;
+        resumes.push(resume);
+        setValues({ ...values, resumes });
+    };
 
     const removeResume = (resumeID) => {
         let resumes = values.resumes;
@@ -279,6 +279,7 @@ const NewApplication = () => {
     const handleSave = () => {
         // TODO Remove id from each interview
         let applicationData = JSON.parse(JSON.stringify(values));
+        // Removing the temporary IDs created, so they're replaced on the server by UUIDs.
         applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
             delete interview._id;
             return interview;
@@ -287,6 +288,14 @@ const NewApplication = () => {
             delete todo._id;
             return todo;
         });
+        applicationData.resumes = applicationData.resumes.map(resume => {
+            if (String(resume._id).length < 5) delete resume._id
+            return resume
+        })
+        applicationData.contacts = applicationData.contacts.map(contact => {
+            if (String(contact._id).length < 5) delete contact._id
+            return contact
+        })
         console.log('handleSave -> applicationData', applicationData);
         // TODO add to DB, return message to user of successs or failure
     };
@@ -423,7 +432,11 @@ const NewApplication = () => {
             </Grid>
             {/* </AccordionDetails>
             </Accordion> */}
-            <Accordion className={classes.spaceTop} expanded={expandedAccordion === 'interviews'} onChange={handleChangeAccordion('interviews')}>
+            <Accordion
+                className={classes.spaceTop}
+                expanded={expandedAccordion === 'interviews'}
+                onChange={handleChangeAccordion('interviews')}
+            >
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="interviews-content"
@@ -487,7 +500,11 @@ const NewApplication = () => {
                         </List>
                         <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
                         <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
-                        <ContactNew open={contactNewOpen} saveContact={saveContact} businessName={values.businessName} />
+                        <ContactNew
+                            open={contactNewOpen}
+                            saveContact={saveContact}
+                            businessName={values.businessName}
+                        />
                     </Grid>
                 </AccordionDetails>
             </Accordion>
