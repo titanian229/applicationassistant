@@ -43,6 +43,7 @@ import ResumeListItem from '../components/ResumeListItem';
 import TodoListItem from '../components/TodoListItem';
 import TodoNew from '../components/TodoNew';
 import ContactNew from '../components/ContactNew'
+import ResumeNew from '../components/ResumeNew'
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -155,6 +156,7 @@ const NewApplication = () => {
     const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false)
+    const [resumeNewOpen, setResumeNewOpen] = useState(false)
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
     const handleChange = changeHandler(values, setValues);
 
@@ -206,7 +208,7 @@ const NewApplication = () => {
         if (!selectedResumeChoice) return;
 
         if (selectedResumeChoice === 'addResume') {
-            // TODO display add resume dialog, then populate this list
+            setResumeNewOpen(true)
             return;
         }
 
@@ -218,6 +220,15 @@ const NewApplication = () => {
         setValues({ ...values, resumes });
         // TODO make sure I process this on save to just the ID of the resume
     };
+
+    const saveResume = (resume) => {
+        setResumeNewOpen(false)
+        if (!resume) return
+        let resumes = values.resumes
+        if (!resume._id) resume._id = resumes.length + 1
+        resumes.push(resume)
+        setValues({...values, resumes})
+    }
 
     const removeResume = (resumeID) => {
         let resumes = values.resumes;
@@ -280,9 +291,9 @@ const NewApplication = () => {
         // TODO add to DB, return message to user of successs or failure
     };
 
-    const handleChangeTab = (event, newValue) => {
-        setCurrentTab(newValue);
-    };
+    // const handleChangeTab = (event, newValue) => {
+    //     setCurrentTab(newValue);
+    // };
 
     const handleChangeAccordion = (panel) => (event, isExpanded) => {
         setExpandedAccordion(isExpanded ? panel : false);
@@ -498,6 +509,7 @@ const NewApplication = () => {
                         </List>
                         <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button>
                         <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} />
+                        <ResumeNew open={resumeNewOpen} saveResume={saveResume} />
                     </Grid>
                 </AccordionDetails>
             </Accordion>
