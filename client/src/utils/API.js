@@ -9,6 +9,20 @@ const getRequest = async (url) => {
 };
 
 export default {
+    post: async (url, body) => {
+        return fetch(url, {
+            method: 'post',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                // Session: localStorage.session ? localStorage.session : '',
+            },
+            body: JSON.stringify(body),
+        })
+            .then((result) => result.json())
+            .catch((err) => console.log(err));
+    },
     getResumes: async () => getRequest('/api/resumes'),
     getContacts: async () => getRequest('/api/contacts'),
+
 };

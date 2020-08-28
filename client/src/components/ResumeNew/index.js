@@ -27,9 +27,12 @@ import {
 import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
 import changeHandler from '../../utils/handleChange';
+import API from '../../utils/API'
+import { useGlobalStore } from '../GlobalStore'
 
 const ResumeNew = (props) => {
     const { open, saveResume } = props;
+    const [globalStore, dispatch] = useGlobalStore()
 
     const defaultValues = {
         name: '',
@@ -44,9 +47,17 @@ const ResumeNew = (props) => {
         saveResume();
     };
 
-    const handleSave = () => {
-        setValues(defaultValues);
-        saveResume(values);
+    const handleSave = async () => {
+        console.log('saving?')
+        dispatch({do: 'setLoading', loading: true})
+        const serverResponse = await API.post('/api/resumes', values)
+        dispatch({do: "processServerResponse", serverResponse})
+        dispatch({do: 'setLoading', loading: false})
+        if (serverResponse.resume){
+            saveResume(serverResponse.resume);
+            setValues(defaultValues);
+        }
+
     };
 
     return (
