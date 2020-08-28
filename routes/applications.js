@@ -4,7 +4,7 @@ module.exports = (router) => {
     router.get('/api/applications', async ({ headers }, res) => {
         try {
             // const { session } = headers;
-            const applications = await db.Application.find();
+            const applications = await db.Application.find().populate('todos').populate('contacts').populate('resumes');
             res.status(200).send({ applications });
         } catch (err) {
             console.log(err);

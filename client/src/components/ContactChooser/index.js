@@ -17,7 +17,9 @@ import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
+
 import changeHandler from '../../utils/handleChange';
+import API from '../../utils/API'
 
 const placeholderContacts = [
     {   
@@ -64,7 +66,17 @@ const ContactChooser = (props) => {
     };
 
     const fetchContacts = async () => {
-        setContacts(placeholderContacts)
+        const serverReturn = await API.getContacts()
+        if (!serverReturn){
+            console.log('error fetching contacts')
+            return
+        }
+        if (serverReturn.error || !serverReturn.contacts){
+            console.log('error fetching contacts')
+            return
+        }
+
+        setContacts(serverReturn.contacts)
     }
 
     useEffect(() => {

@@ -18,6 +18,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 import changeHandler from '../../utils/handleChange';
+import API from '../../utils/API'
 
 const placeholderResumes = [
     {
@@ -49,7 +50,16 @@ const ResumeChooser = (props) => {
     };
 
     const fetchResumes = async () => {
-        setResumes(placeholderResumes)
+        const serverReturn = await API.getResumes()
+        if (!serverReturn){
+            console.log('error fetching resumes')
+            return
+        }
+        if (serverReturn.error || !serverReturn.resumes){
+            console.log('error fetching resumes')
+            return
+        }
+        setResumes(serverReturn.resumes)
     }
 
     useEffect(() => {

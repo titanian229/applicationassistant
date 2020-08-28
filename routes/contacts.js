@@ -4,7 +4,7 @@ module.exports = (router) => {
     router.get('/api/contacts', async ({ headers }, res) => {
         try {
             // const { session } = headers;
-            const contacts = await db.Contact.find();
+            const contacts = await db.Contact.find().populate('associatedTodos');
             res.status(200).send({ contacts });
         } catch (err) {
             console.log(err);
