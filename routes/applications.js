@@ -11,6 +11,20 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
+    router.get('/api/applications/:id', async ({ headers, params }, res) => {
+        try {
+            // const { session } = headers;
+            const { id } = params;
+            const application = await db.Application.findById({ _id: id })
+                .populate('todos')
+                .populate('contacts')
+                .populate('resumes');
+            res.status(200).send({ application });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
     router.post('/api/applications', async ({ headers, body }, res) => {
         try {
             // const { session } = headers;

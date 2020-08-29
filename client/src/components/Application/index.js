@@ -13,6 +13,7 @@ import {
     IconButton,
     Button,
     Chip,
+    Badge,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -21,6 +22,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
+import WorkIcon from '@material-ui/icons/WorkTwoTone';
+import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import clsx from 'clsx';
 
@@ -33,13 +36,7 @@ const useStyles = makeStyles((theme) => ({
             maxWidth: 320,
         },
     },
-    statusArray: {
-        width: '100%',
-        // paddingTop: theme.spacing(1),
-        // paddingBottom: theme.spacing(1),
-        // padding: theme.spacing(1),
-        // marginTop: theme.spacing(2),
-    },
+
     cardContent: {
         marginBottom: theme.spacing(2),
     },
@@ -52,15 +49,77 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const useCRTStyles = makeStyles((theme) => ({
+    badgeIcon: {
+        // marginRight: theme.spacing(4),
+    },
+    container: {
+        // margin: theme.spacing(0, 2, 0, 0),
+        marginTop: theme.spacing(3),
+    },
+}));
+
 const parseDate = (date) => {
     if (date === '' || !date) return '';
     try {
-        const dateObj = new Date(date)
+        const dateObj = new Date(date);
         return dateObj.getFullYear() + '/' + (dateObj.getMonth() + 1) + '/' + dateObj.getDate();
     } catch (err) {
-        console.log("Date error", err)
-        return ''
+        console.log('Date error', err);
+        return '';
     }
+};
+
+const useStatusArrayStyles = makeStyles((theme) => ({
+    chip: {
+        marginRight: theme.spacing(1),
+    },
+    statusArray: {
+        width: '100%',
+        marginTop: theme.spacing(1),
+        // paddingTop: theme.spacing(1),
+        // paddingBottom: theme.spacing(1),
+        // padding: theme.spacing(1),
+        // marginTop: theme.spacing(2),
+    },
+}));
+
+const StatusArray = (props) => {
+    const { haveApplied, haveResearched, interviewsArray } = props;
+    const classes = useStatusArrayStyles();
+    if (!(haveApplied || haveResearched || interviewsArray.length > 0)) return '';
+
+    return (
+        <div className={classes.statusArray}>
+            {haveApplied && (
+                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Applied" />
+            )}
+            {haveResearched && (
+                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Researched" />
+            )}
+            {interviewsArray.length > 0 && (
+                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Interviewed" />
+            )}
+        </div>
+    );
+};
+
+const ContactsResumesTodos = (props) => {
+    const { todosLength, resumesLength, contactsLength } = props;
+    const classes = useCRTStyles();
+    return (
+        <Grid container direction="row" justify="space-evenly">
+            <Badge badgeContent={todosLength} color="primary" className={classes.badgeIcon}>
+                <AddAlertIcon />
+            </Badge>
+            <Badge badgeContent={resumesLength} color="primary" className={classes.badgeIcon}>
+                <DescriptionIcon />
+            </Badge>
+            <Badge badgeContent={contactsLength} color="primary" className={classes.badgeIcon}>
+                <ContactsIcon />
+            </Badge>
+        </Grid>
+    );
 };
 
 const Application = (props) => {
@@ -85,15 +144,9 @@ const Application = (props) => {
         createdAt,
     } = props.applicationData;
 
-    const statusArray = (
-        <div className={classes.statusArray}>
-            {haveApplied && <Chip variant="outlined" color="primary" size="small" label="Applied" />}
-            {haveResearched && <Chip variant="outlined" color="primary" size="small" label="Researched" />}
-            {interviewsArray.length > 0 && <Chip variant="outlined" color="primary" size="small" label="Interviewed" />}
-        </div>
+    const statusDate = parseDate(
+        (interviewsArray.length > 0 && interviewsArray[0].date) || appliedDate || dateFound || ''
     );
-
-    const statusDate = parseDate((interviewsArray.length > 0 && interviewsArray[0].date) || appliedDate || dateFound || '');
 
     return (
         <Card className={classes.applicationCard}>
@@ -114,6 +167,7 @@ const Application = (props) => {
                                     {statusDate}
                                 </Typography>
                             )}
+                            <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
                         </>
                     }
                 />
@@ -124,7 +178,15 @@ const Application = (props) => {
                         </Typography>
                     )} */}
                     {/* Next Step: */}
-                    {statusArray}
+                    {/* <StatusArray
+                        statusArrayClass={classes.statusArray}
+                        {...{ haveApplied, haveResearched, interviewsArray }}
+                    /> */}
+                    <ContactsResumesTodos
+                        todosLength={todos.length}
+                        resumesLength={resumes.length}
+                        contactsLength={contacts.length}
+                    />
                 </CardContent>
             </CardActionArea>
             {/* <CardActions disableSpacing> */}
