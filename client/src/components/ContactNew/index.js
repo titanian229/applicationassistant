@@ -60,13 +60,20 @@ const ContactNew = (props) => {
     };
 
     const handleSave = async () => {
-        if (values.name === '' || values.businessName === '') {
+        const contact = JSON.parse(JSON.stringify(values))
+        if (contact.name === '' || contact.businessName === '') {
             sendMessage('Contact requires a name and business', { variant: 'error', key: 'missingbizandname' });
             return
         }
-
         dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.post('/api/contacts', values);
+
+        // removing the IDs so they're replaced in the DB
+        contact.contactMethods = contact.contactMethods.map((method) => {
+            delete method._id;
+            return method;
+        });
+
+        const serverResponse = await API.post('/api/contacts', contact);
         processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
         if (serverResponse.contact) {
@@ -119,10 +126,10 @@ const ContactNew = (props) => {
                     );
                 };
                 break;
-            case 'phone':
+            case 'cell':
                 return (event) => {
                     setAdditionArea(
-                        <MethodEdit saveMethod={handleSaveMethod} methodName="phone" methodLabel="Phone Number" />
+                        <MethodEdit saveMethod={handleSaveMethod} methodName="cell" methodLabel="Phone Number" />
                     );
                 };
                 break;
@@ -165,7 +172,7 @@ const ContactNew = (props) => {
                         <IconButton onClick={handleAddClick('email')}>
                             <AlternateEmailIcon />
                         </IconButton>
-                        <IconButton onClick={handleAddClick('phone')}>
+                        <IconButton onClick={handleAddClick('cell')}>
                             <PhoneOutlinedIcon />
                         </IconButton>
                         <IconButton onClick={handleAddClick('address')}>

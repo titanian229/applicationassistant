@@ -84,6 +84,7 @@ function GlobalStore(props) {
     const { enqueueSnackbar } = useSnackbar();
 
     const processServerResponse = (serverResponse) => {
+        console.log("processServerResponse -> serverResponse", serverResponse)
         if (!serverResponse) {
             const { message, options } = formatMessage('The server is not responding', 'error');
             enqueueSnackbar(message, options);

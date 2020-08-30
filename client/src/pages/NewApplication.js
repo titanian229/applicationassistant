@@ -45,7 +45,7 @@ import TodoListItem from '../components/TodoListItem';
 import TodoNew from '../components/TodoNew';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
-import ResponsiveSave from '../components/ResponsiveSave'
+import ResponsiveSave from '../components/ResponsiveSave';
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -193,7 +193,7 @@ const NewApplication = () => {
     const saveContact = (contact) => {
         setContactNewOpen(false);
         if (!contact) return;
-        if (!contact._id) contact._id = values.contacts.length + 1;
+        // if (!contact._id) contact._id = values.contacts.length + 1;
         let contacts = values.contacts;
         contacts.push(contact);
         setValues({ ...values, contacts });
@@ -299,7 +299,7 @@ const NewApplication = () => {
             setValues(defaultValues);
             setTimeout(() => {
                 console.log('SUCCESS MOVING TO NEXT PAGE');
-                history.push('/applications')
+                history.push('/applications');
             }, 4000);
         }
     };
@@ -563,7 +563,7 @@ const NewApplication = () => {
                 {/* <Button onClick={handleSave} variant="contained" color="primary">
                     Save Application
                 </Button> */}
-                <ResponsiveSave onClick={handleSave} buttonText='Save Application' />
+                <ResponsiveSave onClick={handleSave} buttonText="Save Application" />
             </Grid>
         </div>
     );

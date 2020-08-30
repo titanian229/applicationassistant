@@ -3,6 +3,8 @@ import { useParams, useHistory } from 'react-router-dom';
 import { Backdrop, CircularProgress, Typography, Grid, Paper, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import StatusArray from '../components/StatusArray';
+
 import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 import formatDate from '../utils/formatDate';
@@ -40,7 +42,24 @@ const useStyles = makeStyles((theme) => ({
 const Application = () => {
     let { id } = useParams();
     const [globalStore, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
-    const [application, setApplication] = useState({});
+    const [application, setApplication] = useState({
+        businessName: '',
+        roleTitle: '',
+        requirementsNote: '',
+        notes: '',
+        postLink: '',
+        dateFound: '',
+        foundWhereNote: '',
+        haveApplied: '',
+        appliedDate: '',
+        interviewsArray: [],
+        haveResearched: '',
+        haveResearchedNotes: '',
+        resumes: [],
+        contacts: [],
+        todos: [],
+        createdAt: '',
+    });
     const {
         businessName,
         roleTitle,
@@ -57,6 +76,7 @@ const Application = () => {
         resumes,
         contacts,
         todos,
+        createdAt,
     } = application;
 
     const classes = useStyles();
@@ -90,8 +110,12 @@ const Application = () => {
                     <Grid container spacing={3}>
                         <Grid item xs={8}>
                             {postLink && (
-                                <a href={postLink} alt='Original Post'>Original Post</a>
-                                )}
+                                <a href={postLink} alt="Original Post">
+                                    Original Post
+                                </a>
+                            )}
+                            <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
+                            {requirementsNote && (<Typography variant='body1'>{requirementsNote}</Typography>)}
                         </Grid>
                         <Grid item xs={4}>
                             {(dateFound || foundWhereNote) && (

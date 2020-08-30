@@ -169,7 +169,7 @@ const Application = (props) => {
                                     {statusDate}
                                 </Typography>
                             )}
-                            <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
+                            <StatusArray marginTop={true} {...{ haveApplied, haveResearched, interviewsArray }} />
                         </>
                     }
                 />

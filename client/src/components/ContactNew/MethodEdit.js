@@ -49,10 +49,6 @@ const MethodEdit = (props) => {
         setValues(defaultValues);
     }, [details]);
 
-    if (methodName === 'phone') {
-        defaultValues.phoneType = phoneType || 'cell';
-    }
-
     const [values, setValues] = useState(defaultValues);
     const handleChange = changeHandler(values, setValues);
 
@@ -81,14 +77,14 @@ const MethodEdit = (props) => {
                     startAdornment: <InputAdornment position="start">{methodIcon}</InputAdornment>,
                 }}
             />
-            {methodName === 'phone' && (
+            {['cell', 'office', 'home'].includes(methodName) && (
                 <FormControl variant="outlined">
                     <InputLabel id="phone-type-label">Phone</InputLabel>
                     <Select
                         labelId="phone-type-label"
                         id="phone-type"
-                        value={values.phoneType}
-                        onChange={handleChange('phoneType', 'select')}
+                        value={values.type}
+                        onChange={handleChange('type', 'select')}
                         label="Phone"
                     >
                         <MenuItem value="cell">Mobile</MenuItem>
