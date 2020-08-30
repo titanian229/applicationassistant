@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Backdrop, CircularProgress, Typography, Grid, Paper, Box } from '@material-ui/core';
+import { Backdrop, CircularProgress, Typography, Grid, Paper, Box, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import StatusArray from '../components/StatusArray';
 
-import API from '../utils/API';
+// import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
-import formatDate from '../utils/formatDate';
+// import formatDate from '../utils/formatDate';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -37,11 +37,27 @@ const useStyles = makeStyles((theme) => ({
         // padding: theme.spacing(1),
         // outline: '1px solid red',
     },
+    section: {
+        marginTop: theme.spacing(1),
+    },
+    central: {
+        padding: theme.spacing(0, 2),
+    },
+    title: {
+        color: theme.palette.primary.dark,
+    },
+    subtitle: {
+        color: theme.palette.secondary.dark,
+    },
 }));
 
 const Application = () => {
     let { id } = useParams();
-    const [globalStore, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
+    const [
+        globalStore,
+        dispatch,
+        { processServerResponse, sendMessage, API, formatDate, loadResource },
+    ] = useGlobalStore();
     const [application, setApplication] = useState({
         businessName: '',
         roleTitle: '',
@@ -82,13 +98,15 @@ const Application = () => {
     const classes = useStyles();
 
     const fetchApplication = async (id) => {
-        dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.getApplication(id);
-        processServerResponse(serverResponse);
-        if (serverResponse.application) {
-            setApplication(serverResponse.application);
-        }
-        dispatch({ do: 'setLoading', loading: false });
+        // dispatch({ do: 'setLoading', loading: true });
+        // const serverResponse = await API.getApplication(id);
+        // const serverUp = processServerResponse(serverResponse);
+        // dispatch({ do: 'setLoading', loading: false });
+        // if (serverUp === false) return;
+        // if (serverResponse.application) {
+        //     setApplication(serverResponse.application);
+        // }
+        loadResource(async () => API.getApplication(id), 'application', setApplication);
     };
 
     useEffect(() => {
@@ -98,10 +116,10 @@ const Application = () => {
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
             <Paper elevation={12} className={classes.header}>
-                <Typography variant="h4" align="center">
+                <Typography variant="h4" align="center" className={classes.title}>
                     {businessName}
                 </Typography>
-                <Typography variant="h6" align="center">
+                <Typography variant="h6" align="center" className={classes.subtitle}>
                     {roleTitle}
                 </Typography>
             </Paper>
@@ -109,13 +127,15 @@ const Application = () => {
                 <Box padding={2}>
                     <Grid container spacing={3}>
                         <Grid item xs={8}>
-                            {postLink && (
-                                <a href={postLink} alt="Original Post">
-                                    Original Post
-                                </a>
+                            <Box className={classes.section}>
+                                <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
+                            </Box>
+                            {requirementsNote && (
+                                <Box className={classes.section}>
+                                    <Typography variant="subtitle2">Requirements:</Typography>
+                                    <Typography variant="body2">{requirementsNote}</Typography>
+                                </Box>
                             )}
-                            <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
-                            {requirementsNote && (<Typography variant='body1'>{requirementsNote}</Typography>)}
                         </Grid>
                         <Grid item xs={4}>
                             {(dateFound || foundWhereNote) && (
@@ -131,8 +151,25 @@ const Application = () => {
                                     {foundWhereNote}
                                 </Typography>
                             )}
+                            {postLink && (
+                                <Typography variant="subtitle2" align="right">
+                                    <a href={postLink} alt="Original Post">
+                                        Original Post
+                                    </a>
+                                </Typography>
+                            )}
                         </Grid>
                     </Grid>
+                    <Divider style={{ marginTop: '0.5em', marginBottom: '0.5em' }} />
+                    <Box className={classes.central}>
+                        {notes && (
+                            <Box className={classes.section}>
+                                <Typography variant="subtitle2">Notes:</Typography>
+                                <Typography variant="body2">{notes}</Typography>
+                            </Box>
+                        )}
+                        {appliedDate && <Typography variant="body2">Applied: {formatDate(appliedDate)}</Typography>}
+                    </Box>
                 </Box>
             </Paper>
             <Backdrop className={classes.backdrop} open={globalStore.loading}>

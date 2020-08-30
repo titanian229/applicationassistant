@@ -292,9 +292,9 @@ const NewApplication = () => {
 
         dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await API.post('/api/applications', applicationData);
-        processServerResponse(serverResponse);
+        const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
-
+        if (serverUp === false) return
         if (serverResponse.application) {
             setValues(defaultValues);
             setTimeout(() => {

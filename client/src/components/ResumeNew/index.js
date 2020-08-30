@@ -50,9 +50,11 @@ const ResumeNew = (props) => {
     const handleSave = async () => {
         dispatch({do: 'setLoading', loading: true})
         const serverResponse = await API.post('/api/resumes', values)
-        processServerResponse(serverResponse)
+        const serverUp = processServerResponse(serverResponse)
         
         dispatch({do: 'setLoading', loading: false})
+        if (serverUp === false) return
+
         if (serverResponse.resume){
             saveResume(serverResponse.resume);
             setValues(defaultValues);

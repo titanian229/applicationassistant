@@ -1,7 +1,9 @@
 //This is a place we can keep any global settings.  Themes, functions, whatever
 import React, { useContext, useReducer, createContext } from 'react';
-import processServerResponse from '../utils/processServerResponse';
+// import processServerResponse from '../utils/processServerResponse';
 import { useSnackbar } from 'notistack';
+
+import { handleChange, formatDate, API } from '../utils';
 
 const defaultGlobalStore = {
     message: { text: '', type: '' },
@@ -71,8 +73,11 @@ function dispatcher(state, action) {
     }
 }
 
+
 const sharedFunctions = {
-    processServerResponse,
+    formatDate,
+    handleChange,
+    API,
 };
 
 const formatMessage = (message, variant) => {
@@ -84,27 +89,40 @@ function GlobalStore(props) {
     const { enqueueSnackbar } = useSnackbar();
 
     const processServerResponse = (serverResponse) => {
-        console.log("processServerResponse -> serverResponse", serverResponse)
+        console.log('processServerResponse -> serverResponse', serverResponse);
         if (!serverResponse) {
             const { message, options } = formatMessage('The server is not responding', 'error');
             enqueueSnackbar(message, options);
-            return;
+            return false;
         }
         if (serverResponse.error) {
             const { message, options } = formatMessage(serverResponse.error, 'error');
             enqueueSnackbar(message, options);
-            return;
+            return true;
         }
         if (serverResponse.message) {
             const { message, options } = formatMessage(serverResponse.message, serverResponse.messageType || 'success');
             enqueueSnackbar(message, options);
-            return;
+            return true;
         }
     };
 
+    const loadResource = async (APIFunction, resourceName, stateSetter) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await APIFunction();
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse[resourceName]) {
+            stateSetter(serverResponse[resourceName]);
+        }
+    
+    
+    }
+
     return (
         <GlobalData.Provider
-            value={[globalData, dispatch, { sendMessage: enqueueSnackbar, processServerResponse }]}
+            value={[globalData, dispatch, { sendMessage: enqueueSnackbar, processServerResponse, loadResource, ...sharedFunctions }]}
             {...props}
         />
     );

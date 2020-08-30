@@ -116,8 +116,9 @@ const Applications = (props) => {
     const fetchApplications = async () => {
         dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await API.getApplications();
-        processServerResponse(serverResponse);
+        const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return
         if (serverResponse.applications) {
             setApplicationData(serverResponse.applications);
         }

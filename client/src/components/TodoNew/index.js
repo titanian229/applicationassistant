@@ -43,8 +43,9 @@ const TodoNew = (props) => {
         if (todoValues.date === null) delete todoValues.date;
         dispatch({do: 'setLoading', loading: true})
         const serverResponse = await API.post('/api/todos', todoValues)
-        processServerResponse(serverResponse)
+        const serverUp = processServerResponse(serverResponse)
         dispatch({do: 'setLoading', loading: false})
+        if (serverUp === false) return
         if (serverResponse.todo){
             saveTodo(serverResponse.todo);
             setValues(defaultValues);

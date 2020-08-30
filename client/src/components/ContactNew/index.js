@@ -74,8 +74,9 @@ const ContactNew = (props) => {
         });
 
         const serverResponse = await API.post('/api/contacts', contact);
-        processServerResponse(serverResponse);
+        const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return
         if (serverResponse.contact) {
             setAdditionArea('');
             saveContact(serverResponse.contact);
