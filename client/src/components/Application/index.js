@@ -25,6 +25,8 @@ import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import WorkIcon from '@material-ui/icons/WorkTwoTone';
 import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
+import StatusArray from '../StatusArray'
+
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -70,39 +72,39 @@ const parseDate = (date) => {
     }
 };
 
-const useStatusArrayStyles = makeStyles((theme) => ({
-    chip: {
-        marginRight: theme.spacing(1),
-    },
-    statusArray: {
-        width: '100%',
-        marginTop: theme.spacing(1),
-        // paddingTop: theme.spacing(1),
-        // paddingBottom: theme.spacing(1),
-        // padding: theme.spacing(1),
-        // marginTop: theme.spacing(2),
-    },
-}));
+// const useStatusArrayStyles = makeStyles((theme) => ({
+//     chip: {
+//         marginRight: theme.spacing(1),
+//     },
+//     statusArray: {
+//         width: '100%',
+//         marginTop: theme.spacing(1),
+//         // paddingTop: theme.spacing(1),
+//         // paddingBottom: theme.spacing(1),
+//         // padding: theme.spacing(1),
+//         // marginTop: theme.spacing(2),
+//     },
+// }));
 
-const StatusArray = (props) => {
-    const { haveApplied, haveResearched, interviewsArray } = props;
-    const classes = useStatusArrayStyles();
-    if (!(haveApplied || haveResearched || interviewsArray.length > 0)) return '';
+// const StatusArray = (props) => {
+//     const { haveApplied, haveResearched, interviewsArray } = props;
+//     const classes = useStatusArrayStyles();
+//     if (!(haveApplied || haveResearched || interviewsArray.length > 0)) return '';
 
-    return (
-        <div className={classes.statusArray}>
-            {haveApplied && (
-                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Applied" />
-            )}
-            {haveResearched && (
-                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Researched" />
-            )}
-            {interviewsArray.length > 0 && (
-                <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Interviewed" />
-            )}
-        </div>
-    );
-};
+//     return (
+//         <div className={classes.statusArray}>
+//             {haveApplied && (
+//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Applied" />
+//             )}
+//             {haveResearched && (
+//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Researched" />
+//             )}
+//             {interviewsArray.length > 0 && (
+//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Interviewed" />
+//             )}
+//         </div>
+//     );
+// };
 
 const ContactsResumesTodos = (props) => {
     const { todosLength, resumesLength, contactsLength } = props;

@@ -89,18 +89,24 @@ const Application = () => {
                 <Box padding={2}>
                     <Grid container spacing={3}>
                         <Grid item xs={8}>
-                            
+                            {postLink && (
+                                <a href={postLink} alt='Original Post'>Original Post</a>
+                                )}
                         </Grid>
                         <Grid item xs={4}>
-                            {(dateFound || foundWhereNote) && (<Typography variant='subtitle1' align='right'>
-                                Found
-                            </Typography>)}
+                            {(dateFound || foundWhereNote) && (
+                                <Typography variant="subtitle1" align="right">
+                                    Found
+                                </Typography>
+                            )}
                             <Typography variant="subtitle2" align="right">
                                 {formatDate(dateFound)}
                             </Typography>
-                            {foundWhereNote && (<Typography variant='subtitle2' align='right'>
-                                {foundWhereNote}
-                            </Typography>)}
+                            {foundWhereNote && (
+                                <Typography variant="subtitle2" align="right">
+                                    {foundWhereNote}
+                                </Typography>
+                            )}
                         </Grid>
                     </Grid>
                 </Box>
