@@ -17,20 +17,21 @@ import AddIcon from '@material-ui/icons/Add';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
-import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API'
+// import changeHandler from '../../utils/handleChange';
+// import API from '../../utils/API'
+import { useGlobalStore } from '../GlobalStore';
 
 const placeholderResumes = [
     {
         _id: 1,
-        name: "Professional Resume",
-        link: "https://goog",
-        notes: "Complete resume"
+        name: 'Professional Resume',
+        link: 'https://goog',
+        notes: 'Complete resume',
     },
     {
         _id: 2,
-        name: "Tailored Resume",
-        link: "https://goog"
+        name: 'Tailored Resume',
+        link: 'https://goog',
     },
 ];
 
@@ -39,7 +40,8 @@ const useStyles = makeStyles((theme) => ({}));
 const ResumeChooser = (props) => {
     const classes = useStyles();
     const { open, onClose } = props;
-    const [resumes, setResumes] = useState([])
+    const [resumes, setResumes] = useState([]);
+    const [, , { API, loadResource }] = useGlobalStore;
 
     const handleClose = () => {
         onClose();
@@ -50,21 +52,22 @@ const ResumeChooser = (props) => {
     };
 
     const fetchResumes = async () => {
-        const serverReturn = await API.getResumes()
-        if (!serverReturn){
-            console.log('error fetching resumes')
-            return
-        }
-        if (serverReturn.error || !serverReturn.resumes){
-            console.log('error fetching resumes')
-            return
-        }
-        setResumes(serverReturn.resumes)
-    }
+        loadResource(async () => API.getResumes(), 'resumes', setResumes);
+        // const serverReturn = await API.getResumes();
+        // if (!serverReturn) {
+        //     console.log('error fetching resumes');
+        //     return;
+        // }
+        // if (serverReturn.error || !serverReturn.resumes) {
+        //     console.log('error fetching resumes');
+        //     return;
+        // }
+        // setResumes(serverReturn.resumes);
+    };
 
     useEffect(() => {
-        fetchResumes()
-    }, [])
+        fetchResumes();
+    }, []);
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="resume selection" open={open}>

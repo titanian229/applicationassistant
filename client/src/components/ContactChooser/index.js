@@ -19,10 +19,11 @@ import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 
 import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API'
+// import API from '../../utils/API'
+import { useGlobalStore } from '../GlobalStore';
 
 const placeholderContacts = [
-    {   
+    {
         _id: 1,
         name: 'James',
         roleTitle: 'Science Officer',
@@ -55,7 +56,8 @@ const useStyles = makeStyles((theme) => ({}));
 const ContactChooser = (props) => {
     const classes = useStyles();
     const { open, onClose } = props;
-    const [contacts, setContacts] = useState([])
+    const [contacts, setContacts] = useState([]);
+    const [, , { loadResource, API }] = useGlobalStore;
 
     const handleClose = () => {
         onClose();
@@ -66,22 +68,24 @@ const ContactChooser = (props) => {
     };
 
     const fetchContacts = async () => {
-        const serverReturn = await API.getContacts()
-        if (!serverReturn){
-            console.log('error fetching contacts')
-            return
-        }
-        if (serverReturn.error || !serverReturn.contacts){
-            console.log('error fetching contacts')
-            return
-        }
+        loadResource(async () => API.getContacts(), 'contacts', setContacts)
+        // const serverReturn = await API.getContacts();
 
-        setContacts(serverReturn.contacts)
-    }
+        // if (!serverReturn) {
+        //     console.log('error fetching contacts');
+        //     return;
+        // }
+        // if (serverReturn.error || !serverReturn.contacts) {
+        //     console.log('error fetching contacts');
+        //     return;
+        // }
+
+        // setContacts(serverReturn.contacts);
+    };
 
     useEffect(() => {
-        fetchContacts()
-    }, [])
+        fetchContacts();
+    }, []);
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="contact selection" open={open}>

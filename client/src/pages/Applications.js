@@ -105,7 +105,7 @@ const applicationMockData = [
 const Applications = (props) => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
-    const [globalStore, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
+    const [globalStore, dispatch, { processServerResponse, sendMessage, loadResource }] = useGlobalStore();
     const emptyValues = {
         search: '',
         filter: [],
@@ -114,14 +114,16 @@ const Applications = (props) => {
     const [applicationData, setApplicationData] = useState([]);
 
     const fetchApplications = async () => {
-        dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.getApplications();
-        const serverUp = processServerResponse(serverResponse);
-        dispatch({ do: 'setLoading', loading: false });
-        if (serverUp === false) return
-        if (serverResponse.applications) {
-            setApplicationData(serverResponse.applications);
-        }
+        // dispatch({ do: 'setLoading', loading: true });
+        // const serverResponse = await API.getApplications();
+        // const serverUp = processServerResponse(serverResponse);
+        // dispatch({ do: 'setLoading', loading: false });
+        // if (serverUp === false) return
+        // if (serverResponse.applications) {
+        //     setApplicationData(serverResponse.applications);
+        // }
+        loadResource(async () => API.getApplications, 'applications', setApplicationData)
+
     };
 
     useEffect(() => {

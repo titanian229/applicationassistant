@@ -34,8 +34,8 @@ import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
 import MethodEdit from './MethodEdit';
 import MethodDisplay from './MethodDisplay';
-import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API';
+// import changeHandler from '../../utils/handleChange';
+// import API from '../../utils/API';
 import { useGlobalStore } from '../GlobalStore';
 
 const ContactNew = (props) => {
@@ -49,7 +49,7 @@ const ContactNew = (props) => {
     };
     const [values, setValues] = useState(defaultValues);
     const [additionArea, setAdditionArea] = useState('');
-    const [, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, sendMessage, API, changeHandler }] = useGlobalStore();
 
     const handleChange = changeHandler(values, setValues);
 

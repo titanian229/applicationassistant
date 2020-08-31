@@ -3,7 +3,7 @@ import React, { useContext, useReducer, createContext } from 'react';
 // import processServerResponse from '../utils/processServerResponse';
 import { useSnackbar } from 'notistack';
 
-import { handleChange, formatDate, API } from '../utils';
+import { handleChange as changeHandler, formatDate, API } from '../utils';
 
 const defaultGlobalStore = {
     message: { text: '', type: '' },
@@ -76,7 +76,7 @@ function dispatcher(state, action) {
 
 const sharedFunctions = {
     formatDate,
-    handleChange,
+    changeHandler,
     API,
 };
 
