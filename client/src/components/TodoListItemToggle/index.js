@@ -18,17 +18,17 @@ import { useGlobalStore } from '../GlobalStore';
 const TodoListItem = (props) => {
     const { _id, name, date, handleRemove, completed } = props;
     const [checked, setChecked] = useState(completed || false);
-    const [indeterminate, setIndeterminate] = useState(false)
-    const [, dispatch, { API, processServerResponse }] = useGlobalStore();
+    const [indeterminate, setIndeterminate] = useState(false);
+    const [, , { API, processServerResponse }] = useGlobalStore();
 
     const handleCheck = async () => {
         // send put req to server to toggle it
         // dispatch({ do: 'setLoading', loading: true });
-        setIndeterminate(true)
+        setIndeterminate(true);
         const serverResponse = await API.toggleTodo(_id, !checked);
         const serverUp = processServerResponse(serverResponse);
         // dispatch({ do: 'setLoading', loading: false });
-        setIndeterminate(false)
+        setIndeterminate(false);
         if (serverUp === false) return;
         if (serverResponse.todo) {
             setChecked(serverResponse.todo.completed);
@@ -41,10 +41,13 @@ const TodoListItem = (props) => {
         <AssetListItem
             primary={name}
             secondary={date && formatDate(date)}
-            icon={<AddAlertIcon />}
+            // icon={<AddAlertIcon />}
             checked={checked}
             handleCheck={handleCheck}
             indeterminate={indeterminate}
+            handleRemove={handleRemove}
+            removeText="Delete Todo?"
+            deleteDialogDetails={{ text: 'Delete Todo?', confirmText: 'Delete' }}
             {...props}
         />
     );

@@ -52,9 +52,16 @@ const AssetListItem = (props) => {
 
     return (
         <ListItem key={_id}>
-            <ListItemAvatar>
-                <Avatar>{icon}</Avatar>
-            </ListItemAvatar>
+            {icon && (
+                <ListItemAvatar>
+                    <Avatar>{icon}</Avatar>
+                </ListItemAvatar>
+            )}
+            {handleCheck && (
+                <ListItemIcon>
+                    <Checkbox edge="start" onChange={handleCheck} checked={checked} indeterminate={indeterminate} />
+                </ListItemIcon>
+            )}
             <ListItemText
                 {...{ primary, secondary }}
                 primaryTypographyProps={{ classes: { root: clsx(checked && classes.checked) } }}
@@ -72,13 +79,13 @@ const AssetListItem = (props) => {
                     </WrapTooltip>
                 </ListItemSecondaryAction>
             )}
-            {handleCheck && (
+            {/* {handleCheck && (
                 <ListItemSecondaryAction>
                     <WrapTooltip tooltipText={tooltipText}>
                         <Checkbox edge="end" onChange={handleCheck} checked={checked} indeterminate={indeterminate} />
                     </WrapTooltip>
                 </ListItemSecondaryAction>
-            )}
+            )} */}
         </ListItem>
     );
 };

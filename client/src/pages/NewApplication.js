@@ -48,6 +48,9 @@ import ResumeNew from '../components/ResumeNew';
 import ResponsiveSave from '../components/ResponsiveSave';
 import AddButton from '../components/AddButton'
 
+import ResumeListSection from '../components/ResumeListSection'
+import ContactListSection from '../components/ContactListSection'
+
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
@@ -173,74 +176,87 @@ const NewApplication = () => {
     };
 
     // Contacts
-    const setSelectedContact = (selectedContactChoice) => {
-        setContactsChooserOpen(false);
+    const updateContacts = (contacts) => {
+        setValues({...values, contacts})
+    }
 
-        if (!selectedContactChoice) return;
+    // const setSelectedContact = (selectedContactChoice) => {
+    //     setContactsChooserOpen(false);
 
-        if (selectedContactChoice === 'addContact') {
-            setContactNewOpen(true);
-            return;
-        }
+    //     if (!selectedContactChoice) return;
 
-        // checking not a duplicate
-        if (values.contacts.map((contact) => contact._id).includes(selectedContactChoice._id)) return;
+    //     if (selectedContactChoice === 'addContact') {
+    //         setContactNewOpen(true);
+    //         return;
+    //     }
 
-        let contacts = values.contacts;
-        contacts.push(selectedContactChoice);
-        setValues({ ...values, contacts });
-    };
+    //     // checking not a duplicate
+    //     if (values.contacts.map((contact) => contact._id).includes(selectedContactChoice._id)) return;
 
-    const saveContact = (contact) => {
-        setContactNewOpen(false);
-        if (!contact) return;
-        // if (!contact._id) contact._id = values.contacts.length + 1;
-        let contacts = values.contacts;
-        contacts.push(contact);
-        setValues({ ...values, contacts });
-    };
+    //     let contacts = values.contacts;
+    //     contacts.push(selectedContactChoice);
+    //     setValues({ ...values, contacts });
+    // };
 
-    const removeContact = (contactID) => {
-        let contacts = values.contacts;
-        contacts = contacts.filter((contact) => contact._id !== contactID);
-        setValues({ ...values, contacts });
-    };
+    // const saveContact = (contact) => {
+    //     setContactNewOpen(false);
+    //     if (!contact) return;
+    //     // if (!contact._id) contact._id = values.contacts.length + 1;
+    //     let contacts = values.contacts;
+    //     contacts.push(contact);
+    //     setValues({ ...values, contacts });
+    // };
+
+    // const removeContact = (contactID) => {
+    //     let contacts = values.contacts;
+    //     contacts = contacts.filter((contact) => contact._id !== contactID);
+    //     setValues({ ...values, contacts });
+    // };
 
     // Resumes
-    const setSelectedResume = (selectedResumeChoice) => {
-        setResumesChooserOpen(false);
+    const updateResumes = (resumes) => {
+        setValues({...values, resumes})
+    }
 
-        if (!selectedResumeChoice) return;
 
-        if (selectedResumeChoice === 'addResume') {
-            setResumeNewOpen(true);
-            return;
-        }
+    // const setSelectedResume = (selectedResumeChoice) => {
+    //     setResumesChooserOpen(false);
 
-        // checking not a duplicate
-        if (values.resumes.map((resume) => resume._id).includes(selectedResumeChoice._id)) return;
+    //     if (!selectedResumeChoice) return;
 
-        let resumes = values.resumes;
-        resumes.push(selectedResumeChoice);
-        setValues({ ...values, resumes });
-    };
+    //     if (selectedResumeChoice === 'addResume') {
+    //         setResumeNewOpen(true);
+    //         return;
+    //     }
 
-    const saveResume = (resume) => {
-        setResumeNewOpen(false);
-        if (!resume) return;
-        let resumes = values.resumes;
-        if (!resume._id) resume._id = resumes.length + 1;
-        resumes.push(resume);
-        setValues({ ...values, resumes });
-    };
+    //     // checking not a duplicate
+    //     if (values.resumes.map((resume) => resume._id).includes(selectedResumeChoice._id)) return;
 
-    const removeResume = (resumeID) => {
-        let resumes = values.resumes;
-        resumes = resumes.filter((resume) => resume._id !== resumeID);
-        setValues({ ...values, resumes });
-    };
+    //     let resumes = values.resumes;
+    //     resumes.push(selectedResumeChoice);
+    //     setValues({ ...values, resumes });
+    // };
+
+    // const saveResume = (resume) => {
+    //     setResumeNewOpen(false);
+    //     if (!resume) return;
+    //     let resumes = values.resumes;
+    //     if (!resume._id) resume._id = resumes.length + 1;
+    //     resumes.push(resume);
+    //     setValues({ ...values, resumes });
+    // };
+
+    // const removeResume = (resumeID) => {
+    //     let resumes = values.resumes;
+    //     resumes = resumes.filter((resume) => resume._id !== resumeID);
+    //     setValues({ ...values, resumes });
+    // };
 
     // Todos
+    // const updateReTodos = (todos) => {
+    //     setValues({...values, todos})
+    // }
+
     const saveTodo = (todo) => {
         setTodoNewOpen(false);
         if (!todo) return;
@@ -481,7 +497,8 @@ const NewApplication = () => {
                         have a boolean for adding one, when the boolean is true show addition
                         when save is hit or cancel in the addition field, push
                     */}
-                        {!showAddInterview && <Button onClick={() => setShowAddInterview(true)}>Add Interview</Button>}
+                        {/* {!showAddInterview && <Button onClick={() => setShowAddInterview(true)}>Add Interview</Button>} */}
+                        {!showAddInterview && <AddButton onClick={() => setShowAddInterview(true)} />}
                         {/* </Box> */}
                         {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
                     </Grid>
@@ -496,20 +513,21 @@ const NewApplication = () => {
                     <Typography variant="h6">Contacts</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Grid container direction="column">
+                    {/* <Grid container direction="column">
                         <List dense={true}>
                             {values.contacts.map((contact) => (
                                 <ContactListItem handleRemove={removeContact} {...contact} />
                             ))}
                         </List>
-                        <Button onClick={() => setContactsChooserOpen(true)}>Add Contact</Button>
+                        <AddButton onClick={() => setContactsChooserOpen(true)} />
                         <ContactChooser open={contactsChooserOpen} onClose={setSelectedContact} />
                         <ContactNew
                             open={contactNewOpen}
                             saveContact={saveContact}
                             businessName={values.businessName}
                         />
-                    </Grid>
+                    </Grid> */}
+                    <ContactListSection contacts={values.contacts} updateContacts={updateContacts} />
                 </AccordionDetails>
             </Accordion>
 
@@ -521,17 +539,17 @@ const NewApplication = () => {
                     <Typography variant="h6">Resumes</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Grid container direction="column">
-                        {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
+                    {/* <Grid container direction="column">
                         <List dense={true}>
                             {values.resumes.map((resume) => (
                                 <ResumeListItem handleRemove={removeResume} {...resume} />
                             ))}
                         </List>
-                        <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button>
+                        <AddButton onClick={() => setResumesChooserOpen(true)} />
                         <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} />
                         <ResumeNew open={resumeNewOpen} saveResume={saveResume} />
-                    </Grid>
+                    </Grid> */}
+                    <ResumeListSection resumes={values.resumes} updateResumes={updateResumes} />
                 </AccordionDetails>
             </Accordion>
             {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}

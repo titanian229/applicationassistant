@@ -30,6 +30,12 @@ import TodoListItemToggle from '../components/TodoListItemToggle';
 import ContactListItem from '../components/ContactListItem';
 import AddButton from '../components/AddButton';
 import TodoNew from '../components/TodoNew';
+import ResumeChooser from '../components/ResumeChooser';
+import ContactChooser from '../components/ContactChooser';
+import ContactNew from '../components/ContactNew';
+import ResumeNew from '../components/ResumeNew';
+
+
 
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
@@ -95,6 +101,9 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: '#635ee7',
         },
     },
+    CRTcontainer: {
+        marginTop: theme.spacing(4),
+    },
 }));
 
 const Application = () => {
@@ -105,6 +114,7 @@ const Application = () => {
     const [todoNewOpen, setTodoNewOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false);
+    
 
     const [application, setApplication] = useState({
         businessName: '',
@@ -180,6 +190,10 @@ const Application = () => {
         }
     };
 
+    const removeTodo = async (todo) => {
+        console.log(todo)
+    }
+
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
             <Paper elevation={12} className={classes.header}>
@@ -239,7 +253,7 @@ const Application = () => {
                         )}
                         {appliedDate && <Typography variant="body2">Applied: {formatDate(appliedDate)}</Typography>}
                         {/* TABS */}
-                        <Paper elevation={0}>
+                        <Paper elevation={0} className={classes.CRTcontainer}>
                             <Tabs
                                 centered
                                 value={currentTab}
@@ -257,7 +271,7 @@ const Application = () => {
                             <TabItem tab={0} {...{ currentTab }}>
                                 <List dense>
                                     {todos.map((todo) => (
-                                        <TodoListItemToggle {...todo} />
+                                        <TodoListItemToggle handleRemove={removeTodo} {...todo} />
                                     ))}
                                 </List>
                                 <AddButton onClick={() => setTodoNewOpen(true)} />
@@ -276,6 +290,9 @@ const Application = () => {
                                         <ResumeListItem {...resume} />
                                     ))}
                                 </List>
+                                {/* <AddButton onClick={() => setResumesChooserOpen(true)} /> */}
+                                {/* <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} /> */}
+                                {/* <ResumeNew open={resumeNewOpen} saveResume={saveResume} /> */}
                             </TabItem>
                         </Paper>
                         {/* <Accordion>
