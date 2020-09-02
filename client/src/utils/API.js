@@ -8,6 +8,20 @@ const getRequest = async (url) => {
         .catch((err) => console.error(err));
 };
 
+const putRequest = async (url, body) => {
+    return fetch(url, {
+        method: 'put',
+        headers: {
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            // Session: localStorage.session ? localStorage.session : '',
+        },
+        body: JSON.stringify(body),
+    })
+        .then((result) => result.json())
+        .catch((err) => console.log(err));
+};
+
 export default {
     post: async (url, body) => {
         return fetch(url, {
@@ -26,4 +40,5 @@ export default {
     getContacts: async () => getRequest('/api/contacts'),
     getApplications: async () => getRequest('/api/applications'),
     getApplication: async (id) => getRequest('/api/applications/' + id),
+    toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
 };

@@ -25,6 +25,10 @@ import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import StatusArray from '../components/StatusArray';
 import TabItem from '../components/TabItem';
+import ResumeListItem from '../components/ResumeListItem';
+import TodoListItemToggle from '../components/TodoListItemToggle';
+import ContactListItem from '../components/ContactListItem';
+
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 // import formatDate from '../utils/formatDate';
@@ -224,19 +228,30 @@ const Application = () => {
                                 TabIndicatorProps={{ children: <span /> }}
                             >
                                 <Tab disableRipple label="Todos" icon={<AddAlertIcon />} />
+                                {/* TODO add checkboxes to show todo done or not */}
                                 <Tab disableRipple label="Contacts" icon={<ContactsIcon />} />
                                 <Tab disableRipple label="Resumes" icon={<DescriptionIcon />} />
                             </Tabs>
 
                             <TabItem tab={0} {...{ currentTab }}>
-                                Todos
+                                <List dense>
+                                    {todos.map((todo) => (
+                                        <TodoListItemToggle {...todo} />
+                                    ))}
+                                </List>
                             </TabItem>
                             <TabItem tab={1} {...{ currentTab }}>
-                                Contacts
+                                <List>
+                                    {contacts.map((contact) => (
+                                        <ContactListItem {...contact} />
+                                    ))}
+                                </List>
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>
                                 <List>
-                                    
+                                    {resumes.map((resume) => (
+                                        <ResumeListItem {...resume} />
+                                    ))}
                                 </List>
                             </TabItem>
                         </Paper>

@@ -10,6 +10,10 @@ const todoSchema = new Schema(
         date: {
             type: Date,
         },
+        completed: {
+            type: Boolean,
+            default: false,
+        },
         associatedContact: {
             type: Schema.Types.ObjectId,
             ref: 'Contact',

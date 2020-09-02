@@ -109,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
     const classes = useStyles();
+    // TODO add a back button to return to previous page
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider maxSnack={3} preventDuplicate anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>

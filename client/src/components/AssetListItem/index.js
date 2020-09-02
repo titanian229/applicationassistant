@@ -9,6 +9,7 @@ import {
     ListItemSecondaryAction,
     IconButton,
     Tooltip,
+    Checkbox,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useGlobalStore } from '../GlobalStore';
@@ -22,7 +23,19 @@ const WrapTooltip = (props) => {
 };
 
 const AssetListItem = (props) => {
-    const { _id, primary, secondary, tooltipText, icon, handleRemove, deleteDialogDetails: dialogDetails, handleClick } = props;
+    const {
+        _id,
+        primary,
+        secondary,
+        tooltipText,
+        icon,
+        handleRemove,
+        deleteDialogDetails: dialogDetails,
+        handleClick,
+        handleCheck,
+        checked,
+        indeterminate,
+    } = props;
     const [, , { confirmAction }] = useGlobalStore();
     const handleDeleteButton = () => {
         handleRemove(_id);
@@ -44,6 +57,13 @@ const AssetListItem = (props) => {
                         >
                             <DeleteIcon />
                         </IconButton>
+                    </WrapTooltip>
+                </ListItemSecondaryAction>
+            )}
+            {handleCheck && (
+                <ListItemSecondaryAction>
+                    <WrapTooltip tooltipText={tooltipText}>
+                        <Checkbox edge="end" onChange={handleCheck} checked={checked} indeterminate={indeterminate} />
                     </WrapTooltip>
                 </ListItemSecondaryAction>
             )}
