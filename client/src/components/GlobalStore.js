@@ -5,6 +5,13 @@ import { useSnackbar } from 'notistack';
 
 import { handleChange as changeHandler, formatDate, API } from '../utils';
 
+const defaultConfirmationDialog = {
+    open: false,
+    handleConfirm: () => console.log('No confirm action defined'),
+    text: '',
+    confirmText: '',
+};
+
 const defaultGlobalStore = {
     message: { text: '', type: '' },
     messageDuration: 5000,
@@ -13,6 +20,7 @@ const defaultGlobalStore = {
     loggedIn: false,
     theme: 'light',
     loading: false,
+    confirmationDialog: defaultConfirmationDialog,
 };
 
 let previousMessage = { text: '', time: undefined };
@@ -32,7 +40,6 @@ function dispatcher(state, action) {
             newState.message.text = action.message.text;
             return newState;
         case 'clearMessage':
-            console.log('clearing message');
             newState.message = defaultGlobalStore.message;
             return newState;
         case 'processServerResponse':
@@ -62,6 +69,15 @@ function dispatcher(state, action) {
         case 'setLoading':
             newState.loading = action.loading;
             return newState;
+        case 'showConfirmation':
+            newState.confirmationDialog = {
+                open: true,
+                ...action,
+            };
+            return newState;
+        case 'closeConfirmation':
+            newState.confirmationDialog = defaultConfirmationDialog;
+            return newState;
         case 'login':
             newState.loggedIn = true;
             return newState;
@@ -69,7 +85,7 @@ function dispatcher(state, action) {
             return defaultGlobalStore;
         default:
             console.log(`unknown action called from GlobalStore: ${action.do}`);
-            break;
+            return newState;
     }
 }
 
@@ -117,12 +133,22 @@ function GlobalStore(props) {
         }
     };
 
+    const confirmAction = (handleConfirm, dialogDetails) => () => {
+        dispatch({ do: 'showConfirmation', handleConfirm, ...dialogDetails });
+    };
+
     return (
         <GlobalData.Provider
             value={[
                 globalData,
                 dispatch,
-                { sendMessage: enqueueSnackbar, processServerResponse, loadResource, ...sharedFunctions },
+                {
+                    sendMessage: enqueueSnackbar,
+                    processServerResponse,
+                    loadResource,
+                    confirmAction,
+                    ...sharedFunctions,
+                },
             ]}
             {...props}
         />

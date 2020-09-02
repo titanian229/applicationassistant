@@ -164,7 +164,7 @@ const NewApplication = () => {
     const [contactNewOpen, setContactNewOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
-    const [, dispatch, { processServerResponse, sendMessage, API, changeHandler }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, API, changeHandler }] = useGlobalStore();
     const handleChange = changeHandler(values, setValues);
 
     const handleReset = () => {

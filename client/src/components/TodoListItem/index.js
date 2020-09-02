@@ -16,7 +16,16 @@ import AssetListItem from '../AssetListItem';
 
 const TodoListItem = (props) => {
     const { _id, name, date, handleRemove } = props;
-    return <AssetListItem primary={name} secondary={date && formatDate(date)} icon={<AddAlertIcon />} {...props} />;
+    return (
+        <AssetListItem
+            primary={name}
+            secondary={date && formatDate(date)}
+            icon={<AddAlertIcon />}
+            removeText="Delete Todo?"
+            deleteDialogDetails={{ text: 'Delete Todo?', confirmText: 'Delete' }}
+            {...props}
+        />
+    );
 };
 // TODO change handleRemove for this to remove it from the DB as well.
 

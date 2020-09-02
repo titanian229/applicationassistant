@@ -13,6 +13,7 @@ import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
 import Message from './components/Message';
 import Home from './pages/Home';
+import ConfirmationDialog from './components/ConfirmationDialog'
 import { GlobalStore } from './components/GlobalStore';
 // primary: {
 //     main: '#820263',
@@ -113,6 +114,7 @@ function App() {
             <SnackbarProvider maxSnack={3} preventDuplicate anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
                 <GlobalStore>
                     <div className={classes.mainContainer}>
+                        <ConfirmationDialog />
                         <Router>
                             <Navbar />
                             <Message />

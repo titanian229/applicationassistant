@@ -14,7 +14,15 @@ import AssetListItem from '../AssetListItem';
 
 const ContactListItem = (props) => {
     const { _id, name, roleTitle, businessName, handleRemove } = props;
-    return <AssetListItem primary={name} secondary={roleTitle} icon={<PersonIcon />} {...props} />;
+    return (
+        <AssetListItem
+            primary={name}
+            secondary={roleTitle}
+            icon={<PersonIcon />}
+            deleteDialogDetails={{ text: 'Remove associated contact?' }}
+            {...props}
+        />
+    );
 };
 
 export default ContactListItem;

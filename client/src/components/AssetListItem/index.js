@@ -8,11 +8,25 @@ import {
     ListItemAvatar,
     ListItemSecondaryAction,
     IconButton,
+    Tooltip,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useGlobalStore } from '../GlobalStore';
+
+const WrapTooltip = (props) => {
+    const { children, tooltipText } = props;
+
+    if (!tooltipText) return <>{children}</>;
+
+    return <Tooltip title={tooltipText}>{children}</Tooltip>;
+};
 
 const AssetListItem = (props) => {
-    const { _id, primary, secondary, icon, handleRemove, handleClick } = props;
+    const { _id, primary, secondary, tooltipText, icon, handleRemove, deleteDialogDetails: dialogDetails, handleClick } = props;
+    const [, , { confirmAction }] = useGlobalStore();
+    const handleDeleteButton = () => {
+        handleRemove(_id);
+    };
 
     return (
         <ListItem key={_id}>
@@ -22,9 +36,15 @@ const AssetListItem = (props) => {
             <ListItemText {...{ primary, secondary }} />
             {handleRemove && (
                 <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="remove" onClick={() => handleRemove(_id)}>
-                        <DeleteIcon />
-                    </IconButton>
+                    <WrapTooltip tooltipText={tooltipText}>
+                        <IconButton
+                            edge="end"
+                            aria-label="remove"
+                            onClick={confirmAction(handleDeleteButton, dialogDetails)}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </WrapTooltip>
                 </ListItemSecondaryAction>
             )}
         </ListItem>
