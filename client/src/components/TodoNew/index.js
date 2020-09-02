@@ -14,12 +14,12 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API'
-import {useGlobalStore} from '../GlobalStore'
-import ConfirmationButtons from '../ConfirmationButtons'
+import API from '../../utils/API';
+import { useGlobalStore } from '../GlobalStore';
+import ConfirmationButtons from '../ConfirmationButtons';
 
 const TodoNew = (props) => {
-    const { open, saveTodo } = props;
+    const { open, saveTodo, todoCount } = props;
     const defaultValues = {
         name: '',
         date: null,
@@ -27,29 +27,33 @@ const TodoNew = (props) => {
     // TODO add the associated contact or application in whatever element creates this component
     const [values, setValues] = useState(defaultValues);
     const handleChange = changeHandler(values, setValues);
-    const [, dispatch, {processServerResponse, sendMessage}] = useGlobalStore()
+    const [, , { sendMessage }] = useGlobalStore();
 
     const handleClose = () => {
         saveTodo();
     };
 
     const handleSave = async () => {
-        const todoValues = JSON.parse(JSON.stringify(values))
+        const todoValues = JSON.parse(JSON.stringify(values));
         if (todoValues.name === '') {
             // dispatch({ do: 'displayMessage', message: { text: 'Todo must have text', type: 'warning' } });
-            sendMessage('Todo must have text', {variant: "error", key: 'todotextmissing'})
-            return
+            sendMessage('Todo must have text', { variant: 'error', key: 'todotextmissing' });
+            return;
         }
         if (todoValues.date === null) delete todoValues.date;
-        dispatch({do: 'setLoading', loading: true})
-        const serverResponse = await API.post('/api/todos', todoValues)
-        const serverUp = processServerResponse(serverResponse)
-        dispatch({do: 'setLoading', loading: false})
-        if (serverUp === false) return
-        if (serverResponse.todo){
-            saveTodo(serverResponse.todo);
-            setValues(defaultValues);
-        }
+        todoValues._id = todoCount + 1;
+        saveTodo(todoValues);
+        setValues(defaultValues);
+
+        // dispatch({do: 'setLoading', loading: true})
+        // const serverResponse = await API.post('/api/todos', todoValues)
+        // const serverUp = processServerResponse(serverResponse)
+        // dispatch({do: 'setLoading', loading: false})
+        // if (serverUp === false) return
+        // if (serverResponse.todo){
+        //     saveTodo(serverResponse.todo);
+        //     setValues(defaultValues);
+        // }
     };
 
     return (
@@ -77,7 +81,7 @@ const TodoNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <ConfirmationButtons {...{handleClose, handleSave}} />
+                <ConfirmationButtons {...{ handleClose, handleSave }} />
             </DialogActions>
         </Dialog>
     );

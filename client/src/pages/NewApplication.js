@@ -245,10 +245,6 @@ const NewApplication = () => {
         setTodoNewOpen(false);
         if (!todo) return;
 
-        if (!todo._id) {
-            todo._id = values.todos.length + 1;
-        }
-
         let todos = values.todos;
         todos.push(todo);
         setValues({ ...values, todos });
@@ -287,7 +283,10 @@ const NewApplication = () => {
             delete interview._id;
             return interview;
         });
-        applicationData.todos = applicationData.todos.map((todo) => ({ _id: todo._id }));
+        applicationData.todos = applicationData.todos.map((todo) => {
+            delete todo._id
+            return todo
+        });
         applicationData.resumes = applicationData.resumes.map((resume) => ({ _id: resume._id }));
         applicationData.contacts = applicationData.contacts.map((contact) => ({ _id: contact._id }));
 
@@ -553,7 +552,7 @@ const NewApplication = () => {
                         </List>
                         {/* <Button onClick={() => setTodoNewOpen(true)}>Add Todo/Reminder</Button> */}
                         <AddButton onClick={() => setTodoNewOpen(true)} />
-                        <TodoNew open={todoNewOpen} saveTodo={saveTodo} />
+                        <TodoNew open={todoNewOpen} saveTodo={saveTodo} todoCount={values.todos.length} />
                     </Grid>
                 </AccordionDetails>
             </Accordion>

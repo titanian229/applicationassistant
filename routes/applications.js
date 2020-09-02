@@ -43,12 +43,21 @@ module.exports = (router) => {
                 haveResearchedNotes,
                 resumes,
                 contacts,
-                todos,
+                todos: fullTodos,
             } = body;
 
             if (!businessName || !roleTitle) {
                 res.status(400).send({ error: 'Application must have a business name and role title' });
                 return;
+            }
+
+            let todos = [];
+
+            if (fullTodos.length > 0) {
+                // Make the todos, add the ids to an array
+                todos = fullTodos.map((todo) => db.Todo.create(todo));
+                todos = await Promise.all(todos);
+                // todos = todos.map((todo) => ({_id: todo._id}));
             }
 
             const application = await db.Application.create({
@@ -70,6 +79,7 @@ module.exports = (router) => {
             });
 
             res.status(200).send({ message: 'Application saved', application });
+            // res.status(200).send({ message: 'Application saved' });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
