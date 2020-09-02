@@ -11,25 +11,13 @@ import {
 } from '@material-ui/core';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import DeleteIcon from '@material-ui/icons/Delete';
-import formatDate from '../../utils/formatDate'
+import formatDate from '../../utils/formatDate';
+import AssetListItem from '../AssetListItem';
 
 const TodoListItem = (props) => {
     const { _id, name, date, handleRemove } = props;
-    return (
-        <ListItem key={_id}>
-            <ListItemAvatar>
-                <Avatar>
-                    <AddAlertIcon />
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={name} secondary={date && formatDate(date)} />
-            <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="remove" onClick={() => handleRemove(_id)}>
-                    <DeleteIcon />
-                </IconButton>
-            </ListItemSecondaryAction>
-        </ListItem>
-    );
+    return <AssetListItem primary={name} secondary={date && formatDate(date)} icon={<AddAlertIcon />} {...props} />;
 };
+// TODO change handleRemove for this to remove it from the DB as well.
 
 export default TodoListItem;

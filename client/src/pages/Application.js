@@ -1,10 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Backdrop, CircularProgress, Typography, Grid, Paper, Box, Divider } from '@material-ui/core';
+import {
+    Backdrop,
+    CircularProgress,
+    Typography,
+    Grid,
+    Paper,
+    Box,
+    Divider,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Tabs,
+    Tab,
+    List,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
+import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
+import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
+import WorkIcon from '@material-ui/icons/WorkTwoTone';
+import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import StatusArray from '../components/StatusArray';
-
+import TabItem from '../components/TabItem';
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 // import formatDate from '../utils/formatDate';
@@ -49,15 +69,34 @@ const useStyles = makeStyles((theme) => ({
     subtitle: {
         color: theme.palette.secondary.dark,
     },
+    tabRoot: {
+        textTransform: 'none',
+        color: '#fff',
+        fontWeight: theme.typography.fontWeightRegular,
+        fontSize: theme.typography.pxToRem(15),
+        marginRight: theme.spacing(1),
+        '&:focus': {
+            opacity: 1,
+        },
+    },
+    tabIndicator: {
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: 'transparent',
+        '& > span': {
+            maxWidth: 40,
+            width: '100%',
+            backgroundColor: '#635ee7',
+        },
+    },
 }));
 
 const Application = () => {
     let { id } = useParams();
-    const [
-        globalStore,
-        dispatch,
-        { processServerResponse, sendMessage, API, formatDate, loadResource },
-    ] = useGlobalStore();
+    const [globalStore, dispatch, { processServerResponse, API, formatDate, loadResource }] = useGlobalStore();
+
+    const [currentTab, setCurrentTab] = useState(0);
+
     const [application, setApplication] = useState({
         businessName: '',
         roleTitle: '',
@@ -96,6 +135,9 @@ const Application = () => {
     } = application;
 
     const classes = useStyles();
+    const handleTabChange = (event, newTab) => {
+        setCurrentTab(newTab);
+    };
 
     const fetchApplication = async (id) => {
         // dispatch({ do: 'setLoading', loading: true });
@@ -143,9 +185,11 @@ const Application = () => {
                                     Found
                                 </Typography>
                             )}
-                            <Typography variant="subtitle2" align="right">
-                                {formatDate(dateFound)}
-                            </Typography>
+                            {dateFound && (
+                                <Typography variant="subtitle2" align="right">
+                                    {formatDate(dateFound)}
+                                </Typography>
+                            )}
                             {foundWhereNote && (
                                 <Typography variant="subtitle2" align="right">
                                     {foundWhereNote}
@@ -169,6 +213,46 @@ const Application = () => {
                             </Box>
                         )}
                         {appliedDate && <Typography variant="body2">Applied: {formatDate(appliedDate)}</Typography>}
+                        {/* TABS */}
+                        <Paper elevation={0}>
+                            <Tabs
+                                centered
+                                value={currentTab}
+                                onChange={handleTabChange}
+                                classes={{ indicator: classes.tabIndicator }}
+                                aria-label="tabs for resumes todos contacts"
+                                TabIndicatorProps={{ children: <span /> }}
+                            >
+                                <Tab disableRipple label="Todos" icon={<AddAlertIcon />} />
+                                <Tab disableRipple label="Contacts" icon={<ContactsIcon />} />
+                                <Tab disableRipple label="Resumes" icon={<DescriptionIcon />} />
+                            </Tabs>
+
+                            <TabItem tab={0} {...{ currentTab }}>
+                                Todos
+                            </TabItem>
+                            <TabItem tab={1} {...{ currentTab }}>
+                                Contacts
+                            </TabItem>
+                            <TabItem tab={2} {...{ currentTab }}>
+                                <List></List>
+                            </TabItem>
+                        </Paper>
+                        {/* <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="resume-content"
+                                id="resume-header"
+                            >
+                                <Typography className={classes.heading}>Resume</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
+                                    ex, sit amet blandit leo lobortis eget.
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion> */}
                     </Box>
                 </Box>
             </Paper>

@@ -46,6 +46,7 @@ import TodoNew from '../components/TodoNew';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
 import ResponsiveSave from '../components/ResponsiveSave';
+import AddButton from '../components/AddButton'
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -53,8 +54,8 @@ import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import WorkIcon from '@material-ui/icons/WorkTwoTone';
 import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
-import changeHandler from '../utils/handleChange';
-import API from '../utils/API';
+// import changeHandler from '../utils/handleChange';
+// import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 
 // const TabPanel = (props) => {
@@ -163,8 +164,8 @@ const NewApplication = () => {
     const [contactNewOpen, setContactNewOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
+    const [, dispatch, { processServerResponse, sendMessage, API, changeHandler }] = useGlobalStore();
     const handleChange = changeHandler(values, setValues);
-    const [, dispatch, { processServerResponse, sendMessage }] = useGlobalStore();
 
     const handleReset = () => {
         // TODO add confirmation before wipe
@@ -550,7 +551,8 @@ const NewApplication = () => {
                                 <TodoListItem handleRemove={removeTodo} key={index} {...todo} />
                             ))}
                         </List>
-                        <Button onClick={() => setTodoNewOpen(true)}>Add Todo/Reminder</Button>
+                        {/* <Button onClick={() => setTodoNewOpen(true)}>Add Todo/Reminder</Button> */}
+                        <AddButton onClick={() => setTodoNewOpen(true)} />
                         <TodoNew open={todoNewOpen} saveTodo={saveTodo} />
                     </Grid>
                 </AccordionDetails>

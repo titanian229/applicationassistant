@@ -57,7 +57,7 @@ const ContactChooser = (props) => {
     const classes = useStyles();
     const { open, onClose } = props;
     const [contacts, setContacts] = useState([]);
-    const [, , { loadResource, API }] = useGlobalStore;
+    const [, , { loadResource, API }] = useGlobalStore();
 
     const handleClose = () => {
         onClose();
@@ -89,7 +89,7 @@ const ContactChooser = (props) => {
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="contact selection" open={open}>
-            <DialogTitle id="contact selection">Choose a contact</DialogTitle>
+            <DialogTitle id="contact selection">Saved Contacts</DialogTitle>
             <List>
                 {contacts.map((contact) => (
                     <ListItem button onClick={() => handleListItemClick(contact)} key={contact.name}>

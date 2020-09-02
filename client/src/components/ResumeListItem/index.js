@@ -10,25 +10,11 @@ import {
     IconButton,
 } from '@material-ui/core';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
-import DeleteIcon from '@material-ui/icons/Delete';
+import AssetListItem from '../AssetListItem';
 
 const ResumeListItem = (props) => {
     const { _id, name, notes, handleRemove } = props;
-    return (
-        <ListItem key={_id}>
-            <ListItemAvatar>
-                <Avatar>
-                    <DescriptionIcon />
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={name} secondary={notes} />
-            <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="remove" onClick={() => handleRemove(_id)}>
-                    <DeleteIcon />
-                </IconButton>
-            </ListItemSecondaryAction>
-        </ListItem>
-    );
+    return <AssetListItem primary={name} secondary={notes} icon={<DescriptionIcon />} {...props} />;
 };
 
 export default ResumeListItem;

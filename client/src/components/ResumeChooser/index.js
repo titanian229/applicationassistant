@@ -21,27 +21,13 @@ import InputField from '../InputField';
 // import API from '../../utils/API'
 import { useGlobalStore } from '../GlobalStore';
 
-const placeholderResumes = [
-    {
-        _id: 1,
-        name: 'Professional Resume',
-        link: 'https://goog',
-        notes: 'Complete resume',
-    },
-    {
-        _id: 2,
-        name: 'Tailored Resume',
-        link: 'https://goog',
-    },
-];
-
 const useStyles = makeStyles((theme) => ({}));
 
 const ResumeChooser = (props) => {
     const classes = useStyles();
     const { open, onClose } = props;
     const [resumes, setResumes] = useState([]);
-    const [, , { API, loadResource }] = useGlobalStore;
+    const [, , { API, loadResource }] = useGlobalStore();
 
     const handleClose = () => {
         onClose();
@@ -71,7 +57,7 @@ const ResumeChooser = (props) => {
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="resume selection" open={open}>
-            <DialogTitle id="resume-selection">Choose a resume</DialogTitle>
+            <DialogTitle id="resume-selection">Saved Resumes</DialogTitle>
             <List>
                 {resumes.map((resume) => (
                     <ListItem button onClick={() => handleListItemClick(resume)} key={resume.name}>

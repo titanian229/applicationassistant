@@ -73,7 +73,6 @@ function dispatcher(state, action) {
     }
 }
 
-
 const sharedFunctions = {
     formatDate,
     changeHandler,
@@ -116,13 +115,15 @@ function GlobalStore(props) {
         if (serverResponse[resourceName]) {
             stateSetter(serverResponse[resourceName]);
         }
-    
-    
-    }
+    };
 
     return (
         <GlobalData.Provider
-            value={[globalData, dispatch, { sendMessage: enqueueSnackbar, processServerResponse, loadResource, ...sharedFunctions }]}
+            value={[
+                globalData,
+                dispatch,
+                { sendMessage: enqueueSnackbar, processServerResponse, loadResource, ...sharedFunctions },
+            ]}
             {...props}
         />
     );

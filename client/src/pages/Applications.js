@@ -122,7 +122,7 @@ const Applications = (props) => {
         // if (serverResponse.applications) {
         //     setApplicationData(serverResponse.applications);
         // }
-        loadResource(async () => API.getApplications, 'applications', setApplicationData)
+        loadResource(async () => API.getApplications(), 'applications', setApplicationData)
 
     };
 
