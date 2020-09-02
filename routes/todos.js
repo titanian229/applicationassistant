@@ -15,7 +15,7 @@ module.exports = (router) => {
     router.post('/api/todos', async ({ headers, body }, res) => {
         try {
             // const { session } = headers;
-            const { name, date } = body.todo;
+            const { name, date, _id } = body.todo;
             const { applicationID } = body;
             if (!name) {
                 res.status(400).send({ error: 'Todo must have a name' });
@@ -38,6 +38,8 @@ module.exports = (router) => {
     router.put('/api/todos/:_id', async ({ headers, params: { _id }, body }, res) => {
         try {
             // const { session } = headers;
+            // How MUI handles date, it gets removed from the body.  This is required to remove a date.
+            if (!body.date) body.date = ''
             const todo = await db.Todo.findByIdAndUpdate({ _id }, { ...body }, { new: true });
 
             res.status(200).send({ todo });
@@ -52,8 +54,7 @@ module.exports = (router) => {
 
             await db.Todo.findByIdAndDelete({ _id });
             await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
-            const application = await db.Application.findById({ _id: applicationID })
-                .populate('todos')
+            const application = await db.Application.findById({ _id: applicationID }).populate('todos');
 
             res.status(200).send({ message: 'Todo deleted', todos: application.todos });
         } catch (err) {

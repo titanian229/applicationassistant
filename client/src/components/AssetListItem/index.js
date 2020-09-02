@@ -42,6 +42,7 @@ const AssetListItem = (props) => {
         handleCheck,
         checked,
         indeterminate,
+        viewItem,
     } = props;
     const [, , { confirmAction }] = useGlobalStore();
     const classes = useStyles();
@@ -50,8 +51,9 @@ const AssetListItem = (props) => {
         handleRemove(_id);
     };
 
+
     return (
-        <ListItem key={_id}>
+        <ListItem button={Boolean(viewItem)} onClick={viewItem} key={_id}>
             {icon && (
                 <ListItemAvatar>
                     <Avatar>{icon}</Avatar>

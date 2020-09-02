@@ -112,6 +112,7 @@ const Application = () => {
     const [todoNewOpen, setTodoNewOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false);
+    const [viewTodoItem, setViewTodoItem] = useState({});
 
     const [application, setApplication] = useState({
         businessName: '',
@@ -176,6 +177,21 @@ const Application = () => {
         if (!todo) return;
 
         dispatch({ do: 'setLoading', loading: true });
+        if (!Number.isInteger(todo._id)) {
+            console.log('update', todo)
+            // This is an update, not a new todo
+            const serverResponse = await API.updateTodo(todo);
+            const serverUp = processServerResponse(serverResponse);
+            dispatch({ do: 'setLoading', loading: false });
+            if (serverUp === false) return;
+            if (serverResponse.todo) {
+                let appTodos = application.todos.filter(existingTodo => existingTodo._id !== todo._id);
+                appTodos.push(serverResponse.todo);
+                setApplication({ ...application, todos: appTodos });
+            }
+            return;
+        }
+        console.log('new todo', todo)
         const serverResponse = await API.addTodo(todo, id);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
@@ -196,6 +212,11 @@ const Application = () => {
         if (serverResponse.todos) {
             setApplication({ ...application, todos: serverResponse.todos });
         }
+    };
+
+    const viewTodo = (todo) => {
+        setViewTodoItem(todo);
+        setTodoNewOpen(true);
     };
 
     return (
@@ -275,11 +296,16 @@ const Application = () => {
                             <TabItem tab={0} {...{ currentTab }}>
                                 <List dense>
                                     {todos.map((todo) => (
-                                        <TodoListItemToggle handleRemove={removeTodo} {...todo} />
+                                        <TodoListItemToggle viewTodo={viewTodo} handleRemove={removeTodo} {...todo} />
                                     ))}
                                 </List>
                                 <AddButton onClick={() => setTodoNewOpen(true)} />
-                                <TodoNew open={todoNewOpen} saveTodo={saveTodo} todoCount={todos.length} />
+                                <TodoNew
+                                    open={todoNewOpen}
+                                    todo={viewTodoItem}
+                                    saveTodo={saveTodo}
+                                    todoCount={todos.length}
+                                />
                             </TabItem>
                             <TabItem tab={1} {...{ currentTab }}>
                                 <List>

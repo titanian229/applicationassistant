@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Typography,
@@ -19,29 +19,42 @@ import { useGlobalStore } from '../GlobalStore';
 import ConfirmationButtons from '../ConfirmationButtons';
 
 const TodoNew = (props) => {
-    const { open, saveTodo, todoCount } = props;
+    const { open, saveTodo, todoCount, todo } = props;
     const defaultValues = {
         name: '',
         date: null,
+        _id: 0,
     };
+
     // TODO add the associated contact or application in whatever element creates this component
     const [values, setValues] = useState(defaultValues);
     const handleChange = changeHandler(values, setValues);
     const [, , { sendMessage }] = useGlobalStore();
 
+    useEffect(() => {
+        if (todo._id) {
+            console.log('todo changed', todo);
+            if (todo.date === undefined || todo.date === '') delete todo.date
+            // TODO check on the DB update route that removal of date is removing date
+            setValues({ ...defaultValues, ...todo });
+        }
+    }, [todo]);
+
     const handleClose = () => {
         saveTodo();
+        setValues(defaultValues);
+        // TODO double check I've done this everywhere, if cancelled out clear values
     };
 
     const handleSave = async () => {
         const todoValues = JSON.parse(JSON.stringify(values));
         if (todoValues.name === '') {
             // dispatch({ do: 'displayMessage', message: { text: 'Todo must have text', type: 'warning' } });
-            sendMessage('Todo must have text', { variant: 'error', key: 'todotextmissing' });
+            sendMessage('Todo must not be empty', { variant: 'error', key: 'todotextmissing' });
             return;
         }
         if (todoValues.date === null) delete todoValues.date;
-        todoValues._id = todoCount + 1;
+        if (Number.isInteger(todoValues._id)) todoValues._id = todoCount + 1;
         saveTodo(todoValues);
         setValues(defaultValues);
 

@@ -70,4 +70,5 @@ export default {
     toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
     addTodo: async (todo, applicationID) => postRequest('/api/todos', { todo, applicationID }),
     deleteTodo: async (todoID, applicationID) => deleteRequest('/api/todos/' + todoID + '/' + applicationID),
+    updateTodo: async (todo) => putRequest('/api/todos/' + todo._id, todo),
 };

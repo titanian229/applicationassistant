@@ -16,7 +16,7 @@ import AssetListItem from '../AssetListItem';
 import { useGlobalStore } from '../GlobalStore';
 
 const TodoListItem = (props) => {
-    const { _id, name, date, handleRemove, completed } = props;
+    const { _id, name, date, handleRemove, completed, viewTodo } = props;
     const [checked, setChecked] = useState(completed || false);
     const [indeterminate, setIndeterminate] = useState(false);
     const [, , { API, processServerResponse }] = useGlobalStore();
@@ -37,6 +37,10 @@ const TodoListItem = (props) => {
         // setChecked(!checked);
     };
 
+    const viewItem = () => {
+        viewTodo({_id, name, date})
+    }
+
     return (
         <AssetListItem
             primary={name}
@@ -48,6 +52,7 @@ const TodoListItem = (props) => {
             handleRemove={handleRemove}
             removeText="Delete Todo?"
             deleteDialogDetails={{ text: 'Delete Todo?', confirmText: 'Delete' }}
+            viewItem={viewItem}
             {...props}
         />
     );
