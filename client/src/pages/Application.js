@@ -35,8 +35,6 @@ import ContactChooser from '../components/ContactChooser';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
 
-
-
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 // import formatDate from '../utils/formatDate';
@@ -114,7 +112,6 @@ const Application = () => {
     const [todoNewOpen, setTodoNewOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false);
-    
 
     const [application, setApplication] = useState({
         businessName: '',
@@ -190,9 +187,16 @@ const Application = () => {
         }
     };
 
-    const removeTodo = async (todo) => {
-        console.log(todo)
-    }
+    const removeTodo = async (todoID) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.deleteTodo(todoID, id);
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse.todos) {
+            setApplication({ ...application, todos: serverResponse.todos });
+        }
+    };
 
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>

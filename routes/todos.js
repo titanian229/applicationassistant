@@ -46,11 +46,16 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/todos', async ({ headers }, res) => {
+    router.delete('/api/todos/:_id/:applicationID', async ({ headers, params: { _id, applicationID } }, res) => {
         try {
             // const { session } = headers;
 
-            res.status(200).send({ message: 'Route not yet implemented' });
+            await db.Todo.findByIdAndDelete({ _id });
+            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
+            const application = await db.Application.findById({ _id: applicationID })
+                .populate('todos')
+
+            res.status(200).send({ message: 'Todo deleted', todos: application.todos });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
