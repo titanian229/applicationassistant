@@ -28,6 +28,8 @@ import TabItem from '../components/TabItem';
 import ResumeListItem from '../components/ResumeListItem';
 import TodoListItemToggle from '../components/TodoListItemToggle';
 import ContactListItem from '../components/ContactListItem';
+import AddButton from '../components/AddButton';
+import TodoNew from '../components/TodoNew';
 
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
@@ -100,6 +102,9 @@ const Application = () => {
     const [globalStore, dispatch, { processServerResponse, API, formatDate, loadResource }] = useGlobalStore();
 
     const [currentTab, setCurrentTab] = useState(0);
+    const [todoNewOpen, setTodoNewOpen] = useState(false);
+    const [resumeNewOpen, setResumeNewOpen] = useState(false);
+    const [contactNewOpen, setContactNewOpen] = useState(false);
 
     const [application, setApplication] = useState({
         businessName: '',
@@ -158,6 +163,22 @@ const Application = () => {
     useEffect(() => {
         fetchApplication(id);
     }, [id]);
+
+    const saveTodo = async (todo) => {
+        setTodoNewOpen(false);
+        if (!todo) return;
+
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.addTodo(todo, id);
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse.todo) {
+            let appTodos = application.todos;
+            appTodos.push(serverResponse.todo);
+            setApplication({ ...application, todos: appTodos });
+        }
+    };
 
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
@@ -239,6 +260,8 @@ const Application = () => {
                                         <TodoListItemToggle {...todo} />
                                     ))}
                                 </List>
+                                <AddButton onClick={() => setTodoNewOpen(true)} />
+                                <TodoNew open={todoNewOpen} saveTodo={saveTodo} todoCount={todos.length} />
                             </TabItem>
                             <TabItem tab={1} {...{ currentTab }}>
                                 <List>

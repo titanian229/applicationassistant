@@ -15,13 +15,19 @@ module.exports = (router) => {
     router.post('/api/todos', async ({ headers, body }, res) => {
         try {
             // const { session } = headers;
-            const { name, date, associatedContact, associatedApplication } = body;
+            const { name, date } = body.todo;
+            const { applicationID } = body;
             if (!name) {
                 res.status(400).send({ error: 'Todo must have a name' });
                 return;
             }
+            if (!applicationID) {
+                res.status(400).send({ error: 'Todo has no associated application' });
+                return;
+            }
 
-            const todo = await db.Todo.create({ name, date, associatedContact, associatedApplication });
+            const todo = await db.Todo.create({ name, date });
+            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $push: { todos: todo._id } });
 
             res.status(200).send({ message: 'Todo saved', todo });
         } catch (err) {

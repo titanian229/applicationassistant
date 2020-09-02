@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
     ListItem,
@@ -22,6 +23,12 @@ const WrapTooltip = (props) => {
     return <Tooltip title={tooltipText}>{children}</Tooltip>;
 };
 
+const useStyles = makeStyles((theme) => ({
+    checked: {
+        textDecoration: 'line-through',
+    },
+}));
+
 const AssetListItem = (props) => {
     const {
         _id,
@@ -37,6 +44,8 @@ const AssetListItem = (props) => {
         indeterminate,
     } = props;
     const [, , { confirmAction }] = useGlobalStore();
+    const classes = useStyles();
+
     const handleDeleteButton = () => {
         handleRemove(_id);
     };
@@ -46,7 +55,10 @@ const AssetListItem = (props) => {
             <ListItemAvatar>
                 <Avatar>{icon}</Avatar>
             </ListItemAvatar>
-            <ListItemText {...{ primary, secondary }} />
+            <ListItemText
+                {...{ primary, secondary }}
+                primaryTypographyProps={{ classes: { root: clsx(checked && classes.checked) } }}
+            />
             {handleRemove && (
                 <ListItemSecondaryAction>
                     <WrapTooltip tooltipText={tooltipText}>
