@@ -34,12 +34,13 @@ import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
 import MethodEdit from './MethodEdit';
 import MethodDisplay from './MethodDisplay';
+
 // import changeHandler from '../../utils/handleChange';
 // import API from '../../utils/API';
 import { useGlobalStore } from '../GlobalStore';
 
 const ContactNew = (props) => {
-    const { businessName, open, saveContact, existingContact } = props;
+    const { businessName, open, saveContact, existingContact, deleteContact } = props;
     const defaultValues = {
         name: '',
         roleTitle: '',
@@ -94,6 +95,11 @@ const ContactNew = (props) => {
             setValues(defaultValues);
         }
     };
+
+    const handleDelete = () => {
+        deleteContact(values._id)
+        setValues(defaultValues)
+    }
 
     const handleSaveMethod = (method) => {
         setAdditionArea('');
@@ -196,12 +202,16 @@ const ContactNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                {/* <Button onClick={handleClose} color="primary">
                     Cancel
                 </Button>
                 <Button onClick={handleSave} color="primary">
                     Save
-                </Button>
+                </Button> */}
+                <ConfirmationButtons
+                    handleDelete={!existingContact._id ? '' : handleDelete}
+                    {...{ handleClose, handleSave }}
+                />
             </DialogActions>
         </Dialog>
     );

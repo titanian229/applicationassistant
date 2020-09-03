@@ -1,8 +1,11 @@
 import React from 'react';
 import { Grid, Button } from '@material-ui/core';
 import ResponsiveSave from '../ResponsiveSave';
+import {useGlobalStore} from '../GlobalStore'
+
 const ConfirmationButtons = (props) => {
     const { handleClose, handleSave, handleDelete } = props;
+    const [, , {confirmAction}] = useGlobalStore()
     // TODO create responsive save button, use here.  Have it check the globalStore's loading state
     return (
         <Grid container justify="center">
@@ -10,7 +13,7 @@ const ConfirmationButtons = (props) => {
                 Cancel
             </Button>
             {handleDelete && (
-                <Button onClick={handleDelete}>
+                <Button onClick={confirmAction(handleDelete, {text: 'Are you sure?', confirmText: "Delete"})}>
                     Delete
                 </Button>
             )}

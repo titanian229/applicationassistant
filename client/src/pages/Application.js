@@ -36,6 +36,7 @@ import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
 
 import ContactListSection from '../components/ContactListSection';
+import ResumeListSection from '../components/ResumeListSection';
 
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
@@ -242,6 +243,17 @@ const Application = () => {
     //     console.log('view contact', contact)
     // }
 
+    const updateResumes = async (resumes) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.updateApplication(id, { resumes });
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse.application) {
+            setApplication({ ...application, resumes: serverResponse.application.resumes });
+        }
+    };
+
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
             <Paper elevation={12} className={classes.header}>
@@ -337,14 +349,16 @@ const Application = () => {
                                         <ContactListItem {...contact} />
                                     ))}
                                 </List> */}
-                                <ContactListSection contacts={contacts} updateContacts={updateContacts} />
+                                <ContactListSection applicationID={id} contacts={contacts} updateContacts={updateContacts} />
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>
-                                <List>
+                                <ResumeListSection resumes={resumes} updateResumes={updateResumes} />
+
+                                {/* <List>
                                     {resumes.map((resume) => (
                                         <ResumeListItem {...resume} />
                                     ))}
-                                </List>
+                                </List> */}
                                 {/* <AddButton onClick={() => setResumesChooserOpen(true)} /> */}
                                 {/* <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} /> */}
                                 {/* <ResumeNew open={resumeNewOpen} saveResume={saveResume} /> */}

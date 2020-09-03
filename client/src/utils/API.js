@@ -73,4 +73,5 @@ export default {
     updateTodo: async (todo) => putRequest('/api/todos/' + todo._id, todo),
     updateApplication: async (id, body) => putRequest('/api/applications/' + id, body),
     updateContact: async (id, body) => putRequest('/api/contacts/' + id, body),
+    deleteContact: async (id, applicationID) => deleteRequest('/api/contacts/' + id + '/' + applicationID),
 };

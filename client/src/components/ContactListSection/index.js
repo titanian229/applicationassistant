@@ -4,12 +4,14 @@ import ContactNew from '../ContactNew';
 import ContactChooser from '../ContactChooser';
 import ContactListItem from '../ContactListItem';
 import AddButton from '../AddButton';
+import {useGlobalStore} from '../GlobalStore'
 
 const ContactListSection = (props) => {
-    const { contacts, updateContacts } = props;
+    const { contacts, updateContacts, applicationID } = props;
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false);
     const [viewContactItem, setViewContactItem] = useState({});
+    const [,dispatch , {processServerResponse, API}] = useGlobalStore()
 
     const saveContact = (contact) => {
         setContactNewOpen(false);
@@ -37,9 +39,20 @@ const ContactListSection = (props) => {
     };
 
     const viewContact = (contact) => {
-        console.log('View clicked', contact);
         setViewContactItem(contact);
         setContactNewOpen(true);
+    };
+
+    const deleteContact = async (contactID) => {
+        setContactNewOpen(false);
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.deleteContact(contactID, applicationID);
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp == false) return;
+        if (serverResponse.contacts) {
+            updateContacts(serverResponse.contacts);
+        }
     };
 
     return (
@@ -52,7 +65,12 @@ const ContactListSection = (props) => {
             {/* <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button> */}
             <AddButton onClick={() => setContactsChooserOpen(true)} />
             <ContactChooser open={contactsChooserOpen} onClose={saveContact} />
-            <ContactNew open={contactNewOpen} saveContact={saveContact} existingContact={viewContactItem} />
+            <ContactNew
+                open={contactNewOpen}
+                saveContact={saveContact}
+                existingContact={viewContactItem}
+                deleteContact={deleteContact}
+            />
         </Grid>
     );
 };

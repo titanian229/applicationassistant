@@ -51,11 +51,14 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/contacts', async ({ headers }, res) => {
+    router.delete('/api/contacts/:_id/:applicationID', async ({ headers, params: { _id, applicationID } }, res) => {
         try {
             // const { session } = headers;
+            await db.Contact.findByIdAndDelete({ _id });
+            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { contacts: _id } });
+            const application = await db.Application.findById({ _id: applicationID }).populate('contacts');
 
-            res.status(200).send('Route not yet implemented');
+            res.status(200).send({ message: 'Contact deleted', contacts: application.contacts });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
