@@ -30,21 +30,32 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/resumes', async ({ headers }, res) => {
+    router.put('/api/resumes/:_id', async ({ headers, params: { _id }, body }, res) => {
         try {
             // const { session } = headers;
 
-            res.status(200).send('Route not yet implemented');
+            if (!body) {
+                res.status(400).send({ error: 'Resume missing for update' });
+                return;
+            }
+
+            const resume = await db.Resume.findByIdAndUpdate({ _id }, body, { new: true });
+
+            res.status(200).send({ message: 'Resume updated', resume });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/resumes', async ({ headers }, res) => {
+    router.delete('/api/resumes/:_id/:applicationID', async ({ headers, params: { _id, applicationID } }, res) => {
         try {
             // const { session } = headers;
 
-            res.status(200).send('Route not yet implemented');
+            await db.Resume.findByIdAndDelete({ _id });
+            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { resumes: _id } });
+            const application = await db.Application.findById({ _id: applicationID }).populate('resumes');
+
+            res.status(200).send({ message: 'Resume deleted', resumes: application.resumes });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });

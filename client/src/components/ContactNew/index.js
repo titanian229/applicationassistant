@@ -69,7 +69,6 @@ const ContactNew = (props) => {
     };
 
     const handleSave = async () => {
-        console.log('attempting save', existingContact, values);
         const contact = JSON.parse(JSON.stringify(values));
         if (contact.name === '' || contact.businessName === '') {
             sendMessage('Contact requires a name and business', { variant: 'error', key: 'missingbizandname' });

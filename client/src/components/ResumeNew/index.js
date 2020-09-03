@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Typography,
     Dialog,
@@ -26,13 +26,13 @@ import {
 
 import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
-import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API'
-import { useGlobalStore } from '../GlobalStore'
+// import changeHandler from '../../utils/handleChange';
+// import API from '../../utils/API'
+import { useGlobalStore } from '../GlobalStore';
 
 const ResumeNew = (props) => {
-    const { open, saveResume } = props;
-    const [, dispatch, {processServerResponse, sendMessage}] = useGlobalStore()
+    const { open, saveResume, existingResume, deleteResume } = props;
+    const [, dispatch, { processServerResponse, sendMessage, changeHandler, API }] = useGlobalStore();
 
     const defaultValues = {
         name: '',
@@ -42,31 +42,47 @@ const ResumeNew = (props) => {
     const [values, setValues] = useState(defaultValues);
     const handleChange = changeHandler(values, setValues);
 
+    useEffect(() => {
+        if (!existingResume) return;
+        if (existingResume._id) {
+            setValues({ ...values, ...existingResume });
+        }
+    }, [existingResume]);
+
     const handleClose = () => {
         setValues(defaultValues);
         saveResume();
     };
 
     const handleSave = async () => {
-        dispatch({do: 'setLoading', loading: true})
-        const serverResponse = await API.post('/api/resumes', values)
-        const serverUp = processServerResponse(serverResponse)
-        
-        dispatch({do: 'setLoading', loading: false})
-        if (serverUp === false) return
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = !existingResume._id
+            ? await API.post('/api/resumes', values)
+            : await API.updateResume(existingResume._id, values);
+        const serverUp = processServerResponse(serverResponse);
 
-        if (serverResponse.resume){
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+
+        if (serverResponse.resume) {
             saveResume(serverResponse.resume);
             setValues(defaultValues);
         }
+    };
 
+    const handleDelete = async () => {
+        deleteResume(values._id);
+        setValues(defaultValues);
     };
 
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="resume-dialog">
             <DialogTitle id="resume-dialog">New Resume</DialogTitle>
             <DialogContent>
-                <DialogContentText>Add a resume to link to this application.  Add a link to the resume, saved in Google Drive or Dropbox.</DialogContentText>
+                <DialogContentText>
+                    Add a resume to link to this application. Add a link to the resume, saved in Google Drive or
+                    Dropbox.
+                </DialogContentText>
                 {/* <TextField autoFocus margin="dense" id="name" label="Email Address" type="email" fullWidth /> */}
                 <Grid container direction="column">
                     <InputField name="name" label="Name" {...{ values, handleChange }} />
@@ -75,7 +91,10 @@ const ResumeNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <ConfirmationButtons {...{ handleClose, handleSave }} />
+                <ConfirmationButtons
+                    handleDelete={!existingResume._id ? '' : handleDelete}
+                    {...{ handleClose, handleSave }}
+                />
             </DialogActions>
         </Dialog>
     );

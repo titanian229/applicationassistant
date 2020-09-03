@@ -74,4 +74,6 @@ export default {
     updateApplication: async (id, body) => putRequest('/api/applications/' + id, body),
     updateContact: async (id, body) => putRequest('/api/contacts/' + id, body),
     deleteContact: async (id, applicationID) => deleteRequest('/api/contacts/' + id + '/' + applicationID),
+    updateResume: async (id, body) => putRequest('/api/resumes/' + id, body),
+    deleteResume: async (id, applicationID) => deleteRequest('/api/resumes/' + id + '/' + applicationID),
 };

@@ -349,10 +349,14 @@ const Application = () => {
                                         <ContactListItem {...contact} />
                                     ))}
                                 </List> */}
-                                <ContactListSection applicationID={id} contacts={contacts} updateContacts={updateContacts} />
+                                <ContactListSection
+                                    applicationID={id}
+                                    contacts={contacts}
+                                    updateContacts={updateContacts}
+                                />
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>
-                                <ResumeListSection resumes={resumes} updateResumes={updateResumes} />
+                                <ResumeListSection applicationID={id} resumes={resumes} updateResumes={updateResumes} />
 
                                 {/* <List>
                                     {resumes.map((resume) => (
