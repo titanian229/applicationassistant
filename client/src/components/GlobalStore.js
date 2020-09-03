@@ -122,8 +122,8 @@ function GlobalStore(props) {
         }
     };
 
-    const loadResource = async (APIFunction, resourceName, stateSetter) => {
-        dispatch({ do: 'setLoading', loading: true });
+    const loadResource = async (APIFunction, resourceName, stateSetter, showLoading = true) => {
+        if (showLoading) dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await APIFunction();
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });

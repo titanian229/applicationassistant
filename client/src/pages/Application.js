@@ -35,6 +35,8 @@ import ContactChooser from '../components/ContactChooser';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
 
+import ContactListSection from '../components/ContactListSection';
+
 // import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
 // import formatDate from '../utils/formatDate';
@@ -178,20 +180,20 @@ const Application = () => {
 
         dispatch({ do: 'setLoading', loading: true });
         if (!Number.isInteger(todo._id)) {
-            console.log('update', todo)
+            console.log('update', todo);
             // This is an update, not a new todo
             const serverResponse = await API.updateTodo(todo);
             const serverUp = processServerResponse(serverResponse);
             dispatch({ do: 'setLoading', loading: false });
             if (serverUp === false) return;
             if (serverResponse.todo) {
-                let appTodos = application.todos.filter(existingTodo => existingTodo._id !== todo._id);
+                let appTodos = application.todos.filter((existingTodo) => existingTodo._id !== todo._id);
                 appTodos.push(serverResponse.todo);
                 setApplication({ ...application, todos: appTodos });
             }
             return;
         }
-        console.log('new todo', todo)
+        console.log('new todo', todo);
         const serverResponse = await API.addTodo(todo, id);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
@@ -204,6 +206,7 @@ const Application = () => {
     };
 
     const removeTodo = async (todoID) => {
+        setTodoNewOpen(false);
         dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await API.deleteTodo(todoID, id);
         const serverUp = processServerResponse(serverResponse);
@@ -217,6 +220,12 @@ const Application = () => {
     const viewTodo = (todo) => {
         setViewTodoItem(todo);
         setTodoNewOpen(true);
+    };
+
+    // CONTACTS
+
+    const updateContacts = (contacts) => {
+        console.log(contacts);
     };
 
     return (
@@ -296,7 +305,7 @@ const Application = () => {
                             <TabItem tab={0} {...{ currentTab }}>
                                 <List dense>
                                     {todos.map((todo) => (
-                                        <TodoListItemToggle viewTodo={viewTodo} handleRemove={removeTodo} {...todo} />
+                                        <TodoListItemToggle viewTodo={viewTodo} {...todo} />
                                     ))}
                                 </List>
                                 <AddButton onClick={() => setTodoNewOpen(true)} />
@@ -305,14 +314,16 @@ const Application = () => {
                                     todo={viewTodoItem}
                                     saveTodo={saveTodo}
                                     todoCount={todos.length}
+                                    removeTodo={removeTodo}
                                 />
                             </TabItem>
                             <TabItem tab={1} {...{ currentTab }}>
-                                <List>
+                                {/* <List>
                                     {contacts.map((contact) => (
                                         <ContactListItem {...contact} />
                                     ))}
-                                </List>
+                                </List> */}
+                                <ContactListSection contacts={contacts} updateContacts={updateContacts} />
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>
                                 <List>

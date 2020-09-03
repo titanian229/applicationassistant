@@ -38,7 +38,7 @@ const ResumeChooser = (props) => {
     };
 
     const fetchResumes = async () => {
-        loadResource(async () => API.getResumes(), 'resumes', setResumes);
+        loadResource(async () => API.getResumes(), 'resumes', setResumes, false);
         // const serverReturn = await API.getResumes();
         // if (!serverReturn) {
         //     console.log('error fetching resumes');

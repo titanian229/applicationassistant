@@ -13,6 +13,7 @@ import {
     Checkbox,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useGlobalStore } from '../GlobalStore';
 
 const WrapTooltip = (props) => {
@@ -51,9 +52,8 @@ const AssetListItem = (props) => {
         handleRemove(_id);
     };
 
-
     return (
-        <ListItem button={Boolean(viewItem)} onClick={viewItem} key={_id}>
+        <ListItem button={Boolean(handleCheck)} onClick={handleCheck} key={_id}>
             {icon && (
                 <ListItemAvatar>
                     <Avatar>{icon}</Avatar>
@@ -77,6 +77,19 @@ const AssetListItem = (props) => {
                             onClick={confirmAction(handleDeleteButton, dialogDetails)}
                         >
                             <DeleteIcon />
+                        </IconButton>
+                    </WrapTooltip>
+                </ListItemSecondaryAction>
+            )}
+            {viewItem && (
+                <ListItemSecondaryAction>
+                    <WrapTooltip tooltipText={tooltipText}>
+                        <IconButton
+                            edge="end"
+                            aria-label="edit"
+                            onClick={viewItem}
+                        >
+                            <EditOutlinedIcon />
                         </IconButton>
                     </WrapTooltip>
                 </ListItemSecondaryAction>

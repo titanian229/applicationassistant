@@ -19,7 +19,7 @@ import { useGlobalStore } from '../GlobalStore';
 import ConfirmationButtons from '../ConfirmationButtons';
 
 const TodoNew = (props) => {
-    const { open, saveTodo, todoCount, todo } = props;
+    const { open, saveTodo, removeTodo, todoCount, todo } = props;
     const defaultValues = {
         name: '',
         date: null,
@@ -32,6 +32,8 @@ const TodoNew = (props) => {
     const [, , { sendMessage }] = useGlobalStore();
 
     useEffect(() => {
+        if (!todo) return
+
         if (todo._id) {
             console.log('todo changed', todo);
             if (todo.date === undefined || todo.date === '') delete todo.date
@@ -69,6 +71,11 @@ const TodoNew = (props) => {
         // }
     };
 
+    const handleDelete = () => {
+        removeTodo(values._id)
+        setValues(defaultValues)
+    }
+
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="todo-dialog">
             <DialogTitle id="todo-dialog">New Todo/Reminder</DialogTitle>
@@ -94,7 +101,7 @@ const TodoNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <ConfirmationButtons {...{ handleClose, handleSave }} />
+                <ConfirmationButtons handleDelete={Number.isInteger(values._id) ? '' : handleDelete} {...{ handleClose, handleSave }} />
             </DialogActions>
         </Dialog>
     );

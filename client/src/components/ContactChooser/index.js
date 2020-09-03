@@ -68,7 +68,7 @@ const ContactChooser = (props) => {
     };
 
     const fetchContacts = async () => {
-        loadResource(async () => API.getContacts(), 'contacts', setContacts)
+        loadResource(async () => API.getContacts(), 'contacts', setContacts, false)
         // const serverReturn = await API.getContacts();
 
         // if (!serverReturn) {

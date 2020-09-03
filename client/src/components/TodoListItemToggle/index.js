@@ -49,9 +49,6 @@ const TodoListItem = (props) => {
             checked={checked}
             handleCheck={handleCheck}
             indeterminate={indeterminate}
-            handleRemove={handleRemove}
-            removeText="Delete Todo?"
-            deleteDialogDetails={{ text: 'Delete Todo?', confirmText: 'Delete' }}
             viewItem={viewItem}
             {...props}
         />
