@@ -224,9 +224,23 @@ const Application = () => {
 
     // CONTACTS
 
-    const updateContacts = (contacts) => {
-        console.log(contacts);
+    const updateContacts = async (contacts) => {
+        console.log('updating contacts', contacts);
+        // Contact has already been created, must add to this application and associate
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.updateApplication(id, { contacts });
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse.application) {
+            console.log('server returned contacts', serverResponse);
+            setApplication({ ...application, contacts: serverResponse.application.contacts });
+        }
     };
+
+    // const viewContact = (contact) => {
+    //     console.log('view contact', contact)
+    // }
 
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>

@@ -53,7 +53,11 @@ const AssetListItem = (props) => {
     };
 
     return (
-        <ListItem button={Boolean(handleCheck)} onClick={handleCheck} key={_id}>
+        <ListItem
+            button={Boolean(handleCheck) || Boolean(viewItem)}
+            onClick={(handleCheck && handleCheck) || (viewItem && viewItem) || null}
+            key={_id}
+        >
             {icon && (
                 <ListItemAvatar>
                     <Avatar>{icon}</Avatar>
@@ -81,14 +85,10 @@ const AssetListItem = (props) => {
                     </WrapTooltip>
                 </ListItemSecondaryAction>
             )}
-            {viewItem && (
+            {viewItem && !handleRemove && (
                 <ListItemSecondaryAction>
                     <WrapTooltip tooltipText={tooltipText}>
-                        <IconButton
-                            edge="end"
-                            aria-label="edit"
-                            onClick={viewItem}
-                        >
+                        <IconButton edge="end" aria-label="edit" onClick={viewItem}>
                             <EditOutlinedIcon />
                         </IconButton>
                     </WrapTooltip>

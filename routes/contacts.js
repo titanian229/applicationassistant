@@ -35,11 +35,17 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/contacts', async ({ headers }, res) => {
+    router.put('/api/contacts/:_id', async ({ headers, params: { _id }, body }, res) => {
         try {
             // const { session } = headers;
+            if (!body) {
+                res.status(400).send({ error: 'No body included with the contact update' });
+                return;
+            }
 
-            res.status(200).send('Route not yet implemented');
+            const contact = await db.Contact.findByIdAndUpdate({ _id }, body, { new: true });
+
+            res.status(200).send({ message: 'Contact updated', contact });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });

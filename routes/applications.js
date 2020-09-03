@@ -85,16 +85,25 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    // router.put('/api/applications', async ({ headers }, res) => {
-    //     try {
-    //         // const { session } = headers;
+    router.put('/api/applications/:_id', async ({ headers, params: { _id }, body }, res) => {
+        try {
+            // const { session } = headers;
+            if (!body) {
+                res.status(400).send({ error: 'No application included in update' });
+                return;
+            }
 
-    //         res.status(200).send('Route not yet implemented');
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
+            const application = await db.Application.findByIdAndUpdate({ _id }, body, { new: true })
+                .populate('contacts')
+                .populate('todos')
+                .populate('resumes');
+
+            res.status(200).send({ message: 'Application updated', application });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
     // router.delete('/api/applications', async ({ headers }, res) => {
     //     try {
     //         // const { session } = headers;

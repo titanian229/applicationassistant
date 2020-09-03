@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Typography,
@@ -39,7 +39,7 @@ import MethodDisplay from './MethodDisplay';
 import { useGlobalStore } from '../GlobalStore';
 
 const ContactNew = (props) => {
-    const { businessName, open, saveContact } = props;
+    const { businessName, open, saveContact, existingContact } = props;
     const defaultValues = {
         name: '',
         roleTitle: '',
@@ -53,6 +53,14 @@ const ContactNew = (props) => {
 
     const handleChange = changeHandler(values, setValues);
 
+    useEffect(() => {
+        if (!existingContact) return;
+        if (existingContact._id) {
+            console.log('contact changed');
+            setValues({ ...defaultValues, ...existingContact });
+        }
+    }, [existingContact]);
+
     const handleClose = () => {
         setAdditionArea('');
         setValues(defaultValues);
@@ -60,10 +68,11 @@ const ContactNew = (props) => {
     };
 
     const handleSave = async () => {
-        const contact = JSON.parse(JSON.stringify(values))
+        console.log('attempting save', existingContact, values);
+        const contact = JSON.parse(JSON.stringify(values));
         if (contact.name === '' || contact.businessName === '') {
             sendMessage('Contact requires a name and business', { variant: 'error', key: 'missingbizandname' });
-            return
+            return;
         }
         dispatch({ do: 'setLoading', loading: true });
 
@@ -73,10 +82,12 @@ const ContactNew = (props) => {
             return method;
         });
 
-        const serverResponse = await API.post('/api/contacts', contact);
+        const serverResponse = !existingContact._id
+            ? await API.post('/api/contacts', contact)
+            : await API.updateContact(existingContact._id, contact);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
-        if (serverUp === false) return
+        if (serverUp === false) return;
         if (serverResponse.contact) {
             setAdditionArea('');
             saveContact(serverResponse.contact);
@@ -181,7 +192,7 @@ const ContactNew = (props) => {
                         </IconButton>
                     </Grid>
 
-                    <InputField name="notes" label="Notes" {...{ values, handleChange }} />
+                    <InputField multiline name="notes" label="Notes" {...{ values, handleChange }} />
                 </Grid>
             </DialogContent>
             <DialogActions>

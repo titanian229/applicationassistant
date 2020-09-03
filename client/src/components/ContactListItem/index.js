@@ -13,13 +13,19 @@ import PersonIcon from '@material-ui/icons/Person';
 import AssetListItem from '../AssetListItem';
 
 const ContactListItem = (props) => {
-    const { _id, name, roleTitle, businessName, handleRemove } = props;
+    const { _id, name, roleTitle, businessName, handleRemove, viewContact } = props;
+
+    const viewItem = () => {
+        viewContact({ _id, name, roleTitle, businessName, contactMethods: props.contactMethods, notes: props.notes });
+    };
+
     return (
         <AssetListItem
             primary={name}
             secondary={roleTitle}
             icon={<PersonIcon />}
             deleteDialogDetails={{ text: 'Remove associated contact?' }}
+            viewItem={Boolean(viewContact) ? viewItem : ''}
             {...props}
         />
     );
