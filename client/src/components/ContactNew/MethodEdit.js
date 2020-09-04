@@ -22,7 +22,9 @@ const useContactStyles = makeStyles((theme) => ({
 
 const icons = {
     email: <AlternateEmailIcon />,
-    phone: <PhoneOutlinedIcon />,
+    cell: <PhoneOutlinedIcon />,
+    home: <PhoneOutlinedIcon />,
+    office: <PhoneOutlinedIcon />,
     address: <HomeOutlinedIcon />,
 };
 
@@ -33,7 +35,7 @@ const verifyMethod = {
 };
 
 const MethodEdit = (props) => {
-    const { methodName, methodLabel, _id, details, phoneType, saveMethod } = props;
+    const { methodName, methodLabel, _id, details, saveMethod } = props;
     const methodIcon = icons[methodName];
     const classes = useContactStyles();
     const defaultValues = {

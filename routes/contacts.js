@@ -11,6 +11,16 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
+    router.get('/api/contacts/:_id', async ({ headers, params: { _id } }, res) => {
+        try {
+            // const { session } = headers;
+            const contact = await db.Contact.findById({ _id }).populate('associatedTodos');
+            res.status(200).send({ contact });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
     router.post('/api/contacts', async ({ headers, body }, res) => {
         const { name, roleTitle, businessName, contactMethods, notes } = body;
         try {
@@ -55,7 +65,6 @@ module.exports = (router) => {
         try {
             // const { session } = headers;
             await db.Contact.findByIdAndDelete({ _id });
-
 
             // await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { contacts: _id } });
             // const application = await db.Application.findById({ _id: applicationID }).populate('contacts');

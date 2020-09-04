@@ -65,6 +65,7 @@ export default {
     },
     getResumes: async () => getRequest('/api/resumes'),
     getContacts: async () => getRequest('/api/contacts'),
+    getContact: async (id) => getRequest('/api/contacts/' + id),
     getApplications: async () => getRequest('/api/applications'),
     getApplication: async (id) => getRequest('/api/applications/' + id),
     getApplicationItems: async (id, itemType) => getRequest(`/api/applications/${id}/${itemType}`),

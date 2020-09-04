@@ -12,6 +12,7 @@ import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
 import Contacts from './pages/Contacts';
+import Contact from './pages/Contact'
 import Resumes from './pages/Resumes'
 import Message from './components/Message';
 import Home from './pages/Home';
@@ -136,6 +137,9 @@ function App() {
                                 </Route>
                                 <Route exact path="/contacts">
                                     <Contacts />
+                                </Route>
+                                <Route path="/contacts/:id">
+                                    <Contact />
                                 </Route>
                                 <Route exact path="/resumes">
                                     <Resumes />
