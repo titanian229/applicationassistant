@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AssetListItem = (props) => {
     const {
-        _id,
+        asset,
         primary,
         secondary,
         tooltipText,
@@ -44,20 +44,19 @@ const AssetListItem = (props) => {
         checked,
         indeterminate,
         viewItem,
-        avatarClassName
+        avatarClassName,
     } = props;
     const [, , { confirmAction }] = useGlobalStore();
     const classes = useStyles();
 
     const handleDeleteButton = () => {
-        handleRemove(_id);
+        handleRemove(asset);
     };
 
     return (
         <ListItem
             button={Boolean(handleCheck) || Boolean(viewItem)}
             onClick={(handleCheck && handleCheck) || (viewItem && viewItem) || null}
-            key={_id}
         >
             {icon && (
                 <ListItemAvatar>

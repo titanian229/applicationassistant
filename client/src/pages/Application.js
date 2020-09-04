@@ -249,10 +249,10 @@ const Application = () => {
         loadResource(async () => API.getApplicationContacts(id), 'contacts', setContacts);
     };
 
-    const changeContactAssociations = (action) => async (contactID) => {
-        console.log('changing contact association with application', contactID);
+    const changeContactAssociations = (action) => async (contact) => {
+        console.log('changing contact association with application', contact._id);
         // dispatch({do: 'setLoading', loading: true})
-        const serverResponse = await API.associateContact(id, contactID, action);
+        const serverResponse = await API.associateContact(id, contact._id, action);
         const serverUp = processServerResponse(serverResponse);
         // dispatch({ do: 'setLoading', loading: false });
         // if (serverUp === false) return;

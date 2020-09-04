@@ -63,12 +63,19 @@ const ContactChooser = (props) => {
         onClose();
     };
 
+    useEffect(() => {
+        if (open && contacts.length === 0) {
+            console.log('Use effect called, no contacts present so dialog skipped to add contact')
+            onClose('addContact');
+        }
+    }, [open]);
+
     const handleListItemClick = (value) => {
         onClose(value);
     };
 
     const fetchContacts = async () => {
-        loadResource(async () => API.getContacts(), 'contacts', setContacts, false)
+        loadResource(async () => API.getContacts(), 'contacts', setContacts, false);
         // const serverReturn = await API.getContacts();
 
         // if (!serverReturn) {
@@ -91,8 +98,8 @@ const ContactChooser = (props) => {
         <Dialog onClose={handleClose} aria-labelledby="contact selection" open={open}>
             <DialogTitle id="contact selection">Saved Contacts</DialogTitle>
             <List>
-                {contacts.map((contact) => (
-                    <ListItem button onClick={() => handleListItemClick(contact)} key={contact.name}>
+                {contacts.map((contact, index) => (
+                    <ListItem button onClick={() => handleListItemClick(contact)} key={contact._id || index}>
                         <ListItemAvatar>
                             <Avatar>
                                 <PersonIcon />

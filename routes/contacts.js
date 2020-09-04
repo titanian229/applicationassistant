@@ -55,7 +55,9 @@ module.exports = (router) => {
         try {
             // const { session } = headers;
             await db.Contact.findByIdAndDelete({ _id });
-            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { contacts: _id } });
+
+
+            // await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { contacts: _id } });
             // const application = await db.Application.findById({ _id: applicationID }).populate('contacts');
 
             res.status(200).send({ message: 'Contact deleted' });

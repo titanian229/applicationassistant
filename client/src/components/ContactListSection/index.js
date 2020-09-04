@@ -36,7 +36,7 @@ const ContactListSection = (props) => {
         }
 
         if (applicationParent) {
-            applicationParent.associateContact(contact._id);
+            applicationParent.associateContact(contact);
         }
         refreshContacts();
 
@@ -63,9 +63,9 @@ const ContactListSection = (props) => {
         setContactNewOpen(true);
     };
 
-    const handleDissociateContact = (contactID) => {
+    const handleDissociateContact = (contact) => {
         if (applicationParent) {
-            applicationParent.dissociateContact(contactID);
+            applicationParent.dissociateContact(contact);
             refreshContacts();
         }
     };
@@ -96,7 +96,7 @@ const ContactListSection = (props) => {
                         key={contact._id}
                         handleRemove={applicationParent ? handleDissociateContact : ''}
                         viewContact={viewContact}
-                        {...contact}
+                        contact={contact}
                     />
                 ))}
             </List>

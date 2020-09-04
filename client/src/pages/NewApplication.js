@@ -46,10 +46,10 @@ import TodoNew from '../components/TodoNew';
 import ContactNew from '../components/ContactNew';
 import ResumeNew from '../components/ResumeNew';
 import ResponsiveSave from '../components/ResponsiveSave';
-import AddButton from '../components/AddButton'
+import AddButton from '../components/AddButton';
 
-import ResumeListSection from '../components/ResumeListSection'
-import ContactListSection from '../components/ContactListSection'
+import ResumeListSection from '../components/ResumeListSection';
+import ContactListSection from '../components/ContactListSection';
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -177,8 +177,8 @@ const NewApplication = () => {
 
     // Contacts
     const updateContacts = (contacts) => {
-        setValues({...values, contacts})
-    }
+        setValues({ ...values, contacts });
+    };
 
     // const setSelectedContact = (selectedContactChoice) => {
     //     setContactsChooserOpen(false);
@@ -215,9 +215,8 @@ const NewApplication = () => {
 
     // Resumes
     const updateResumes = (resumes) => {
-        setValues({...values, resumes})
-    }
-
+        setValues({ ...values, resumes });
+    };
 
     // const setSelectedResume = (selectedResumeChoice) => {
     //     setResumesChooserOpen(false);
@@ -300,8 +299,8 @@ const NewApplication = () => {
             return interview;
         });
         applicationData.todos = applicationData.todos.map((todo) => {
-            delete todo._id
-            return todo
+            delete todo._id;
+            return todo;
         });
         applicationData.resumes = applicationData.resumes.map((resume) => ({ _id: resume._id }));
         applicationData.contacts = applicationData.contacts.map((contact) => ({ _id: contact._id }));
@@ -310,7 +309,7 @@ const NewApplication = () => {
         const serverResponse = await API.post('/api/applications', applicationData);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
-        if (serverUp === false) return
+        if (serverUp === false) return;
         if (serverResponse.application) {
             setValues(defaultValues);
             setTimeout(() => {
@@ -326,6 +325,15 @@ const NewApplication = () => {
 
     const handleChangeAccordion = (panel) => (event, isExpanded) => {
         setExpandedAccordion(isExpanded ? panel : false);
+    };
+
+    const changeContactAssociations = (action) => (contact) => {
+        let contactList = values.contacts;
+        contactList = contactList.filter((existingContact) => existingContact._id !== contact._id);
+        if (action === 'add') {
+            contactList.push(contact);
+        }
+        setValues({ ...values, contacts: contactList });
     };
 
     return (
@@ -527,7 +535,15 @@ const NewApplication = () => {
                             businessName={values.businessName}
                         />
                     </Grid> */}
-                    <ContactListSection contacts={values.contacts} updateContacts={updateContacts} />
+                    <ContactListSection
+                        contacts={values.contacts}
+                        refreshContacts={() => {}}
+                        applicationParent={{
+                            associateContact: changeContactAssociations('add'),
+                            dissociateContact: changeContactAssociations('remove'),
+                        }}
+                    />
+                    {/* TODO GET THIS WORKING */}
                 </AccordionDetails>
             </Accordion>
 
