@@ -29,6 +29,13 @@ const ResumeChooser = (props) => {
     const [resumes, setResumes] = useState([]);
     const [, , { API, loadResource }] = useGlobalStore();
 
+    useEffect(() => {
+        if (open && resumes.length === 0) {
+            console.log('Use effect called, no resumes present so dialog skipped to add resume')
+            onClose('addResume');
+        }
+    }, [open]);
+
     const handleClose = () => {
         onClose();
     };
@@ -59,8 +66,8 @@ const ResumeChooser = (props) => {
         <Dialog onClose={handleClose} aria-labelledby="resume selection" open={open}>
             <DialogTitle id="resume-selection">Saved Resumes</DialogTitle>
             <List>
-                {resumes.map((resume) => (
-                    <ListItem button onClick={() => handleListItemClick(resume)} key={resume.name}>
+                {resumes.map((resume, index) => (
+                    <ListItem button onClick={() => handleListItemClick(resume)} key={resume._id || index}>
                         <ListItemAvatar>
                             <Avatar>
                                 <DescriptionIcon />

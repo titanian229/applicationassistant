@@ -67,20 +67,20 @@ export default {
     getContacts: async () => getRequest('/api/contacts'),
     getApplications: async () => getRequest('/api/applications'),
     getApplication: async (id) => getRequest('/api/applications/' + id),
-    getApplicationContacts: async (id) => getRequest(`/api/applications/${id}/contacts`),
+    getApplicationItems: async (id, itemType) => getRequest(`/api/applications/${id}/${itemType}`),
     toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
     addTodo: async (todo, applicationID) => postRequest('/api/todos', { todo, applicationID }),
     deleteTodo: async (todoID, applicationID) => deleteRequest('/api/todos/' + todoID + '/' + applicationID),
     updateTodo: async (todo) => putRequest('/api/todos/' + todo._id, todo),
     updateApplication: async (id, body) => putRequest('/api/applications/' + id, body),
     updateContact: async (id, body) => putRequest('/api/contacts/' + id, body),
-    deleteContact: async (id, applicationID) => deleteRequest('/api/contacts/' + id),
     updateResume: async (id, body) => putRequest('/api/resumes/' + id, body),
-    deleteResume: async (id, applicationID) => deleteRequest('/api/resumes/' + id + '/' + applicationID),
-    associateContact: async (applicationID, contactID, itemAction) =>
+    deleteContact: async (id) => deleteRequest('/api/contacts/' + id),
+    deleteResume: async (id) => deleteRequest('/api/resumes/' + id),
+    associateItem: async (applicationID, itemID, itemAction, itemType) =>
         putRequest(`/api/applications/associateItem/${applicationID}`, {
-            itemType: 'contacts',
-            itemID: contactID,
+            itemType,
+            itemID,
             itemAction,
         }),
 };

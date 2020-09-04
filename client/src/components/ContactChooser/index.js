@@ -22,35 +22,6 @@ import changeHandler from '../../utils/handleChange';
 // import API from '../../utils/API'
 import { useGlobalStore } from '../GlobalStore';
 
-const placeholderContacts = [
-    {
-        _id: 1,
-        name: 'James',
-        roleTitle: 'Science Officer',
-        businessName: 'Starfleet',
-        contactMethods: [
-            {
-                name: 'phone',
-                details: '416 879 4701',
-            },
-        ],
-        notes: 'Met through Ensign C',
-    },
-    {
-        _id: 2,
-        name: 'Thomas',
-        roleTitle: 'Science Officer',
-        businessName: 'Starfleet',
-        contactMethods: [
-            {
-                name: 'phone',
-                details: '416 578 4701',
-            },
-        ],
-        notes: 'Met through Ensign J',
-    },
-];
-
 const useStyles = makeStyles((theme) => ({}));
 
 const ContactChooser = (props) => {

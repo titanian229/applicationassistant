@@ -25,12 +25,12 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.get('/api/applications/:id/contacts', async ({ headers, params }, res) => {
+    router.get('/api/applications/:id/:itemType', async ({ headers, params }, res) => {
         try {
             // const { session } = headers;
-            const { id } = params;
-            const application = await db.Application.findById({ _id: id }).populate('contacts');
-            res.status(200).send({ contacts: application.contacts });
+            const { id, itemType } = params;
+            const application = await db.Application.findById({ _id: id }).populate(itemType);
+            res.status(200).send({ [itemType]: application[itemType] });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });

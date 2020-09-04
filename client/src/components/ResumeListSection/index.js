@@ -7,7 +7,7 @@ import AddButton from '../AddButton';
 import { useGlobalStore } from '../GlobalStore';
 
 const ResumeListSection = (props) => {
-    const { resumes, updateResumes, applicationID } = props;
+    const { resumes, refreshResumes, applicationParent } = props;
     const [resumesChooserOpen, setResumesChooserOpen] = useState(false);
     const [resumeNewOpen, setResumeNewOpen] = useState(false);
     const [viewResumeItem, setViewResumeItem] = useState({});
@@ -23,23 +23,20 @@ const ResumeListSection = (props) => {
             return;
         }
 
-        let newResumes = resumes;
-        if (!resume._id) resume._id = newResumes.length + 1;
-
-        newResumes = newResumes.filter((existingResume) => existingResume._id !== resume._id);
-
-        newResumes.push(resume);
-        updateResumes(newResumes);
+        if (applicationParent) {
+            applicationParent.associateResume(resume);
+        }
+        refreshResumes();
     };
 
-    const removeResume = (resumeID) => {
-        let newResumes = resumes;
-        newResumes = newResumes.filter((resume) => resume._id !== resumeID);
-        updateResumes(newResumes);
-    };
+    // const removeResume = (resumeID) => {
+    //     let newResumes = resumes;
+    //     newResumes = newResumes.filter((resume) => resume._id !== resumeID);
+    //     updateResumes(newResumes);
+    // };
 
     const viewResume = (resume) => {
-        console.log('view', resume)
+        console.log('view', resume);
         setViewResumeItem(resume);
         setResumeNewOpen(true);
     };
@@ -47,24 +44,42 @@ const ResumeListSection = (props) => {
     const deleteResume = async (resumeID) => {
         setResumeNewOpen(false);
         dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.deleteResume(resumeID, applicationID);
+        const serverResponse = await API.deleteResume(resumeID);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
         if (serverUp == false) return;
-        if (serverResponse.resumes) {
-            updateResumes(serverResponse.resumes);
+        refreshResumes();
+    };
+
+    const handleDissociateResume = (resume) => {
+        if (applicationParent) {
+            applicationParent.dissociateResume(resume);
+            refreshResumes();
         }
+    };
+
+    const handleAdd = () => {
+        if (applicationParent) {
+            setResumesChooserOpen(true);
+            return;
+        }
+        saveResume('addResume');
     };
 
     return (
         <Grid container direction="column">
             <List dense={true}>
                 {resumes.map((resume) => (
-                    <ResumeListItem key={resume._id} handleRemove={removeResume} viewResume={viewResume} {...resume} />
+                    <ResumeListItem
+                        key={resume._id}
+                        handleRemove={applicationParent ? handleDissociateResume : ''}
+                        viewResume={viewResume}
+                        resume={resume}
+                    />
                 ))}
             </List>
             {/* <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button> */}
-            <AddButton onClick={() => setResumesChooserOpen(true)} />
+            <AddButton onClick={handleAdd} />
             <ResumeChooser open={resumesChooserOpen} onClose={saveResume} />
             <ResumeNew
                 open={resumeNewOpen}

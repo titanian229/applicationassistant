@@ -13,19 +13,21 @@ import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AssetListItem from '../AssetListItem';
 
 const ResumeListItem = (props) => {
-    const { _id, name, notes, handleRemove, viewResume } = props;
+    const { resume, handleRemove, viewResume } = props;
+    const { name, notes } = resume
 
     const viewItem = () => {
-        viewResume({ _id, name, notes, link: props.link });
+        viewResume(resume);
     };
 
     return (
         <AssetListItem
             primary={name}
             secondary={notes}
-            deleteDialogDetails={{ text: 'Remove associated resume?' }}
             icon={<DescriptionIcon />}
+            deleteDialogDetails={{ text: 'Remove associated resume?' }}
             viewItem={Boolean(viewResume) ? viewItem : ''}
+            asset={resume}
             {...props}
         />
     );

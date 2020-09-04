@@ -249,18 +249,33 @@ const Application = () => {
         loadResource(async () => API.getApplicationContacts(id), 'contacts', setContacts);
     };
 
-    const changeContactAssociations = (action) => async (contact) => {
-        console.log('changing contact association with application', contact._id);
-        // dispatch({do: 'setLoading', loading: true})
-        const serverResponse = await API.associateContact(id, contact._id, action);
-        const serverUp = processServerResponse(serverResponse);
-        // dispatch({ do: 'setLoading', loading: false });
-        // if (serverUp === false) return;
-        // if (serverResponse.application) {
-        //     console.log('server returned contacts', serverResponse);
-        //     setApplication({ ...application, contacts: serverResponse.application.contacts });
-        // }
+    const setItems = (itemType) => (items) => {
+        setApplication({ ...application, [itemType]: items });
     };
+
+    const refreshItems = (itemType) => async () => {
+        console.log('Refreshing ', itemType);
+        // get contacts, update.  Inside the actual thing use on delete, or everywhere to simplify
+        loadResource(async () => API.getApplicationItems(id, itemType), itemType, setItems(itemType));
+    };
+
+    const changeItemAssociations = (action, itemType) => async (item) => {
+        const serverResponse = await API.associateItem(id, item._id, action, itemType);
+        const serverUp = processServerResponse(serverResponse);
+    };
+
+    // const changeContactAssociations = (action) => async (contact) => {
+    //     console.log('changing contact association with application', contact._id);
+    //     // dispatch({do: 'setLoading', loading: true})
+    //     const serverResponse = await API.associateContact(id, contact._id, action);
+    //     const serverUp = processServerResponse(serverResponse);
+    //     // dispatch({ do: 'setLoading', loading: false });
+    //     // if (serverUp === false) return;
+    //     // if (serverResponse.application) {
+    //     //     console.log('server returned contacts', serverResponse);
+    //     //     setApplication({ ...application, contacts: serverResponse.application.contacts });
+    //     // }
+    // };
 
     // const viewContact = (contact) => {
     //     console.log('view contact', contact)
@@ -375,15 +390,22 @@ const Application = () => {
                                 <ContactListSection
                                     contacts={contacts}
                                     // updateContacts={updateContacts}
-                                    refreshContacts={getContacts}
+                                    refreshContacts={refreshItems('contacts')}
                                     applicationParent={{
-                                        associateContact: changeContactAssociations('addToSet'),
-                                        dissociateContact: changeContactAssociations('pull'),
+                                        associateContact: changeItemAssociations('addToSet', 'contacts'),
+                                        dissociateContact: changeItemAssociations('pull', 'contacts'),
                                     }}
                                 />
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>
-                                <ResumeListSection applicationID={id} resumes={resumes} updateResumes={updateResumes} />
+                                <ResumeListSection
+                                    resumes={resumes}
+                                    refreshResumes={refreshItems('resumes')}
+                                    applicationParent={{
+                                        associateResume: changeItemAssociations('addToSet', 'resumes'),
+                                        dissociateResume: changeItemAssociations('pull', 'resumes'),
+                                    }}
+                                />
 
                                 {/* <List>
                                     {resumes.map((resume) => (

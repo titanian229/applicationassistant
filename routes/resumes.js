@@ -47,15 +47,13 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/resumes/:_id/:applicationID', async ({ headers, params: { _id, applicationID } }, res) => {
+    router.delete('/api/resumes/:_id/', async ({ headers, params: { _id } }, res) => {
         try {
             // const { session } = headers;
 
             await db.Resume.findByIdAndDelete({ _id });
-            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { resumes: _id } });
-            const application = await db.Application.findById({ _id: applicationID }).populate('resumes');
 
-            res.status(200).send({ message: 'Resume deleted', resumes: application.resumes });
+            res.status(200).send({ message: 'Resume deleted' });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });

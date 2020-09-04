@@ -327,14 +327,24 @@ const NewApplication = () => {
         setExpandedAccordion(isExpanded ? panel : false);
     };
 
-    const changeContactAssociations = (action) => (contact) => {
-        let contactList = values.contacts;
-        contactList = contactList.filter((existingContact) => existingContact._id !== contact._id);
+    const changeItemAssociations = (action, itemType) => (item) => {
+        console.log('Changing associations for ', itemType, action, item);
+        let itemList = values[itemType];
+        itemList = itemList.filter((existingItem) => existingItem._id !== item._id);
         if (action === 'add') {
-            contactList.push(contact);
+            itemList.push(item);
         }
-        setValues({ ...values, contacts: contactList });
+        setValues({ ...values, [itemType]: itemList });
     };
+
+    // const changeContactAssociations = (action) => (contact) => {
+    //     let contactList = values.contacts;
+    //     contactList = contactList.filter((existingContact) => existingContact._id !== contact._id);
+    //     if (action === 'add') {
+    //         contactList.push(contact);
+    //     }
+    //     setValues({ ...values, contacts: contactList });
+    // };
 
     return (
         <div>
@@ -539,8 +549,8 @@ const NewApplication = () => {
                         contacts={values.contacts}
                         refreshContacts={() => {}}
                         applicationParent={{
-                            associateContact: changeContactAssociations('add'),
-                            dissociateContact: changeContactAssociations('remove'),
+                            associateContact: changeItemAssociations('add', 'contacts'),
+                            dissociateContact: changeItemAssociations('remove', 'contacts'),
                         }}
                     />
                     {/* TODO GET THIS WORKING */}
@@ -565,7 +575,14 @@ const NewApplication = () => {
                         <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} />
                         <ResumeNew open={resumeNewOpen} saveResume={saveResume} />
                     </Grid> */}
-                    <ResumeListSection resumes={values.resumes} updateResumes={updateResumes} />
+                    <ResumeListSection
+                        resumes={values.resumes}
+                        refreshResumes={() => {}}
+                        applicationParent={{
+                            associateResume: changeItemAssociations('add', 'resumes'),
+                            dissociateResume: changeItemAssociations('remove', 'resumes'),
+                        }}
+                    />
                 </AccordionDetails>
             </Accordion>
             {/* <Divider style={{ marginTop: '1em', marginBottom: '1em' }} /> */}
