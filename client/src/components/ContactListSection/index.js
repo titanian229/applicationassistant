@@ -1,10 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, List } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { red, indigo, blue, lightBlue, teal, green, yellow, deepOrange, deepPurple } from '@material-ui/core/colors/';
 import ContactNew from '../ContactNew';
 import ContactChooser from '../ContactChooser';
 import ContactListItem from '../ContactListItem';
 import AddButton from '../AddButton';
 import { useGlobalStore } from '../GlobalStore';
+
+const useAvatarStyles = makeStyles((theme) => ({
+    red: {
+        color: theme.palette.getContrastText(red[500]),
+        backgroundColor: red[500],
+    },
+    indigo: {
+        color: theme.palette.getContrastText(indigo[500]),
+        backgroundColor: indigo[500],
+    },
+    blue: {
+        color: theme.palette.getContrastText(blue[500]),
+        backgroundColor: blue[500],
+    },
+    lightBlue: {
+        color: theme.palette.getContrastText(lightBlue[500]),
+        backgroundColor: lightBlue[500],
+    },
+    teal: {
+        color: theme.palette.getContrastText(teal[500]),
+        backgroundColor: teal[500],
+    },
+    green: {
+        color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
+    },
+    yellow: {
+        color: theme.palette.getContrastText(yellow[500]),
+        backgroundColor: yellow[500],
+    },
+    deepOrange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
+    purple: {
+        color: theme.palette.getContrastText(deepPurple[500]),
+        backgroundColor: deepPurple[500],
+    },
+}));
+
+const colours = ['red', 'indigo', 'blue', 'lightBlue', 'teal', 'green', 'yellow', 'deepOrange', 'purple'];
 
 const ContactListSection = (props) => {
     // TODO Refactor this so it's independent of the application, but optionally calls function
@@ -20,6 +63,7 @@ const ContactListSection = (props) => {
     const [contactNewOpen, setContactNewOpen] = useState(false);
     const [viewContactItem, setViewContactItem] = useState({});
     const [, dispatch, { processServerResponse, API }] = useGlobalStore();
+    const avatarClasses = useAvatarStyles();
 
     useEffect(() => {
         console.log('Contacts have changed');
@@ -81,22 +125,23 @@ const ContactListSection = (props) => {
     };
 
     const handleAdd = () => {
-        if (applicationParent){
-            setContactsChooserOpen(true)
-            return
+        if (applicationParent) {
+            setContactsChooserOpen(true);
+            return;
         }
-        saveContact('addContact')
-    }
+        saveContact('addContact');
+    };
 
     return (
         <Grid container direction="column">
             <List dense={true}>
-                {contacts.map((contact) => (
+                {contacts.map((contact, index) => (
                     <ContactListItem
                         key={contact._id}
                         handleRemove={applicationParent ? handleDissociateContact : ''}
                         viewContact={viewContact}
                         contact={contact}
+                        avatarClassName={avatarClasses[colours[index % colours.length]]}
                     />
                 ))}
             </List>

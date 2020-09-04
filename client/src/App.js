@@ -12,6 +12,7 @@ import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
 import Contacts from './pages/Contacts';
+import Resumes from './pages/Resumes'
 import Message from './components/Message';
 import Home from './pages/Home';
 import ConfirmationDialog from './components/ConfirmationDialog';
@@ -135,6 +136,9 @@ function App() {
                                 </Route>
                                 <Route exact path="/contacts">
                                     <Contacts />
+                                </Route>
+                                <Route exact path="/resumes">
+                                    <Resumes />
                                 </Route>
                             </Switch>
                         </Router>
