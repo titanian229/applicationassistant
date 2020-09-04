@@ -225,18 +225,41 @@ const Application = () => {
 
     // CONTACTS
 
-    const updateContacts = async (contacts) => {
-        console.log('updating contacts', contacts);
-        // Contact has already been created, must add to this application and associate
-        dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.updateApplication(id, { contacts });
+    // const updateContacts = async (contacts) => {
+    //     console.log('updating contacts', contacts);
+    //     // Contact has already been created, must add to this application and associate
+    //     dispatch({ do: 'setLoading', loading: true });
+    //     const serverResponse = await API.updateApplication(id, { contacts });
+    //     const serverUp = processServerResponse(serverResponse);
+    //     dispatch({ do: 'setLoading', loading: false });
+    //     if (serverUp === false) return;
+    //     if (serverResponse.application) {
+    //         console.log('server returned contacts', serverResponse);
+    //         setApplication({ ...application, contacts: serverResponse.application.contacts });
+    //     }
+    // };
+
+    const setContacts = (contacts) => {
+        setApplication({ ...application, contacts });
+    };
+
+    const getContacts = async () => {
+        console.log('Refreshing contacts');
+        // get contacts, update.  Inside the actual thing use on delete, or everywhere to simplify
+        loadResource(async () => API.getApplicationContacts(id), 'contacts', setContacts);
+    };
+
+    const changeContactAssociations = (action) => async (contactID) => {
+        console.log('changing contact association with application', contactID);
+        // dispatch({do: 'setLoading', loading: true})
+        const serverResponse = await API.associateContact(id, contactID, action);
         const serverUp = processServerResponse(serverResponse);
-        dispatch({ do: 'setLoading', loading: false });
-        if (serverUp === false) return;
-        if (serverResponse.application) {
-            console.log('server returned contacts', serverResponse);
-            setApplication({ ...application, contacts: serverResponse.application.contacts });
-        }
+        // dispatch({ do: 'setLoading', loading: false });
+        // if (serverUp === false) return;
+        // if (serverResponse.application) {
+        //     console.log('server returned contacts', serverResponse);
+        //     setApplication({ ...application, contacts: serverResponse.application.contacts });
+        // }
     };
 
     // const viewContact = (contact) => {
@@ -331,7 +354,7 @@ const Application = () => {
                             <TabItem tab={0} {...{ currentTab }}>
                                 <List dense>
                                     {todos.map((todo) => (
-                                        <TodoListItemToggle viewTodo={viewTodo} {...todo} />
+                                        <TodoListItemToggle key={todo._id} viewTodo={viewTodo} {...todo} />
                                     ))}
                                 </List>
                                 <AddButton onClick={() => setTodoNewOpen(true)} />
@@ -350,9 +373,13 @@ const Application = () => {
                                     ))}
                                 </List> */}
                                 <ContactListSection
-                                    applicationID={id}
                                     contacts={contacts}
-                                    updateContacts={updateContacts}
+                                    // updateContacts={updateContacts}
+                                    refreshContacts={getContacts}
+                                    applicationParent={{
+                                        associateContact: changeContactAssociations('addToSet'),
+                                        dissociateContact: changeContactAssociations('pull'),
+                                    }}
                                 />
                             </TabItem>
                             <TabItem tab={2} {...{ currentTab }}>

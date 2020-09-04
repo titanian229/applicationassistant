@@ -60,7 +60,7 @@ const ResumeListSection = (props) => {
         <Grid container direction="column">
             <List dense={true}>
                 {resumes.map((resume) => (
-                    <ResumeListItem handleRemove={removeResume} viewResume={viewResume} {...resume} />
+                    <ResumeListItem key={resume._id} handleRemove={removeResume} viewResume={viewResume} {...resume} />
                 ))}
             </List>
             {/* <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button> */}

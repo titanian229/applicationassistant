@@ -62,6 +62,9 @@ const ContactNew = (props) => {
         }
     }, [existingContact]);
 
+    // TODO try a useffect that watches for changes in open, and if there is an 
+    // existing contact being showed
+
     const handleClose = () => {
         setAdditionArea('');
         setValues(defaultValues);

@@ -44,6 +44,7 @@ const AssetListItem = (props) => {
         checked,
         indeterminate,
         viewItem,
+        avatarClassName
     } = props;
     const [, , { confirmAction }] = useGlobalStore();
     const classes = useStyles();
@@ -60,7 +61,7 @@ const AssetListItem = (props) => {
         >
             {icon && (
                 <ListItemAvatar>
-                    <Avatar>{icon}</Avatar>
+                    <Avatar className={avatarClassName || ''}>{icon}</Avatar>
                 </ListItemAvatar>
             )}
             {handleCheck && (

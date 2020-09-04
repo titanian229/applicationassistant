@@ -11,9 +11,10 @@ import { SnackbarProvider } from 'notistack';
 import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
+import Contacts from './pages/Contacts';
 import Message from './components/Message';
 import Home from './pages/Home';
-import ConfirmationDialog from './components/ConfirmationDialog'
+import ConfirmationDialog from './components/ConfirmationDialog';
 import { GlobalStore } from './components/GlobalStore';
 // primary: {
 //     main: '#820263',
@@ -131,6 +132,9 @@ function App() {
                                 </Route>
                                 <Route exact path="/newapplication">
                                     <NewApplication />
+                                </Route>
+                                <Route exact path="/contacts">
+                                    <Contacts />
                                 </Route>
                             </Switch>
                         </Router>

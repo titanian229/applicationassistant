@@ -25,6 +25,17 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
+    router.get('/api/applications/:id/contacts', async ({ headers, params }, res) => {
+        try {
+            // const { session } = headers;
+            const { id } = params;
+            const application = await db.Application.findById({ _id: id }).populate('contacts');
+            res.status(200).send({ contacts: application.contacts });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
     router.post('/api/applications', async ({ headers, body }, res) => {
         try {
             // const { session } = headers;
@@ -94,6 +105,48 @@ module.exports = (router) => {
             }
 
             const application = await db.Application.findByIdAndUpdate({ _id }, body, { new: true })
+                .populate('contacts')
+                .populate('todos')
+                .populate('resumes');
+
+            res.status(200).send({ message: 'Application updated', application });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
+    router.put('/api/applications/associateItem/:_id', async ({ headers, params: { _id }, body }, res) => {
+        try {
+            // const { session } = headers;
+            if (!body) {
+                res.status(400).send({ error: 'No application included in update' });
+                return;
+            }
+
+            const { itemType, itemID, itemAction } = body;
+
+            if (!(itemType && itemID && itemAction)) {
+                res.status(400).send({ error: 'Association request missing data' });
+                return;
+            }
+
+            // const existingApplication = await db.Application.findById({ _id });
+
+            // if (itemAction === 'push' && existingApplication.contacts.includes(itemID)) {
+            //     res.status(400).send({ error: 'Application already includes item' });
+            //     return;
+            // }
+            // if (itemAction === 'pull' && !existingApplication.contacts.includes(itemID)) {
+            //     res.status(400).send({ error: 'Application does not include item' });
+            //     console.log("Critical error, item being dissocated from application it doesn't belong to", body);
+            //     return;
+            // }
+
+            const application = await db.Application.findByIdAndUpdate(
+                { _id },
+                { [`$${itemAction}`]: { [itemType]: itemID } },
+                { new: true }
+            )
                 .populate('contacts')
                 .populate('todos')
                 .populate('resumes');
