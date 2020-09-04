@@ -55,14 +55,15 @@ const ContactNew = (props) => {
     const handleChange = changeHandler(values, setValues);
 
     useEffect(() => {
+        console.log('contact changed');
         if (!existingContact) return;
         if (existingContact._id) {
-            console.log('contact changed');
+            console.log('Called change in edit', existingContact);
             setValues({ ...defaultValues, ...existingContact });
         }
     }, [existingContact]);
 
-    // TODO try a useffect that watches for changes in open, and if there is an 
+    // TODO try a useffect that watches for changes in open, and if there is an
     // existing contact being showed
 
     const handleClose = () => {
@@ -99,9 +100,9 @@ const ContactNew = (props) => {
     };
 
     const handleDelete = () => {
-        deleteContact(values._id)
-        setValues(defaultValues)
-    }
+        deleteContact(values._id);
+        setValues(defaultValues);
+    };
 
     const handleSaveMethod = (method) => {
         setAdditionArea('');
@@ -168,7 +169,7 @@ const ContactNew = (props) => {
 
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="contact-dialog">
-            <DialogTitle id="contact-dialog">New Contact</DialogTitle>
+            <DialogTitle id="contact-dialog">{existingContact._id ? 'Edit' : 'New'} Contact</DialogTitle>
             <DialogContent>
                 <DialogContentText>Add a contact to link to this application</DialogContentText>
                 {/* <TextField autoFocus margin="dense" id="name" label="Email Address" type="email" fullWidth /> */}

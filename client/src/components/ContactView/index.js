@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
+import AssetActionsPanel from '../AssetActionsPanel';
 
 // import ContactMethod from './ContactMethod'
 import MethodDisplay from '../ContactNew/MethodDisplay';
@@ -27,11 +28,23 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         position: 'relative',
+        // left: 0,
+        // right: 0,
+        // top: 0,
+        // bottom: 0,
         width: '100vw',
         height: '100%',
-        backgroundColor: theme.palette.secondary.light,
+        // backgroundColor: theme.palette.secondary.light,
         margin: theme.spacing(-1),
         padding: theme.spacing(1, 3),
+    },
+    bg: {
+        backgroundColor: theme.palette.secondary.light,
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
     },
     header: {
         width: 340,
@@ -44,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 40,
         width: '100%',
         height: '100%',
-        minHeight: '80vh',
+        // minHeight: '80vh',
         // padding: theme.spacing(1),
         // outline: '1px solid red',
     },
@@ -86,11 +99,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ContactView = (props) => {
+    const { handleDelete, handleEdit, handleDissociate } = props;
     const { name, roleTitle, businessName, contactMethods, notes, associatedTodos } = props.contact;
     const classes = useStyles();
 
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
+            <div className={classes.bg} />
             <Paper elevation={12} className={classes.header}>
                 <Typography variant="h4" align="center" className={classes.title}>
                     {name}
@@ -109,6 +124,10 @@ const ContactView = (props) => {
             <Paper elevation={4} className={classes.main}>
                 <Box padding={2}>
                     <Grid container spacing={3}>
+                        <AssetActionsPanel
+                            {...{ handleDelete, handleEdit, handleDissociate }}
+                            asset={props.contact}
+                        />
                         <Box className={classes.central}>
                             <List dense>
                                 {contactMethods.map((method, index) => (

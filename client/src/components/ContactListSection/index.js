@@ -5,6 +5,7 @@ import { red, indigo, blue, lightBlue, teal, green, yellow, deepOrange, deepPurp
 import ContactNew from '../ContactNew';
 import ContactChooser from '../ContactChooser';
 import ContactListItem from '../ContactListItem';
+import ContactViewDialog from '../ContactViewDialog';
 import AddButton from '../AddButton';
 import { useGlobalStore } from '../GlobalStore';
 
@@ -61,13 +62,29 @@ const ContactListSection = (props) => {
     const { contacts, refreshContacts, applicationParent } = props;
     const [contactsChooserOpen, setContactsChooserOpen] = useState(false);
     const [contactNewOpen, setContactNewOpen] = useState(false);
+    const [contactViewOpen, setContactViewOpen] = useState(false);
     const [viewContactItem, setViewContactItem] = useState({});
-    const [, dispatch, { processServerResponse, API }] = useGlobalStore();
+    const [editContactItem, setEditContactItem] = useState({});
+    const [, dispatch, { processServerResponse, API, confirmAction }] = useGlobalStore();
     const avatarClasses = useAvatarStyles();
 
     useEffect(() => {
         console.log('Contacts have changed');
     }, [contacts]);
+
+    useEffect(() => {
+        if (contactNewOpen === false) {
+            console.log('ContactNewOpen has changed', contactNewOpen);
+            setEditContactItem({});
+        }
+    }, [contactNewOpen]);
+
+    useEffect(() => {
+        if (contactViewOpen === false) {
+            console.log('contactViewOpen has changed', contactViewOpen);
+            setViewContactItem({});
+        }
+    }, [contactViewOpen]);
 
     const saveContact = (contact) => {
         setContactNewOpen(false);
@@ -104,6 +121,12 @@ const ContactListSection = (props) => {
 
     const viewContact = (contact) => {
         setViewContactItem(contact);
+        // setContactNewOpen(true);  Disabled while changing to show first
+        setContactViewOpen(true);
+    };
+
+    const editContact = (contact) => {
+        setEditContactItem(contact);
         setContactNewOpen(true);
     };
 
@@ -122,6 +145,11 @@ const ContactListSection = (props) => {
         dispatch({ do: 'setLoading', loading: false });
         if (serverUp == false) return;
         refreshContacts();
+    };
+
+    const handleDelete = (contact) => {
+        console.log("handle delete clicked", contact)
+        //() => deleteContact(contact._id)
     };
 
     const handleAdd = () => {
@@ -151,8 +179,16 @@ const ContactListSection = (props) => {
             <ContactNew
                 open={contactNewOpen}
                 saveContact={saveContact}
-                existingContact={viewContactItem}
+                existingContact={editContactItem}
                 deleteContact={deleteContact}
+            />
+            <ContactViewDialog
+                open={contactViewOpen}
+                onClose={() => setContactViewOpen(false)}
+                contact={viewContactItem}
+                deleteContact={deleteContact}
+                handleEdit={editContact}
+                handleDissociate={applicationParent ? handleDissociateContact : null}
             />
         </Grid>
     );
