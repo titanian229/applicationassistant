@@ -29,12 +29,6 @@ const ResumeListSection = (props) => {
         refreshResumes();
     };
 
-    // const removeResume = (resumeID) => {
-    //     let newResumes = resumes;
-    //     newResumes = newResumes.filter((resume) => resume._id !== resumeID);
-    //     updateResumes(newResumes);
-    // };
-
     const viewResume = (resume) => {
         console.log('view', resume);
         setViewResumeItem(resume);
@@ -47,7 +41,7 @@ const ResumeListSection = (props) => {
         const serverResponse = await API.deleteResume(resumeID);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
-        if (serverUp == false) return;
+        if (serverUp === false) return;
         refreshResumes();
     };
 

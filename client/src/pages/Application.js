@@ -1,46 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import {
-    Backdrop,
-    CircularProgress,
-    Typography,
-    Grid,
-    Paper,
-    Box,
-    Divider,
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Tabs,
-    Tab,
-    List,
-} from '@material-ui/core';
+import { useParams } from 'react-router-dom';
+import { Backdrop, CircularProgress, Typography, Grid, Paper, Box, Divider, Tabs, Tab, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
-import WorkIcon from '@material-ui/icons/WorkTwoTone';
-import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import StatusArray from '../components/StatusArray';
 import TabItem from '../components/TabItem';
-import ResumeListItem from '../components/ResumeListItem';
 import TodoListItemToggle from '../components/TodoListItemToggle';
-import ContactListItem from '../components/ContactListItem';
 import AddButton from '../components/AddButton';
 import TodoNew from '../components/TodoNew';
-import ResumeChooser from '../components/ResumeChooser';
-import ContactChooser from '../components/ContactChooser';
-import ContactNew from '../components/ContactNew';
-import ResumeNew from '../components/ResumeNew';
 
 import ContactListSection from '../components/ContactListSection';
 import ResumeListSection from '../components/ResumeListSection';
 
-// import API from '../utils/API';
 import { useGlobalStore } from '../components/GlobalStore';
-// import formatDate from '../utils/formatDate';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -113,8 +88,6 @@ const Application = () => {
 
     const [currentTab, setCurrentTab] = useState(0);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
-    const [resumeNewOpen, setResumeNewOpen] = useState(false);
-    const [contactNewOpen, setContactNewOpen] = useState(false);
     const [viewTodoItem, setViewTodoItem] = useState({});
 
     const [application, setApplication] = useState({
@@ -147,11 +120,11 @@ const Application = () => {
         appliedDate,
         interviewsArray,
         haveResearched,
-        haveResearchedNotes,
+        // haveResearchedNotes,
         resumes,
         contacts,
         todos,
-        createdAt,
+        // createdAt,
     } = application;
 
     const classes = useStyles();
@@ -160,19 +133,12 @@ const Application = () => {
     };
 
     const fetchApplication = async (id) => {
-        // dispatch({ do: 'setLoading', loading: true });
-        // const serverResponse = await API.getApplication(id);
-        // const serverUp = processServerResponse(serverResponse);
-        // dispatch({ do: 'setLoading', loading: false });
-        // if (serverUp === false) return;
-        // if (serverResponse.application) {
-        //     setApplication(serverResponse.application);
-        // }
         loadResource(async () => API.getApplication(id), 'application', setApplication);
     };
 
     useEffect(() => {
         fetchApplication(id);
+        // eslint-disable-next-line
     }, [id]);
 
     const saveTodo = async (todo) => {
@@ -223,31 +189,11 @@ const Application = () => {
         setTodoNewOpen(true);
     };
 
-    // CONTACTS
-
-    // const updateContacts = async (contacts) => {
-    //     console.log('updating contacts', contacts);
-    //     // Contact has already been created, must add to this application and associate
-    //     dispatch({ do: 'setLoading', loading: true });
-    //     const serverResponse = await API.updateApplication(id, { contacts });
-    //     const serverUp = processServerResponse(serverResponse);
-    //     dispatch({ do: 'setLoading', loading: false });
-    //     if (serverUp === false) return;
-    //     if (serverResponse.application) {
-    //         console.log('server returned contacts', serverResponse);
-    //         setApplication({ ...application, contacts: serverResponse.application.contacts });
-    //     }
+    // const getContacts = async () => {
+    //     console.log('Refreshing contacts');
+    //     // get contacts, update.  Inside the actual thing use on delete, or everywhere to simplify
+    //     loadResource(async () => API.getApplicationContacts(id), 'contacts', setContacts);
     // };
-
-    const setContacts = (contacts) => {
-        setApplication({ ...application, contacts });
-    };
-
-    const getContacts = async () => {
-        console.log('Refreshing contacts');
-        // get contacts, update.  Inside the actual thing use on delete, or everywhere to simplify
-        loadResource(async () => API.getApplicationContacts(id), 'contacts', setContacts);
-    };
 
     const setItems = (itemType) => (items) => {
         setApplication({ ...application, [itemType]: items });
@@ -261,36 +207,19 @@ const Application = () => {
 
     const changeItemAssociations = (action, itemType) => async (item) => {
         const serverResponse = await API.associateItem(id, item._id, action, itemType);
-        const serverUp = processServerResponse(serverResponse);
+        processServerResponse(serverResponse);
     };
 
-    // const changeContactAssociations = (action) => async (contact) => {
-    //     console.log('changing contact association with application', contact._id);
-    //     // dispatch({do: 'setLoading', loading: true})
-    //     const serverResponse = await API.associateContact(id, contact._id, action);
+    // const updateResumes = async (resumes) => {
+    //     dispatch({ do: 'setLoading', loading: true });
+    //     const serverResponse = await API.updateApplication(id, { resumes });
     //     const serverUp = processServerResponse(serverResponse);
-    //     // dispatch({ do: 'setLoading', loading: false });
-    //     // if (serverUp === false) return;
-    //     // if (serverResponse.application) {
-    //     //     console.log('server returned contacts', serverResponse);
-    //     //     setApplication({ ...application, contacts: serverResponse.application.contacts });
-    //     // }
+    //     dispatch({ do: 'setLoading', loading: false });
+    //     if (serverUp === false) return;
+    //     if (serverResponse.application) {
+    //         setApplication({ ...application, resumes: serverResponse.application.resumes });
+    //     }
     // };
-
-    // const viewContact = (contact) => {
-    //     console.log('view contact', contact)
-    // }
-
-    const updateResumes = async (resumes) => {
-        dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.updateApplication(id, { resumes });
-        const serverUp = processServerResponse(serverResponse);
-        dispatch({ do: 'setLoading', loading: false });
-        if (serverUp === false) return;
-        if (serverResponse.application) {
-            setApplication({ ...application, resumes: serverResponse.application.resumes });
-        }
-    };
 
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
@@ -382,14 +311,8 @@ const Application = () => {
                                 />
                             </TabItem>
                             <TabItem tab={1} {...{ currentTab }}>
-                                {/* <List>
-                                    {contacts.map((contact) => (
-                                        <ContactListItem {...contact} />
-                                    ))}
-                                </List> */}
                                 <ContactListSection
                                     contacts={contacts}
-                                    // updateContacts={updateContacts}
                                     refreshContacts={refreshItems('contacts')}
                                     applicationParent={{
                                         associateContact: changeItemAssociations('addToSet', 'contacts'),
@@ -406,32 +329,8 @@ const Application = () => {
                                         dissociateResume: changeItemAssociations('pull', 'resumes'),
                                     }}
                                 />
-
-                                {/* <List>
-                                    {resumes.map((resume) => (
-                                        <ResumeListItem {...resume} />
-                                    ))}
-                                </List> */}
-                                {/* <AddButton onClick={() => setResumesChooserOpen(true)} /> */}
-                                {/* <ResumeChooser open={resumesChooserOpen} onClose={setSelectedResume} /> */}
-                                {/* <ResumeNew open={resumeNewOpen} saveResume={saveResume} /> */}
                             </TabItem>
                         </Paper>
-                        {/* <Accordion>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="resume-content"
-                                id="resume-header"
-                            >
-                                <Typography className={classes.heading}>Resume</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
-                                    ex, sit amet blandit leo lobortis eget.
-                                </Typography>
-                            </AccordionDetails>
-                        </Accordion> */}
                     </Box>
                 </Box>
             </Paper>

@@ -28,11 +28,12 @@ const icons = {
     address: <HomeOutlinedIcon />,
 };
 
-const verifyMethod = {
-    email: (value) => true,
-    phone: (value) => true,
-    address: (value) => true,
-};
+// TODO check and verify formats of fields
+// const verifyMethod = {
+//     email: (value) => true,
+//     phone: (value) => true,
+//     address: (value) => true,
+// };
 
 const MethodEdit = (props) => {
     const { methodName, methodLabel, _id, details, saveMethod } = props;
@@ -43,12 +44,12 @@ const MethodEdit = (props) => {
         details: details || '',
         _id: _id || undefined,
     };
-    // TODO REFACTOR to have several methods, remove phoneType, use methodName instead
 
     useEffect(() => {
         //This watches for the edit button being clicked to reset values
         console.log(details);
         setValues(defaultValues);
+        // eslint-disable-next-line
     }, [details]);
 
     const [values, setValues] = useState(defaultValues);

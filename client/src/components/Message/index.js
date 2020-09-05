@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     message: {},
 }));
 
-const Message = (props) => {
+const Message = () => {
     const [open, setOpen] = useState(false);
     const classes = useStyles();
 
@@ -19,9 +19,10 @@ const Message = (props) => {
             return;
         }
         setOpen(true);
-        const timer = setTimeout(() => {
+        setTimeout(() => {
             dispatch({ do: 'clearMessage' });
         }, messageDuration + 1500);
+        // eslint-disable-next-line
     }, [message]);
 
     const handleClose = (event, reason) => {

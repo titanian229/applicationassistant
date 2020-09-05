@@ -1,38 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Typography,
+    // Typography,
     Dialog,
     DialogTitle,
     DialogActions,
     DialogContent,
     DialogContentText,
-    Button,
+    // Button,
     Grid,
-    IconButton,
-    InputAdornment,
-    TextField,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Avatar,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
+    // IconButton,
+    // InputAdornment,
+    // TextField,
+    // List,
+    // ListItem,
+    // ListItemText,
+    // ListItemIcon,
+    // Avatar,
+    // ListItemAvatar,
+    // ListItemSecondaryAction,
+    // FormControl,
+    // Select,
+    // InputLabel,
+    // MenuItem,
 } from '@material-ui/core';
 
 import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
-// import changeHandler from '../../utils/handleChange';
-// import API from '../../utils/API'
 import { useGlobalStore } from '../GlobalStore';
 
 const ResumeNew = (props) => {
     const { open, saveResume, existingResume, deleteResume } = props;
-    const [, dispatch, { processServerResponse, sendMessage, changeHandler, API }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, changeHandler, API }] = useGlobalStore();
 
     const defaultValues = {
         name: '',
@@ -45,8 +43,9 @@ const ResumeNew = (props) => {
     useEffect(() => {
         if (!existingResume) return;
         if (existingResume._id) {
-            setValues({ ...values, ...existingResume });
+            setValues({ ...defaultValues, ...existingResume });
         }
+        // eslint-disable-next-line
     }, [existingResume]);
 
     const handleClose = () => {
@@ -77,13 +76,12 @@ const ResumeNew = (props) => {
 
     return (
         <Dialog open={open} onClose={handleClose} aria-labelledby="resume-dialog">
-            <DialogTitle id="resume-dialog">New Resume</DialogTitle>
+            <DialogTitle id="resume-dialog">{existingResume._id ? 'Edit' : 'New'} Resume</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Add a resume to link to this application. Add a link to the resume, saved in Google Drive or
                     Dropbox.
                 </DialogContentText>
-                {/* <TextField autoFocus margin="dense" id="name" label="Email Address" type="email" fullWidth /> */}
                 <Grid container direction="column">
                     <InputField name="name" label="Name" {...{ values, handleChange }} />
                     <InputField name="link" label="Link" {...{ values, handleChange }} />

@@ -3,40 +3,34 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
     Typography,
     Dialog,
-    DialogTitle,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    Button,
+    // DialogTitle,
+    // DialogActions,
+    // DialogContent,
+    // DialogContentText,
+    // Button,
     Grid,
     IconButton,
-    InputAdornment,
-    TextField,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Avatar,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
+    // InputAdornment,
+    // TextField,
+    // List,
+    // ListItem,
+    // ListItemText,
+    // ListItemIcon,
+    // Avatar,
+    // ListItemAvatar,
+    // ListItemSecondaryAction,
+    // FormControl,
+    // Select,
+    // InputLabel,
+    // MenuItem,
     Slide,
     AppBar,
     Toolbar,
 } from '@material-ui/core';
-import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import CloseIcon from '@material-ui/icons/Close';
-import PhoneIcon from '@material-ui/icons/Phone';
-import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import DeleteIcon from '@material-ui/icons/Delete';
+
 import ContactView from '../ContactView';
 
-import InputField from '../InputField';
-import ConfirmationButtons from '../ConfirmationButtons';
 
 // import changeHandler from '../../utils/handleChange';
 // import API from '../../utils/API';
@@ -71,8 +65,8 @@ const defaultValues = {
 };
 
 const ContactViewDialog = (props) => {
-    const { open, contact, onClose, handleEdit, deleteContact, handleDissociate } = props;
-    const [, dispatch, { processServerResponse, sendMessage, API, confirmAction }] = useGlobalStore();
+    const { open, contact, onClose, handleEdit, deleteContact } = props;  //handleDissociate is also passed in
+    const [, , { confirmAction }] = useGlobalStore();
     const classes = useStyles();
 
     const [values, setValues] = useState(defaultValues);
@@ -80,11 +74,11 @@ const ContactViewDialog = (props) => {
     useEffect(() => {
         if (!contact) return;
         if (contact._id) {
-            setValues({ ...values, ...contact });
+            setValues({ ...defaultValues, ...contact });
         }
     }, [contact]);
 
-    const { name, roleTitle, businessName, contactMethods, notes, associatedTodos } = values;
+    const { name } = values;
 
     const handleCloseAndFunction = (handleFunction) => {
         if (handleFunction) {
@@ -97,8 +91,8 @@ const ContactViewDialog = (props) => {
     };
 
     const handleDelete = () => {
-        onClose()
         deleteContact(contact._id)
+        onClose()
     };
 
     const handleClose = () => {
@@ -141,15 +135,6 @@ const ContactViewDialog = (props) => {
                     />
                 </Grid>
             </div>
-
-            {/* <DialogTitle id="contact-dialog">{name}</DialogTitle> */}
-            {/* <DialogContent>
-                <DialogContentText>Add a contact to link to this application</DialogContentText>
-                <Grid container direction="column"></Grid>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
-            </DialogActions> */}
         </Dialog>
     );
 };

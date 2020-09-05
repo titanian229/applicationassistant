@@ -1,22 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NavLink, Link, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
     IconButton,
     AppBar,
     Toolbar,
-    Typography,
-    Button,
-    ClickAwayListener,
-    Grow,
-    Paper,
-    Popper,
-    MenuItem,
-    MenuList,
-    SwipeableDrawer,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 
 import LargeLogo from '../Logo/LargeLogo';
 import Sidebar from './Sidebar'

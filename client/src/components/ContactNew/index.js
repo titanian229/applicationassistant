@@ -1,42 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import {
-    Typography,
+    // Typography,
     Dialog,
     DialogTitle,
     DialogActions,
     DialogContent,
     DialogContentText,
-    Button,
+    // Button,
     Grid,
     IconButton,
-    InputAdornment,
-    TextField,
+    // InputAdornment,
+    // TextField,
     List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Avatar,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
+    // ListItem,
+    // ListItemText,
+    // ListItemIcon,
+    // Avatar,
+    // ListItemAvatar,
+    // ListItemSecondaryAction,
+    // FormControl,
+    // Select,
+    // InputLabel,
+    // MenuItem,
 } from '@material-ui/core';
 import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
-import PhoneIcon from '@material-ui/icons/Phone';
 import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import DeleteIcon from '@material-ui/icons/Delete';
 
 import InputField from '../InputField';
 import ConfirmationButtons from '../ConfirmationButtons';
 import MethodEdit from './MethodEdit';
 import MethodDisplay from './MethodDisplay';
 
-// import changeHandler from '../../utils/handleChange';
-// import API from '../../utils/API';
 import { useGlobalStore } from '../GlobalStore';
 
 const ContactNew = (props) => {
@@ -61,10 +57,8 @@ const ContactNew = (props) => {
             console.log('Called change in edit', existingContact);
             setValues({ ...defaultValues, ...existingContact });
         }
+        // eslint-disable-next-line
     }, [existingContact]);
-
-    // TODO try a useffect that watches for changes in open, and if there is an
-    // existing contact being showed
 
     const handleClose = () => {
         setAdditionArea('');
@@ -141,26 +135,23 @@ const ContactNew = (props) => {
     const handleAddClick = (type) => {
         switch (type) {
             case 'email':
-                return (event) => {
+                return () => {
                     setAdditionArea(
                         <MethodEdit saveMethod={handleSaveMethod} methodName="email" methodLabel="Email Address" />
                     );
                 };
-                break;
             case 'cell':
-                return (event) => {
+                return () => {
                     setAdditionArea(
                         <MethodEdit saveMethod={handleSaveMethod} methodName="cell" methodLabel="Phone Number" />
                     );
                 };
-                break;
             case 'address':
-                return (event) => {
+                return () => {
                     setAdditionArea(
                         <MethodEdit saveMethod={handleSaveMethod} methodName="address" methodLabel="Address" />
                     );
                 };
-                break;
 
             default:
                 break;
@@ -205,12 +196,6 @@ const ContactNew = (props) => {
                 </Grid>
             </DialogContent>
             <DialogActions>
-                {/* <Button onClick={handleClose} color="primary">
-                    Cancel
-                </Button>
-                <Button onClick={handleSave} color="primary">
-                    Save
-                </Button> */}
                 <ConfirmationButtons
                     handleDelete={!existingContact._id ? '' : handleDelete}
                     {...{ handleClose, handleSave }}

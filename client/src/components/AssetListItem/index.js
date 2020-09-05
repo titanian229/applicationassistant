@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     ListItem,
     ListItemText,
@@ -39,7 +39,7 @@ const AssetListItem = (props) => {
         icon,
         handleRemove,
         deleteDialogDetails: dialogDetails,
-        handleClick,
+        // handleClick,
         handleCheck,
         checked,
         indeterminate,
@@ -94,13 +94,6 @@ const AssetListItem = (props) => {
                     </WrapTooltip>
                 </ListItemSecondaryAction>
             )}
-            {/* {handleCheck && (
-                <ListItemSecondaryAction>
-                    <WrapTooltip tooltipText={tooltipText}>
-                        <Checkbox edge="end" onChange={handleCheck} checked={checked} indeterminate={indeterminate} />
-                    </WrapTooltip>
-                </ListItemSecondaryAction>
-            )} */}
         </ListItem>
     );
 };

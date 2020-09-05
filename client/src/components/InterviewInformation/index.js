@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     ListItem,
     ListItemText,
     ListItemIcon,
-    Avatar,
-    List,
-    ListItemAvatar,
     ListItemSecondaryAction,
     IconButton,
     Collapse,
     Typography,
 } from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -35,6 +31,7 @@ const InterviewInformation = (props) => {
         phone: 'Phone',
         email: 'Email',
     }[interviewType];
+    
     return (
         <>
             <ListItem key={String(date)}>

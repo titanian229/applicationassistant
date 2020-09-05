@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Typography,
+    // Typography,
     Box,
-    Collapse,
-    IconButton,
-    Paper,
+    // Collapse,
+    // IconButton,
+    // Paper,
     Grid,
-    List,
-    ListItem,
-    ListItemText,
-    Divider,
-    Avatar,
+    // List,
+    // ListItem,
+    // ListItemText,
+    // Divider,
+    // Avatar,
     Backdrop,
     CircularProgress,
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
+// import SearchIcon from '@material-ui/icons/Search';
+// import AddIcon from '@material-ui/icons/Add';
 
-import AssetListItem from '../components/AssetListItem';
 // import AddButton from '../components/AddButton';
 // import ContactListItem from '../components/ContactListItem';
 import ContactListSection from '../components/ContactListSection';
@@ -33,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Contacts = (props) => {
+const Contacts = () => {
     // SHOW search bar to search, all contacts sorted by either name or company
     // On click of contact bring to view page for that contact, that has edit button to change things.
     const [globalStore, , { API, loadResource }] = useGlobalStore();
@@ -42,6 +40,7 @@ const Contacts = (props) => {
 
     useEffect(() => {
         getContacts();
+        // eslint-disable-next-line
     }, []);
 
     const getContacts = () => {
@@ -51,18 +50,6 @@ const Contacts = (props) => {
     return (
         <Grid container direction="column">
             <Box padding={2}>
-                {/* <List className={classes.listRoot}> */}
-                {/* <ListItem>
-                        <ListItemAvatar>
-                            <
-                        </ListItemAvatar>
-                    </ListItem> */}
-                {/* {contacts.map((contact, index) => (
-                        <AssetListItem icon={contact.name[0]} primary={contact.name} 
-                        avatarClassName={classes[colours[index % colours.length]]}
-                        secondary={contact.businessName} />
-                    ))} */}
-                {/* </List>  */}
                 <ContactListSection contacts={contacts} refreshContacts={getContacts} />
             </Box>
             <Backdrop className={classes.backdrop} open={globalStore.loading}>

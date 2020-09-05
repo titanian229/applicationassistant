@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles, lighten } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-    Typography,
+    // Typography,
     TextField,
-    Button,
+    // Button,
     InputAdornment,
     IconButton,
-    Box,
-    Paper,
+    // Box,
+    // Paper,
     Grid,
-    Container,
+    // Container,
     Select,
     Input,
     InputLabel,
     Checkbox,
     MenuItem,
     FormControl,
-    List,
-    ListItem,
+    // List,
+    // ListItem,
     ListItemText,
     Divider,
     Fab,
@@ -64,48 +64,10 @@ const MenuProps = {
 
 // TESTING DATA
 
-const applicationMockData = [
-    {
-        _id: 'post',
-        businessName: 'Starfleet',
-        roleTitle: 'Full stack developer',
-        requirementsNote: 'Requires 2 years of python',
-        postLink: 'https://www.google.ca',
-        dateFound: new Date(2020, 2, 3),
-        foundWhereNote: 'I found this post online',
-        haveApplied: true,
-        appliedDate: '',
-        interviewsArray: [],
-        haveResearched: false,
-        haveResearchedNotes: '',
-        associatedResumesArray: [],
-        associatedContactsArray: [],
-        associatedTodosRemindersArray: [],
-    },
-    {
-        _id: 'post',
-        businessName:
-            'StarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleetStarfleet',
-        roleTitle: 'Full stack developer',
-        requirementsNote: 'Requires 2 years of python',
-        postLink: 'https://www.google.ca',
-        dateFound: new Date(2020, 2, 3),
-        foundWhereNote: 'I found this post online',
-        haveApplied: true,
-        appliedDate: '',
-        interviewsArray: [],
-        haveResearched: false,
-        haveResearchedNotes: '',
-        associatedResumesArray: [],
-        associatedContactsArray: [],
-        associatedTodosRemindersArray: [],
-    },
-];
-
 const Applications = (props) => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
-    const [globalStore, dispatch, { processServerResponse, sendMessage, loadResource }] = useGlobalStore();
+    const [, , { loadResource }] = useGlobalStore();
     const emptyValues = {
         search: '',
         filter: [],
@@ -113,21 +75,13 @@ const Applications = (props) => {
     const [values, setValues] = useState(emptyValues);
     const [applicationData, setApplicationData] = useState([]);
 
-    const fetchApplications = async () => {
-        // dispatch({ do: 'setLoading', loading: true });
-        // const serverResponse = await API.getApplications();
-        // const serverUp = processServerResponse(serverResponse);
-        // dispatch({ do: 'setLoading', loading: false });
-        // if (serverUp === false) return
-        // if (serverResponse.applications) {
-        //     setApplicationData(serverResponse.applications);
-        // }
-        loadResource(async () => API.getApplications(), 'applications', setApplicationData)
-
-    };
+    // const fetchApplications = async () => {
+    //     loadResource(async () => API.getApplications(), 'applications', setApplicationData)
+    // };
 
     useEffect(() => {
-        fetchApplications();
+        loadResource(async () => API.getApplications(), 'applications', setApplicationData);
+        // eslint-disable-next-line
     }, []);
 
     const handleChange = (property) => (event) => {

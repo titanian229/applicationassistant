@@ -23,7 +23,7 @@ const defaultGlobalStore = {
     confirmationDialog: defaultConfirmationDialog,
 };
 
-let previousMessage = { text: '', time: undefined };
+// let previousMessage = { text: '', time: undefined };
 
 const GlobalData = createContext();
 
@@ -35,7 +35,7 @@ function dispatcher(state, action) {
                 console.log('message dispatch called with no message');
                 return state;
             }
-            previousMessage = { text: action.message.text, time: Date.now() };
+            // previousMessage = { text: action.message.text, time: Date.now() };
             newState.message.type = action.message.type || 'info';
             newState.message.text = action.message.text;
             return newState;

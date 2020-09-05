@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     Backdrop,
     CircularProgress,
-    Typography,
+    // Typography,
     Grid,
-    Paper,
-    Box,
-    Divider,
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Tabs,
-    Tab,
-    List,
+    // Paper,
+    // Box,
+    // Divider,
+    // Accordion,
+    // AccordionDetails,
+    // AccordionSummary,
+    // Tabs,
+    // Tab,
+    // List,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const Contact = () => {
     let { id } = useParams();
     const classes = useStyles();
-    const [globalStore, dispatch, { processServerResponse, API, formatDate, loadResource }] = useGlobalStore();
+    const [globalStore, , { API, loadResource }] = useGlobalStore();
     const [contact, setContact] = useState({
         name: '',
         roleTitle: '',
@@ -41,12 +41,13 @@ const Contact = () => {
         associatedTodos: [],
     });
 
-    const fetchContact = (contactID) => {
+    const fetchContact = (id) => {
         loadResource(async () => API.getContact(id), 'contact', setContact);
     };
 
     useEffect(() => {
         fetchContact(id)
+        // eslint-disable-next-line
     }, [id])
 
     return (

@@ -1,21 +1,12 @@
 import React from 'react';
 import {
-    Backdrop,
-    CircularProgress,
     Typography,
     Grid,
     Paper,
     Box,
-    Divider,
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Tabs,
-    Tab,
     List,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import AssetActionsPanel from '../AssetActionsPanel';
 
 // import ContactMethod from './ContactMethod'
@@ -100,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ContactView = (props) => {
     const { handleDelete, handleEdit, handleDissociate } = props;
-    const { name, roleTitle, businessName, contactMethods, notes, associatedTodos } = props.contact;
+    const { name, roleTitle, businessName, contactMethods, notes } = props.contact; // Don't forget associatedTodos
     const classes = useStyles();
 
     return (

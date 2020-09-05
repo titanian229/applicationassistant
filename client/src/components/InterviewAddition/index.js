@@ -1,38 +1,21 @@
 import React, { useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
-    Typography,
-    TextField,
     Button,
-    InputAdornment,
-    IconButton,
-    Paper,
     Grid,
-    Box,
-    Container,
     Select,
-    Input,
     InputLabel,
-    Checkbox,
     MenuItem,
     FormControl,
-    List,
-    ListItem,
-    ListItemText,
-    FormGroup,
-    FormControlLabel,
-    Switch,
-    Divider,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
 
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
-import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
-import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+// import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+// import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
+// import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
+// import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
+// import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
 
 import changeHandler from '../../utils/handleChange';
 

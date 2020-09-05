@@ -5,29 +5,27 @@ import {
     Grid,
     Card,
     CardHeader,
-    CardMedia,
+    // CardMedia,
     CardContent,
-    CardActions,
+    // CardActions,
     CardActionArea,
     Avatar,
-    IconButton,
-    Button,
-    Chip,
+    // IconButton,
+    // Button,
+    // Chip,
     Badge,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
+// import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
-import WorkIcon from '@material-ui/icons/WorkTwoTone';
-import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
+// import WorkIcon from '@material-ui/icons/WorkTwoTone';
+// import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
-import StatusArray from '../StatusArray'
-
-import clsx from 'clsx';
+import StatusArray from '../StatusArray';
 
 const useStyles = makeStyles((theme) => ({
     applicationCard: {
@@ -72,40 +70,6 @@ const parseDate = (date) => {
     }
 };
 
-// const useStatusArrayStyles = makeStyles((theme) => ({
-//     chip: {
-//         marginRight: theme.spacing(1),
-//     },
-//     statusArray: {
-//         width: '100%',
-//         marginTop: theme.spacing(1),
-//         // paddingTop: theme.spacing(1),
-//         // paddingBottom: theme.spacing(1),
-//         // padding: theme.spacing(1),
-//         // marginTop: theme.spacing(2),
-//     },
-// }));
-
-// const StatusArray = (props) => {
-//     const { haveApplied, haveResearched, interviewsArray } = props;
-//     const classes = useStatusArrayStyles();
-//     if (!(haveApplied || haveResearched || interviewsArray.length > 0)) return '';
-
-//     return (
-//         <div className={classes.statusArray}>
-//             {haveApplied && (
-//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Applied" />
-//             )}
-//             {haveResearched && (
-//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Researched" />
-//             )}
-//             {interviewsArray.length > 0 && (
-//                 <Chip className={classes.chip} variant="outlined" color="primary" size="small" label="Interviewed" />
-//             )}
-//         </div>
-//     );
-// };
-
 const ContactsResumesTodos = (props) => {
     const { todosLength, resumesLength, contactsLength } = props;
     const classes = useCRTStyles();
@@ -130,20 +94,20 @@ const Application = (props) => {
         _id,
         businessName,
         roleTitle,
-        requirementsNote,
-        notes,
-        postLink,
+        // requirementsNote,
+        // notes,
+        // postLink,
         dateFound,
-        foundWhereNote,
+        // foundWhereNote,
         haveApplied,
         appliedDate,
         interviewsArray,
         haveResearched,
-        haveResearchedNotes,
+        // haveResearchedNotes,
         resumes,
         contacts,
         todos,
-        createdAt,
+        // createdAt,
     } = props.applicationData;
 
     const statusDate = parseDate(
@@ -155,11 +119,6 @@ const Application = (props) => {
             <CardActionArea component={Link} to={'/applications/' + _id}>
                 <CardHeader
                     avatar={<Avatar className={classes.avatarColour}>{businessName[0]}</Avatar>}
-                    // action={
-                    //     <IconButton aria-label="options">
-                    //         <MoreVertIcon />
-                    //     </IconButton>
-                    // }
                     title={<Typography variant="subtitle1">{businessName}</Typography>}
                     subheader={
                         <>
@@ -174,16 +133,6 @@ const Application = (props) => {
                     }
                 />
                 <CardContent>
-                    {/* {postLink && (
-                        <Typography className={classes.cardContent} variant="body2" color="textSecondary" component="p">
-                            <a href={postLink}>Link</a>
-                        </Typography>
-                    )} */}
-                    {/* Next Step: */}
-                    {/* <StatusArray
-                        statusArrayClass={classes.statusArray}
-                        {...{ haveApplied, haveResearched, interviewsArray }}
-                    /> */}
                     <ContactsResumesTodos
                         todosLength={todos.length}
                         resumesLength={resumes.length}
@@ -191,21 +140,6 @@ const Application = (props) => {
                     />
                 </CardContent>
             </CardActionArea>
-            {/* <CardActions disableSpacing> */}
-            {/* <Button>View/Edit</Button> */}
-            {/* <IconButton className={classes.rightIcon}>
-                    <FavoriteIcon />
-                </IconButton> */}
-            {/* <IconButton>
-                    <ContactsIcon />
-                </IconButton>
-                <IconButton>
-                    <DescriptionIcon />
-                </IconButton>
-                <IconButton>
-                    <AddAlertIcon />
-                </IconButton> */}
-            {/* </CardActions> */}
         </Card>
     );
 };

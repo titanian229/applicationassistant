@@ -1,21 +1,10 @@
-import React, { useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Avatar,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    IconButton,
-} from '@material-ui/core';
+import React from 'react';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
-import DeleteIcon from '@material-ui/icons/Delete';
 import formatDate from '../../utils/formatDate';
 import AssetListItem from '../AssetListItem';
 
 const TodoListItem = (props) => {
-    const { _id, name, date, handleRemove } = props;
+    const { name, date } = props;
     return (
         <AssetListItem
             primary={name}

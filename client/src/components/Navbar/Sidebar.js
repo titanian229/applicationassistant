@@ -78,12 +78,6 @@ const Sidebar = (props) => {
                         </ListItemIcon>
                         <ListItemText primary="Log out" classes={{ primary: classes.sidebarItemText }} />
                     </ListItem>
-
-                    {/* <ListItem button component={Link} to="/overview" className={classes.listItem}>
-                            <ListItemIcon><HomeIcon /></ListItemIcon>
-                            <ListItemText primary="Overview" />
-                        </ListItem>
-                         */}
                 </List>
             </div>
         </SwipeableDrawer>

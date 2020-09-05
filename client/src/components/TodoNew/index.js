@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
-    Typography,
     Dialog,
     DialogTitle,
     DialogActions,
     DialogContent,
     DialogContentText,
-    Button,
     Grid,
 } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import InputField from '../InputField';
-import changeHandler from '../../utils/handleChange';
-import API from '../../utils/API';
 import { useGlobalStore } from '../GlobalStore';
 import ConfirmationButtons from '../ConfirmationButtons';
 
@@ -28,8 +23,8 @@ const TodoNew = (props) => {
 
     // TODO add the associated contact or application in whatever element creates this component
     const [values, setValues] = useState(defaultValues);
+    const [, , { sendMessage, changeHandler }] = useGlobalStore();
     const handleChange = changeHandler(values, setValues);
-    const [, , { sendMessage }] = useGlobalStore();
 
     useEffect(() => {
         if (!todo) return
@@ -40,6 +35,7 @@ const TodoNew = (props) => {
             // TODO check on the DB update route that removal of date is removing date
             setValues({ ...defaultValues, ...todo });
         }
+        // eslint-disable-next-line
     }, [todo]);
 
     const handleClose = () => {
@@ -51,7 +47,6 @@ const TodoNew = (props) => {
     const handleSave = async () => {
         const todoValues = JSON.parse(JSON.stringify(values));
         if (todoValues.name === '') {
-            // dispatch({ do: 'displayMessage', message: { text: 'Todo must have text', type: 'warning' } });
             sendMessage('Todo must not be empty', { variant: 'error', key: 'todotextmissing' });
             return;
         }
@@ -60,15 +55,6 @@ const TodoNew = (props) => {
         saveTodo(todoValues);
         setValues(defaultValues);
 
-        // dispatch({do: 'setLoading', loading: true})
-        // const serverResponse = await API.post('/api/todos', todoValues)
-        // const serverUp = processServerResponse(serverResponse)
-        // dispatch({do: 'setLoading', loading: false})
-        // if (serverUp === false) return
-        // if (serverResponse.todo){
-        //     saveTodo(serverResponse.todo);
-        //     setValues(defaultValues);
-        // }
     };
 
     const handleDelete = () => {

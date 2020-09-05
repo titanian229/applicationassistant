@@ -1,31 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {
-    Typography,
-    TextField,
-    Button,
-    Avatar,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    DialogTitle,
-    Dialog,
-} from '@material-ui/core';
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText, DialogTitle, Dialog } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import AddIcon from '@material-ui/icons/Add';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import InputField from '../InputField';
 
-import changeHandler from '../../utils/handleChange';
-// import API from '../../utils/API'
 import { useGlobalStore } from '../GlobalStore';
 
-const useStyles = makeStyles((theme) => ({}));
 
 const ContactChooser = (props) => {
-    const classes = useStyles();
     const { open, onClose } = props;
     const [contacts, setContacts] = useState([]);
     const [, , { loadResource, API }] = useGlobalStore();
@@ -36,9 +17,10 @@ const ContactChooser = (props) => {
 
     useEffect(() => {
         if (open && contacts.length === 0) {
-            console.log('Use effect called, no contacts present so dialog skipped to add contact')
+            console.log('Use effect called, no contacts present so dialog skipped to add contact');
             onClose('addContact');
         }
+        // eslint-disable-next-line
     }, [open]);
 
     const handleListItemClick = (value) => {
@@ -47,22 +29,18 @@ const ContactChooser = (props) => {
 
     const fetchContacts = async () => {
         loadResource(async () => API.getContacts(), 'contacts', setContacts, false);
-        // const serverReturn = await API.getContacts();
-
-        // if (!serverReturn) {
-        //     console.log('error fetching contacts');
-        //     return;
-        // }
-        // if (serverReturn.error || !serverReturn.contacts) {
-        //     console.log('error fetching contacts');
-        //     return;
-        // }
-
-        // setContacts(serverReturn.contacts);
     };
 
     useEffect(() => {
+        if (open === true) {
+            fetchContacts();
+        }
+        // eslint-disable-next-line
+    }, [open]);
+
+    useEffect(() => {
         fetchContacts();
+        // eslint-disable-next-line
     }, []);
 
     return (

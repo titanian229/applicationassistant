@@ -65,7 +65,7 @@ const ContactListSection = (props) => {
     const [contactViewOpen, setContactViewOpen] = useState(false);
     const [viewContactItem, setViewContactItem] = useState({});
     const [editContactItem, setEditContactItem] = useState({});
-    const [, dispatch, { processServerResponse, API, confirmAction }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, API }] = useGlobalStore();
     const avatarClasses = useAvatarStyles();
 
     useEffect(() => {
@@ -100,24 +100,7 @@ const ContactListSection = (props) => {
             applicationParent.associateContact(contact);
         }
         refreshContacts();
-
-        // let newContacts = contacts;
-        // if (!contact._id) contact._id = newContacts.length + 1;
-
-        // newContacts = newContacts.filter((existingContact) => existingContact._id !== contact._id);
-        // // if (contacts.map((contact) => contact._id).includes(contact._id)) return;
-        // newContacts.push(contact);
-        // updateContacts(newContacts);
     };
-
-    // const removeContact = (contactID) => {
-    //     if (applicationParent){
-    //         dissociateContact(contactID)
-    //     }
-    //     // let newContacts = contacts;
-    //     // newContacts = newContacts.filter((contact) => contact._id !== contactID);
-    //     // updateContacts(newContacts);
-    // };
 
     const viewContact = (contact) => {
         setViewContactItem(contact);
@@ -143,13 +126,8 @@ const ContactListSection = (props) => {
         const serverResponse = await API.deleteContact(contactID);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
-        if (serverUp == false) return;
+        if (serverUp === false) return;
         refreshContacts();
-    };
-
-    const handleDelete = (contact) => {
-        console.log("handle delete clicked", contact)
-        //() => deleteContact(contact._id)
     };
 
     const handleAdd = () => {

@@ -1,19 +1,9 @@
-import React, { useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Avatar,
-    ListItemAvatar,
-    ListItemSecondaryAction,
-    IconButton,
-} from '@material-ui/core';
+import React from 'react';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AssetListItem from '../AssetListItem';
 
 const ResumeListItem = (props) => {
-    const { resume, handleRemove, viewResume } = props;
+    const { resume, viewResume } = props;
     const { name, notes } = resume
 
     const viewItem = () => {

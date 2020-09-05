@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core';
 import { useGlobalStore } from '../GlobalStore';
 
-const ConfirmationDialog = (props) => {
+const ConfirmationDialog = () => {
     // const { open, handleClose, dialogText, confirmationText } = props;
     // const { handleConfirm, dialogText, confirmationText } = props;
     const [globalStore, dispatch] = useGlobalStore();
