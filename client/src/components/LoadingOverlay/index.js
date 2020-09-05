@@ -3,7 +3,7 @@ import React from 'react';
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useGlobalStore } from '../components/GlobalStore';
+import { useGlobalStore } from '../GlobalStore';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {

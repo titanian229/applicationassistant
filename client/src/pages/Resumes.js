@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-    // Typography,
+    Typography,
     Box,
     // Collapse,
     // IconButton,
@@ -48,6 +48,7 @@ const Resumes = () => {
 
     return (
         <Grid container direction="column">
+            <Typography variant='h4' align='center'>Resumes</Typography>
             <Box padding={2}>
                 <ResumeListSection resumes={resumes} refreshResumes={getResumes} />
             </Box>

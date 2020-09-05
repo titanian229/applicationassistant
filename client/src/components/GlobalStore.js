@@ -3,7 +3,7 @@ import React, { useContext, useReducer, createContext } from 'react';
 // import processServerResponse from '../utils/processServerResponse';
 import { useSnackbar } from 'notistack';
 
-import { handleChange as changeHandler, formatDate, API } from '../utils';
+import { handleChange as changeHandler, formatDate, API, keyCatcher } from '../utils';
 
 const defaultConfirmationDialog = {
     open: false,
@@ -93,6 +93,7 @@ const sharedFunctions = {
     formatDate,
     changeHandler,
     API,
+    keyCatcher,
 };
 
 const formatMessage = (message, variant) => {

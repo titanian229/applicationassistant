@@ -14,10 +14,12 @@ import NewApplication from './pages/NewApplication';
 import Contacts from './pages/Contacts';
 import Contact from './pages/Contact'
 import Resumes from './pages/Resumes'
+import Todos from './pages/Todos'
 import Message from './components/Message';
 import Home from './pages/Home';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import { GlobalStore } from './components/GlobalStore';
+
 // primary: {
 //     main: '#820263',
 //     light: '#CC9BC0',
@@ -143,6 +145,9 @@ function App() {
                                 </Route>
                                 <Route exact path="/resumes">
                                     <Resumes />
+                                </Route>
+                                <Route exact path="/todos">
+                                    <Todos />
                                 </Route>
                             </Switch>
                         </Router>
