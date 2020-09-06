@@ -4,7 +4,7 @@ import formatDate from '../../utils/formatDate';
 import AssetListItem from '../AssetListItem';
 
 const TodoListItem = (props) => {
-    const { name, date } = props;
+    const { name, date } = props.todo;
     return (
         <AssetListItem
             primary={name}
@@ -12,6 +12,7 @@ const TodoListItem = (props) => {
             icon={<AddAlertIcon />}
             removeText="Delete Todo?"
             deleteDialogDetails={{ text: 'Delete Todo?', confirmText: 'Delete' }}
+            asset={props.todo}
             {...props}
         />
     );

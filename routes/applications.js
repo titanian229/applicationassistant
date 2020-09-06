@@ -105,7 +105,26 @@ module.exports = (router) => {
                 return;
             }
 
-            const application = await db.Application.findByIdAndUpdate({ _id }, body, { new: true })
+            const applicationData = body
+
+            // if (interviewsArray) {
+                
+            // }
+            if (applicationData.todos) {
+                // Need to check if they're new or not, if new then I need to create them first using the application ID I have
+                let newTodos = applicationData.todos.filter((todo) => todo._id === undefined);
+                newTodos = await Promise.all(
+                    newTodos.map((todo) => db.Todo.create({ ...todo, parentApplication: _id }))
+                );
+                let oldTodos = applicationData.todos.filter((todo) => todo._id !== undefined);
+                applicationData.todos = newTodos.concat(oldTodos);
+            }
+            // if (contacts) {
+            // }
+            // if (resumes) {
+            // }
+
+            const application = await db.Application.findByIdAndUpdate({ _id }, applicationData, { new: true })
                 .populate('contacts')
                 .populate('todos')
                 .populate('resumes');

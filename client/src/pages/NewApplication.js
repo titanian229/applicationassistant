@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
     Typography,
@@ -44,6 +44,8 @@ import AddButton from '../components/AddButton';
 
 import ResumeListSection from '../components/ResumeListSection';
 import ContactListSection from '../components/ContactListSection';
+
+import LoadingOverlay from '../components/LoadingOverlay';
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -115,6 +117,7 @@ const useStyles = makeStyles((theme) => ({
 const NewApplication = () => {
     const classes = useStyles();
     const history = useHistory();
+    const { id } = useParams();
     const defaultValues = {
         businessName: '',
         roleTitle: '',
@@ -139,15 +142,24 @@ const NewApplication = () => {
 
     const [todoNewOpen, setTodoNewOpen] = useState(false);
     const [expandedAccordion, setExpandedAccordion] = useState('primary');
-    const [, dispatch, { processServerResponse, API, changeHandler }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, API, changeHandler, loadResource }] = useGlobalStore();
     const handleChange = changeHandler(values, setValues);
+
+    useEffect(() => {
+        if (id) {
+            console.log('ID Change UseEffect called', id);
+            loadResource(async () => API.getApplication(id), 'application', setExistingApplicationValues);
+        }
+    }, [id]);
+
+    const setExistingApplicationValues = (application) => {
+        setValues({ ...values, ...application });
+    };
 
     const handleReset = () => {
         // TODO add confirmation before wipe
         setValues(defaultValues);
     };
-
-   
 
     // Todos
     const saveTodo = (todo) => {
@@ -159,9 +171,10 @@ const NewApplication = () => {
         setValues({ ...values, todos });
     };
 
-    const removeTodo = (todoID) => {
+    const removeTodo = (todo) => {
+        console.log('removeTodo -> todoID', todo);
         let todos = values.todos;
-        todos = todos.filter((todo) => todo._id !== todoID);
+        todos = todos.filter((existingTodo) => existingTodo._id !== todo._id);
         setValues({ ...values, todos });
     };
 
@@ -189,18 +202,20 @@ const NewApplication = () => {
         let applicationData = JSON.parse(JSON.stringify(values));
         // Removing the temporary IDs created, so they're replaced on the server by UUIDs.
         applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
-            delete interview._id;
+            if (Number.isInteger(interview._id)) delete interview._id;
             return interview;
         });
         applicationData.todos = applicationData.todos.map((todo) => {
-            delete todo._id;
+            if (Number.isInteger(todo._id)) delete todo._id;
             return todo;
         });
         applicationData.resumes = applicationData.resumes.map((resume) => ({ _id: resume._id }));
         applicationData.contacts = applicationData.contacts.map((contact) => ({ _id: contact._id }));
 
         dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.post('/api/applications', applicationData);
+        const serverResponse = id
+            ? await API.updateApplication(id, applicationData)
+            : await API.post('/api/applications', applicationData);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
         if (serverUp === false) return;
@@ -229,7 +244,6 @@ const NewApplication = () => {
 
     return (
         <div>
-           
             <Grid container direction="column">
                 <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <TextField
@@ -360,7 +374,7 @@ const NewApplication = () => {
                                 handleCancel={() => setShowAddInterview(false)}
                             />
                         )}
-                       
+
                         {!showAddInterview && <AddButton onClick={() => setShowAddInterview(true)} />}
                     </Grid>
                 </AccordionDetails>
@@ -393,7 +407,6 @@ const NewApplication = () => {
                     <Typography variant="h6">Resumes</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                   
                     <ResumeListSection
                         resumes={values.resumes}
                         refreshResumes={() => {}}
@@ -415,7 +428,7 @@ const NewApplication = () => {
                     <Grid container direction="column">
                         <List dense={true}>
                             {values.todos.map((todo, index) => (
-                                <TodoListItem handleRemove={removeTodo} key={index} {...todo} />
+                                <TodoListItem handleRemove={removeTodo} key={index} todo={todo} {...todo} />
                             ))}
                         </List>
                         <AddButton onClick={() => setTodoNewOpen(true)} />
@@ -430,6 +443,7 @@ const NewApplication = () => {
                 </Button>
                 <ResponsiveSave onClick={handleSave} buttonText="Save Application" />
             </Grid>
+            {id && <LoadingOverlay />}
         </div>
     );
 };

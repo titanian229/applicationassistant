@@ -91,7 +91,7 @@ const Application = () => {
         dispatch,
         { processServerResponse, API, formatDate, loadResource, confirmAction },
     ] = useGlobalStore();
-    const history = useHistory()
+    const history = useHistory();
 
     const [currentTab, setCurrentTab] = useState(0);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
@@ -230,6 +230,7 @@ const Application = () => {
 
     const handleEditApplication = () => {
         console.log('application edit clicked');
+        history.push('/editapplication/' + id);
     };
 
     const handleDeleteApplication = async () => {

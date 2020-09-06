@@ -137,6 +137,9 @@ function App() {
                                 <Route exact path="/newapplication">
                                     <NewApplication />
                                 </Route>
+                                <Route exact path="/editapplication/:id">
+                                    <NewApplication />
+                                </Route>
                                 <Route exact path="/contacts">
                                     <Contacts />
                                 </Route>
