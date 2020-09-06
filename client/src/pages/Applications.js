@@ -28,8 +28,8 @@ import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
 import { useGlobalStore } from '../components/GlobalStore';
-import API from '../utils/API';
-import SectionTitle from '../components/SectionTitle'
+import SectionTitle from '../components/SectionTitle';
+import FilterAndSearch from '../components/FilterAndSearch';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -50,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const filterOptions = ['Wishlist', 'Applied', 'Interviewed', 'Heard back'];
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -63,19 +61,25 @@ const MenuProps = {
     },
 };
 
-// TESTING DATA
+const filterOptions = [
+    { name: 'Applied', key: 'applied' },
+    { name: 'Researched', key: 'researched' },
+    { name: 'Interviewed', key: 'interviewed' },
+    { name: 'Has Todos', key: 'todos' },
+    { name: 'Heard back', key: 'heardBack' },
+];
 
 const Applications = (props) => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
-    const [, , { loadResource }] = useGlobalStore();
+    const [, , { loadResource, API }] = useGlobalStore();
     const emptyValues = {
         search: '',
         filter: [],
     };
     const [values, setValues] = useState(emptyValues);
     const [applicationData, setApplicationData] = useState([]);
-
+    const [filteredApplications, setFilteredApplications] = useState(null);
     // const fetchApplications = async () => {
     //     loadResource(async () => API.getApplications(), 'applications', setApplicationData)
     // };
@@ -98,14 +102,72 @@ const Applications = (props) => {
         }
     };
 
+    const extractNames = (keysArray) => {
+        console.log('keysArray', keysArray);
+        console.log(
+            'index, item',
+            filterOptions.map((option) => option.key)
+        );
+
+        keysArray.forEach((key) => {
+            const index = filterOptions.map((option) => option.key).indexOf(key);
+            console.log('extractNames -> index', index);
+            console.log('index value', keysArray[index]);
+        });
+
+        let ret = keysArray.map((key) => filterOptions[filterOptions.map((option) => option.key).indexOf(key)].name);
+        console.log('extractNames -> ret', ret);
+        return ret;
+    };
+
+    const filterApplicationsTags = (applications, filter) => {
+        console.log('filter function called in parent', filter);
+        let filteredApplications = applications;
+
+        if (!filter) {
+            return filteredApplications;
+        }
+
+        let filterKeys = filter.map(
+            (filterValue) => filterOptions[filterOptions.map((option) => option.name).indexOf(filterValue)].key
+        );
+
+        if (filterKeys.includes('applied')) {
+            filteredApplications = filteredApplications.filter((application) => application.haveApplied === true);
+        }
+        if (filterKeys.includes('researched')) {
+            filteredApplications = filteredApplications.filter((application) => application.haveResearched === true);
+        }
+        if (filterKeys.includes('interviewed')) {
+            filteredApplications = filteredApplications.filter((application) => application.interviewsArray.length > 0);
+        }
+        if (filterKeys.includes('todos')) {
+            filteredApplications = filteredApplications.filter((application) => application.todos.length > 0);
+        }
+        if (filterKeys.includes('heardBack')) {
+            filteredApplications = filteredApplications.filter((application) => application.heardBack === true);
+        }
+
+        return filteredApplications;
+    };
+
     return (
         <div>
             <Fab component={Link} to="/newapplication" className={classes.fab} color="primary" aria-label="add">
                 <AddIcon />
             </Fab>
-            <SectionTitle title='Applications' />
+            <SectionTitle title="Applications" />
             <div className={classes.filterHeader}>
-                <TextField
+                <FilterAndSearch
+                    assets={applicationData}
+                    setAssets={setFilteredApplications}
+                    filterOptions={filterOptions}
+                    filterOptionsFunction={filterApplicationsTags}
+                    // sortOptions={sortOptions}
+                    // sortOptionChoice={extractIndex(sortMethod.key)}
+                    // sortSetter={sortMethodSetter}
+                />
+                {/* <TextField
                     className={classes.searchField}
                     fullWidth
                     // focused
@@ -147,11 +209,11 @@ const Applications = (props) => {
                             ))}
                         </Select>
                     </FormControl>
-                </Grid>
+                </Grid> */}
             </div>
             <Divider />
             <Grid container className={classes.applicationsContainer}>
-                {applicationData.map((application) => (
+                {(filteredApplications !== null ? filteredApplications : applicationData).map((application) => (
                     <Application applicationData={application} key={application._id} />
                 ))}
             </Grid>

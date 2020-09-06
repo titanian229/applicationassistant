@@ -22,6 +22,7 @@ import {
 // import ContactListItem from '../components/ContactListItem';
 import ContactListSection from '../components/ContactListSection';
 import SectionTitle from '../components/SectionTitle';
+import FilterAndSearch from '../components/FilterAndSearch';
 
 import { useGlobalStore } from '../components/GlobalStore';
 
@@ -40,6 +41,7 @@ const Contacts = () => {
     // On click of contact bring to view page for that contact, that has edit button to change things.
     const [globalStore, , { API, loadResource }] = useGlobalStore();
     const [contacts, setContacts] = useState([]);
+    const [filteredContacts, setFilteredContacts] = useState(null)
     const classes = useStyles();
 
     useEffect(() => {
@@ -56,7 +58,14 @@ const Contacts = () => {
             <SectionTitle title="Contacts" />
 
             <Box padding={2}>
-                <ContactListSection contacts={contacts} refreshContacts={getContacts} />
+                <FilterAndSearch
+                    assets={contacts}
+                    setAssets={setFilteredContacts}
+                    // sortOptions={sortOptions}
+                    // sortOptionChoice={extractIndex(sortMethod.key)}
+                    // sortSetter={sortMethodSetter}
+                />
+                <ContactListSection contacts={filteredContacts !== null ? filteredContacts : contacts} refreshContacts={getContacts} />
             </Box>
             <Backdrop className={classes.backdrop} open={globalStore.loading}>
                 <CircularProgress color="inherit" />

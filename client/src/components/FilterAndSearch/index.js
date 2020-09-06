@@ -17,8 +17,9 @@ import {
     ListItemText,
     FormControl,
     FormHelperText,
+    Chip,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
@@ -38,6 +39,16 @@ const useStyles = makeStyles((theme) => ({
         // marginBottom: theme.spacing(1),
         margin: theme.spacing(1),
     },
+    chip: {
+        margin: 2,
+    },
+    chipLabel: {
+        color: theme.palette.getContrastText(theme.palette.primary.main),
+        fontSize: 11,
+    },
+    button: {
+        margin: theme.spacing(1),
+    },
 }));
 
 const ITEM_HEIGHT = 48;
@@ -51,29 +62,57 @@ const MenuProps = {
     },
 };
 
+const getStyles = (filterOption, filterOptionChoices, theme) => {
+    return {
+        fontWeight:
+            filterOptionChoices.indexOf(filterOption) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+};
+
 const defaultValues = {
     searchField: '',
     completed: false,
+    filters: [],
 };
 
 const FilterAndSearch = (props) => {
     const [, , { changeHandler, keyCatcher }] = useGlobalStore();
     const [values, setValues] = useState(defaultValues);
     const classes = useStyles();
+    const theme = useTheme();
     const handleChange = changeHandler(values, setValues);
 
-    const { assets, setAssets, sortOptionChoice, sortOptions, sortSetter } = props;
+    const {
+        assets,
+        setAssets,
+        sortOptionChoice,
+        sortOptions,
+        sortSetter,
+        filterOptions,
+        filterOptionsFunction,
+    } = props;
 
     const onEnter = () => {
-        filterAssets(values.searchField);
+        filterAssets();
     };
 
-    const filterAssets = (search = '') => {
-        let searchText = search.toLowerCase().trim();
-        console.log(searchText);
+    const filterAssets = (resetCalled = false) => {
+        if (resetCalled === true) {
+            console.log('reset');
+            setAssets(assets);
+            return;
+        }
+
+        let searchText = values.searchField.toLowerCase().trim();
         let filteredAssets = assets;
 
-        if (!search) {
+        if (filterOptions) {
+            filteredAssets = filterOptionsFunction(filteredAssets, values.filters);
+        }
+
+        if (!searchText) {
             setAssets(filteredAssets);
             return;
         }
@@ -82,9 +121,7 @@ const FilterAndSearch = (props) => {
             let filterMatch = false;
 
             Object.keys(asset).forEach((key) => {
-                // console.log(key, value);
                 const value = asset[key];
-                console.log(value, typeof value, key);
                 if (key[0] === '_' || typeof value !== 'string') return;
 
                 // TODO consider checking each term individually
@@ -96,6 +133,15 @@ const FilterAndSearch = (props) => {
 
         filteredAssets = filteredAssets.filter(filterFunction);
         setAssets(filteredAssets);
+    };
+
+    const handleFilterChange = (event) => {
+        setValues({ ...values, filters: event.target.value });
+    };
+
+    const resetFilter = () => {
+        setValues({ ...values, filters: [], searchField: '' });
+        filterAssets(true);
     };
 
     return (
@@ -151,27 +197,56 @@ const FilterAndSearch = (props) => {
                                     ))}
                                 </Select>
                             </FormControl>
-                            {/* <FormControl className={classes.select} variant="outlined">
-                                <InputLabel id="filter-selection">Filter</InputLabel>
+                        </>
+                    )}
+                    {filterOptions && (
+                        <>
+                            <FormControl className={classes.margin}>
+                                <InputLabel id="multiple-filter-label">Filter</InputLabel>
                                 <Select
-                                    labelId="filter-selection"
-                                    id="filter-select"
-                                    // variant="outlined"
-                                    value={sortOptionChoice}
-                                    onChange={handleSortChange}
-                                    input={<Input />}
+                                    labelId="multiple-filter-label"
+                                    id="multiple-filter"
+                                    multiple
+                                    value={values.filters}
+                                    onChange={handleFilterChange}
+                                    input={<Input id="multiple-filter-input" />}
+                                    renderValue={(selected) => (
+                                        <div className={classes.chips}>
+                                            {selected.map((value) => (
+                                                <Chip
+                                                    key={value}
+                                                    label={value}
+                                                    className={classes.chip}
+                                                    color="primary"
+                                                    size="small"
+                                                    classes={{ label: classes.chipLabel }}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
                                     MenuProps={MenuProps}
                                 >
-                                    {sortOptions.map((sortOption) => (
-                                        <MenuItem key={sortOption.value} value={sortOption.value}>
-                                            <Checkbox checked={sortOption === sortOptionChoice} />
-                                            <ListItemText primary={sortOption.name} />
+                                    {filterOptions.map((filterOption) => (
+                                        <MenuItem
+                                            key={filterOption.key}
+                                            value={filterOption.name}
+                                            style={getStyles(filterOption.name, values.filters, theme)}
+                                        >
+                                            {filterOption.name}
                                         </MenuItem>
                                     ))}
                                 </Select>
-                            </FormControl> */}
+                            </FormControl>
                         </>
                     )}
+                    <Grid container justify="center" className={classes.margin}>
+                        <Button className={classes.button} onClick={resetFilter}>
+                            Reset Filter
+                        </Button>
+                        <Button className={classes.button} onClick={filterAssets}>
+                            Filter
+                        </Button>
+                    </Grid>
                 </Grid>
             </Box>
         </Paper>
