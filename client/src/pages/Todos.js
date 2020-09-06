@@ -33,7 +33,7 @@ import SectionTitle from '../components/SectionTitle';
 const sortOptions = [
     { name: 'Application', key: 'applicationTitle' },
     { name: 'Date', key: 'date' },
-    { name: 'Completed', value: 'completed' },
+    { name: 'Completed', key: 'completed' },
 ];
 
 const Todos = () => {
@@ -50,6 +50,15 @@ const Todos = () => {
         //eslint-disable-next-line
     }, []);
 
+    const sortMethodSetter = (event) => {
+        const index = event.target.value
+        setSortMethod(sortOptions[index])
+    }
+
+    const extractIndex = (item) => {
+        return sortOptions.map(option => option.key).indexOf(item)
+    }
+
     return (
         <Grid container direction="column">
             <SectionTitle title="Todos" />
@@ -58,7 +67,8 @@ const Todos = () => {
                     assets={todos}
                     setAssets={setFilteredTodos}
                     sortOptions={sortOptions}
-                    sortSetter={setSortMethod}
+                    sortOptionChoice={extractIndex(sortMethod.key)}
+                    sortSetter={sortMethodSetter}
                 />
                 {/* <List dense>
                     {todos.map((todo) => (

@@ -88,10 +88,12 @@ const TodoListSection = (props) => {
         let unsortedTodos = [];
 
         todos.forEach((todo) => {
-            if (!todo[sortMethod]) {
+            if (todo[sortMethod] === undefined || todo[sortMethod] === '' || todo[sortMethod] === null) {
+                console.log('unsorted', todo, sortMethod, todo[sortMethod])
                 unsortedTodos.push(todo);
                 return;
             }
+            console.log(todo)
 
             let sortValue = todo[sortMethod];
             if (sortMethod === 'date') sortValue = formatDate(sortValue);
@@ -141,7 +143,7 @@ const TodoListSection = (props) => {
             {/* {todos.map((todo) => (
                 <TodoListItemToggle key={todo._id} viewTodo={viewTodo} {...todo} />
             ))} */}
-            {unsortedTodos && <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} />}
+            {unsortedTodos.length > 0 && <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} />}
         </List>
     );
 };

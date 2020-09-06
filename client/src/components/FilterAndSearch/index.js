@@ -10,6 +10,13 @@ import {
     InputAdornment,
     TextField,
     FormControlLabel,
+    InputLabel,
+    Select,
+    Input,
+    MenuItem,
+    ListItemText,
+    FormControl,
+    FormHelperText,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -20,12 +27,29 @@ import { useGlobalStore } from '../GlobalStore';
 
 const useStyles = makeStyles((theme) => ({
     margin: {
-        margin: theme.spacing(1),
+        margin: theme.spacing(1, 0, 0, 0),
     },
     textField: {
         // width: '100%',
     },
+    select: {
+        // width: '100%',
+        // marginTop: theme.spacing(1),
+        // marginBottom: theme.spacing(1),
+        margin: theme.spacing(1),
+    },
 }));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
 
 const defaultValues = {
     searchField: '',
@@ -38,7 +62,7 @@ const FilterAndSearch = (props) => {
     const classes = useStyles();
     const handleChange = changeHandler(values, setValues);
 
-    const { assets, setAssets } = props;
+    const { assets, setAssets, sortOptionChoice, sortOptions, sortSetter } = props;
 
     const onEnter = () => {
         filterAssets(values.searchField);
@@ -62,7 +86,6 @@ const FilterAndSearch = (props) => {
                 const value = asset[key];
                 console.log(value, typeof value, key);
                 if (key[0] === '_' || typeof value !== 'string') return;
-                console.log('Passed to check', key, value);
 
                 // TODO consider checking each term individually
                 if (value.toLowerCase().trim().includes(searchText)) filterMatch = true;
@@ -82,7 +105,7 @@ const FilterAndSearch = (props) => {
                     <TextField
                         label="Search"
                         id="search-field"
-                        variant='outlined'
+                        variant="outlined"
                         className={clsx(classes.margin, classes.textField)}
                         value={values.searchField}
                         onChange={handleChange('searchField', 'text')}
@@ -109,6 +132,46 @@ const FilterAndSearch = (props) => {
                             label="Hide Completed"
                         />
                     </Grid> */}
+                    {sortOptions && (
+                        <>
+                            <FormControl className={classes.margin} variant="outlined">
+                                <FormHelperText>Sort</FormHelperText>
+                                {/* <InputLabel id="sort-selection-label">Sort</InputLabel> */}
+                                <Select
+                                    labelId="sort-selection-label"
+                                    id="sort-selection"
+                                    variant="outlined"
+                                    value={sortOptionChoice}
+                                    onChange={sortSetter}
+                                >
+                                    {sortOptions.map((sortOption, index) => (
+                                        <MenuItem key={sortOption.key} value={index}>
+                                            {sortOption.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            {/* <FormControl className={classes.select} variant="outlined">
+                                <InputLabel id="filter-selection">Filter</InputLabel>
+                                <Select
+                                    labelId="filter-selection"
+                                    id="filter-select"
+                                    // variant="outlined"
+                                    value={sortOptionChoice}
+                                    onChange={handleSortChange}
+                                    input={<Input />}
+                                    MenuProps={MenuProps}
+                                >
+                                    {sortOptions.map((sortOption) => (
+                                        <MenuItem key={sortOption.value} value={sortOption.value}>
+                                            <Checkbox checked={sortOption === sortOptionChoice} />
+                                            <ListItemText primary={sortOption.name} />
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl> */}
+                        </>
+                    )}
                 </Grid>
             </Box>
         </Paper>
