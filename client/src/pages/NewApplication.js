@@ -209,7 +209,7 @@ const NewApplication = () => {
             setTimeout(() => {
                 console.log('SUCCESS MOVING TO NEXT PAGE');
                 history.push('/applications');
-            }, 4000);
+            }, 2000);
         }
     };
 

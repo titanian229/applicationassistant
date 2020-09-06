@@ -158,16 +158,23 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    // router.delete('/api/applications', async ({ headers }, res) => {
-    //     try {
-    //         // const { session } = headers;
+    router.delete('/api/applications/:_id', async ({ headers, params: { _id } }, res) => {
+        try {
+            // const { session } = headers;
 
-    //         res.status(200).send('Route not yet implemented');
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
+            if (!_id) {
+                res.status(400).send({ error: 'No application ID included in delete request' });
+                return;
+            }
+
+            const application = await db.Application.findByIdAndDelete({ _id });
+
+            res.status(200).send({ message: `Application for ${application.businessName} deleted`, success: true });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
     // router.get('/api/applications', async ({ headers }, res) => {
     //     try {
     //         // const { session } = headers;

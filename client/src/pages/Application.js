@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Backdrop, CircularProgress, Typography, Grid, Paper, Box, Divider, Tabs, Tab, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
@@ -14,6 +14,8 @@ import TodoNew from '../components/TodoNew';
 
 import ContactListSection from '../components/ContactListSection';
 import ResumeListSection from '../components/ResumeListSection';
+
+import AssetActionsPanel from '../components/AssetActionsPanel';
 
 import { useGlobalStore } from '../components/GlobalStore';
 
@@ -84,7 +86,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Application = () => {
     let { id } = useParams();
-    const [globalStore, dispatch, { processServerResponse, API, formatDate, loadResource }] = useGlobalStore();
+    const [
+        globalStore,
+        dispatch,
+        { processServerResponse, API, formatDate, loadResource, confirmAction },
+    ] = useGlobalStore();
+    const history = useHistory()
 
     const [currentTab, setCurrentTab] = useState(0);
     const [todoNewOpen, setTodoNewOpen] = useState(false);
@@ -221,6 +228,25 @@ const Application = () => {
     //     }
     // };
 
+    const handleEditApplication = () => {
+        console.log('application edit clicked');
+    };
+
+    const handleDeleteApplication = async () => {
+        console.log('application delete clicked');
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.deleteApplication(id);
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        if (serverResponse.success) {
+            setTimeout(() => {
+                console.log('SUCCESS MOVING TO APPLICATIONS');
+                history.push('/applications');
+            }, 2000);
+        }
+    };
+
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
             <Paper elevation={12} className={classes.header}>
@@ -234,6 +260,13 @@ const Application = () => {
             <Paper elevation={4} className={classes.main}>
                 <Box padding={2}>
                     <Grid container spacing={3}>
+                        <AssetActionsPanel
+                            handleEdit={handleEditApplication}
+                            handleDelete={confirmAction(handleDeleteApplication, {
+                                text: 'Permanently delete application?',
+                                confirmText: 'Delete',
+                            })}
+                        />
                         <Grid item xs={8}>
                             <Box className={classes.section}>
                                 <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />

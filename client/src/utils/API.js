@@ -70,6 +70,7 @@ export default {
     getTodosSorted: async () => getRequest('/api/todos/sorted'),
     getApplications: async () => getRequest('/api/applications'),
     getApplication: async (id) => getRequest('/api/applications/' + id),
+    deleteApplication: async (id) => deleteRequest('/api/applications/' + id),
     getApplicationItems: async (id, itemType) => getRequest(`/api/applications/${id}/${itemType}`),
     toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
     addTodo: async (todo, parentID) => postRequest('/api/todos', { todo, parentID }),

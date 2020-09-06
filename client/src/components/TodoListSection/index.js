@@ -53,7 +53,7 @@ const ApplicationListSection = (props) => {
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+                <List dense component="div" disablePadding>
                     {todos.map((todo) => (
                         <TodoListItemToggle key={todo._id} viewTodo={viewTodo} className={classes.nested} {...todo} />
                     ))}
@@ -136,7 +136,7 @@ const TodoListSection = (props) => {
     // };
 
     return (
-        <List dense>
+        <List>
             {Object.keys(sortedTodos).map((application, index) => (
                 <ApplicationListSection key={index} title={application} todos={sortedTodos[application]} viewTodo={viewTodo} />
             ))}
