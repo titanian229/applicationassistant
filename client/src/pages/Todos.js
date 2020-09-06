@@ -51,13 +51,18 @@ const Todos = () => {
     }, []);
 
     const sortMethodSetter = (event) => {
-        const index = event.target.value
-        setSortMethod(sortOptions[index])
-    }
+        const e = event;
+        if (e === 0) {
+            setSortMethod(sortOptions[0]);
+            return;
+        }
+        const index = e.target.value;
+        setSortMethod(sortOptions[index]);
+    };
 
     const extractIndex = (item) => {
-        return sortOptions.map(option => option.key).indexOf(item)
-    }
+        return sortOptions.map((option) => option.key).indexOf(item);
+    };
 
     return (
         <Grid container direction="column">

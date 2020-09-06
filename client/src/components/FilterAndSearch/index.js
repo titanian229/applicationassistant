@@ -141,6 +141,9 @@ const FilterAndSearch = (props) => {
 
     const resetFilter = () => {
         setValues({ ...values, filters: [], searchField: '' });
+        if (sortOptions){
+            sortSetter(0)
+        }
         filterAssets(true);
     };
 
