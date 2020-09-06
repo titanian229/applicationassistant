@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // import AddIcon from '@material-ui/icons/Add';
 
 import ResumeListSection from '../components/ResumeListSection';
+import SectionTitle from '../components/SectionTitle'
 
 import { useGlobalStore } from '../components/GlobalStore';
 
@@ -48,7 +49,7 @@ const Resumes = () => {
 
     return (
         <Grid container direction="column">
-            <Typography variant='h4' align='center'>Resumes</Typography>
+            <SectionTitle title='Resumes' />
             <Box padding={2}>
                 <ResumeListSection resumes={resumes} refreshResumes={getResumes} />
             </Box>

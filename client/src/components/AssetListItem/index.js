@@ -55,6 +55,7 @@ const AssetListItem = (props) => {
 
     return (
         <ListItem
+            className={props.className || null}
             button={Boolean(handleCheck) || Boolean(viewItem)}
             onClick={(handleCheck && handleCheck) || (viewItem && viewItem) || null}
         >

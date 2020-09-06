@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    title: {
+        marginBottom: theme.spacing(4)
+    }
 }));
 
 const Contact = () => {

@@ -73,7 +73,7 @@ const ResumeListSection = (props) => {
                 ))}
             </List>
             {/* <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button> */}
-            <AddButton onClick={handleAdd} />
+            <AddButton onClick={handleAdd} pageAdd={! Boolean(applicationParent)} />
             <ResumeChooser open={resumesChooserOpen} onClose={saveResume} />
             <ResumeNew
                 open={resumeNewOpen}

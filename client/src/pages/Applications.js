@@ -29,6 +29,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Application from '../components/Application';
 import { useGlobalStore } from '../components/GlobalStore';
 import API from '../utils/API';
+import SectionTitle from '../components/SectionTitle'
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -102,6 +103,7 @@ const Applications = (props) => {
             <Fab component={Link} to="/newapplication" className={classes.fab} color="primary" aria-label="add">
                 <AddIcon />
             </Fab>
+            <SectionTitle title='Applications' />
             <div className={classes.filterHeader}>
                 <TextField
                     className={classes.searchField}

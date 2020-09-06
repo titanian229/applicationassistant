@@ -9,6 +9,7 @@ import {
     Checkbox,
     InputAdornment,
     TextField,
+    FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const defaultValues = {
     searchField: '',
+    completed: false,
 };
 
 const FilterAndSearch = (props) => {
@@ -44,7 +46,7 @@ const FilterAndSearch = (props) => {
 
     const filterAssets = (search = '') => {
         let searchText = search.toLowerCase().trim();
-        console.log(searchText)
+        console.log(searchText);
         let filteredAssets = assets;
 
         if (!search) {
@@ -57,10 +59,10 @@ const FilterAndSearch = (props) => {
 
             Object.keys(asset).forEach((key) => {
                 // console.log(key, value);
-                const value = asset[key]
-                console.log(value, typeof value, key)
+                const value = asset[key];
+                console.log(value, typeof value, key);
                 if (key[0] === '_' || typeof value !== 'string') return;
-                console.log("Passed to check", key, value)
+                console.log('Passed to check', key, value);
 
                 // TODO consider checking each term individually
                 if (value.toLowerCase().trim().includes(searchText)) filterMatch = true;
@@ -74,12 +76,13 @@ const FilterAndSearch = (props) => {
     };
 
     return (
-        <Paper elevation={4}>
+        <Paper elevation={1}>
             <Box padding={1}>
                 <Grid container direction="column" justify="center" alignItems="stretch">
                     <TextField
                         label="Search"
                         id="search-field"
+                        variant='outlined'
                         className={clsx(classes.margin, classes.textField)}
                         value={values.searchField}
                         onChange={handleChange('searchField', 'text')}
@@ -92,6 +95,20 @@ const FilterAndSearch = (props) => {
                             ),
                         }}
                     />
+                    {/* <Grid container direction="row">
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={values.completed}
+                                    className={clsx(classes.margin)}
+                                    onChange={handleChange('completed', 'check')}
+                                    name="Hide Completed"
+                                    color="primary"
+                                />
+                            }
+                            label="Hide Completed"
+                        />
+                    </Grid> */}
                 </Grid>
             </Box>
         </Paper>

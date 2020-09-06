@@ -152,7 +152,7 @@ const ContactListSection = (props) => {
                 ))}
             </List>
             {/* <Button onClick={() => setResumesChooserOpen(true)}>Add Resume</Button> */}
-            <AddButton onClick={handleAdd} />
+            <AddButton onClick={handleAdd} pageAdd={! Boolean(applicationParent)} />
             <ContactChooser open={contactsChooserOpen} onClose={saveContact} />
             <ContactNew
                 open={contactNewOpen}

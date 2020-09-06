@@ -14,14 +14,15 @@ const todoSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        associatedContact: {
+        parentContact: {
             type: Schema.Types.ObjectId,
             ref: 'Contact',
         },
 
-        associatedApplication: {
+        parentApplication: {
             type: Schema.Types.ObjectId,
             ref: 'Application',
+            required: true
         },
     },
     {

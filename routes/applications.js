@@ -62,16 +62,7 @@ module.exports = (router) => {
                 return;
             }
 
-            let todos = [];
-
-            if (fullTodos.length > 0) {
-                // Make the todos, add the ids to an array
-                todos = fullTodos.map((todo) => db.Todo.create(todo));
-                todos = await Promise.all(todos);
-                // todos = todos.map((todo) => ({_id: todo._id}));
-            }
-
-            const application = await db.Application.create({
+            let application = await db.Application.create({
                 businessName,
                 roleTitle,
                 requirementsNote,
@@ -86,8 +77,18 @@ module.exports = (router) => {
                 haveResearchedNotes,
                 resumes,
                 contacts,
-                todos,
             });
+
+            let todos = [];
+
+            if (fullTodos.length > 0) {
+                // Make the todos, add the ids to an array
+                todos = fullTodos.map((todo) => db.Todo.create({ ...todo, parentApplication: application.id }));
+                todos = await Promise.all(todos);
+                // todos = todos.map((todo) => ({_id: todo._id}));
+            }
+
+            application = await db.Application.findByIdAndUpdate({ _id: application._id }, { todos }, { new: true });
 
             res.status(200).send({ message: 'Application saved', application });
             // res.status(200).send({ message: 'Application saved' });

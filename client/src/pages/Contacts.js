@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    // Typography,
+    Typography,
     Box,
     // Collapse,
     // IconButton,
@@ -21,6 +21,7 @@ import {
 // import AddButton from '../components/AddButton';
 // import ContactListItem from '../components/ContactListItem';
 import ContactListSection from '../components/ContactListSection';
+import SectionTitle from '../components/SectionTitle';
 
 import { useGlobalStore } from '../components/GlobalStore';
 
@@ -29,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    title: {
+        marginBottom: theme.spacing(4),
+    },
 }));
 
 const Contacts = () => {
@@ -36,7 +40,7 @@ const Contacts = () => {
     // On click of contact bring to view page for that contact, that has edit button to change things.
     const [globalStore, , { API, loadResource }] = useGlobalStore();
     const [contacts, setContacts] = useState([]);
-    const classes = useStyles()
+    const classes = useStyles();
 
     useEffect(() => {
         getContacts();
@@ -49,6 +53,8 @@ const Contacts = () => {
 
     return (
         <Grid container direction="column">
+            <SectionTitle title="Contacts" />
+
             <Box padding={2}>
                 <ContactListSection contacts={contacts} refreshContacts={getContacts} />
             </Box>
