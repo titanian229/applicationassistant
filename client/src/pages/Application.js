@@ -14,7 +14,7 @@ import TodoNew from '../components/TodoNew';
 
 import ContactListSection from '../components/ContactListSection';
 import ResumeListSection from '../components/ResumeListSection';
-import InterviewListSection from '../components/InterviewListSection'
+import InterviewListSection from '../components/InterviewListSection';
 
 import AssetActionsPanel from '../components/AssetActionsPanel';
 
@@ -50,9 +50,10 @@ const useStyles = makeStyles((theme) => ({
     },
     section: {
         marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
     },
     central: {
-        padding: theme.spacing(0, 2),
+        // padding: theme.spacing(0, 2),
     },
     title: {
         color: theme.palette.primary.dark,
@@ -81,7 +82,11 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     CRTcontainer: {
-        marginTop: theme.spacing(4),
+        // marginTop: theme.spacing(4),
+    },
+    divider: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
     },
 }));
 
@@ -128,7 +133,7 @@ const Application = () => {
         appliedDate,
         interviewsArray,
         haveResearched,
-        // haveResearchedNotes,
+        haveResearchedNotes,
         resumes,
         contacts,
         todos,
@@ -305,7 +310,7 @@ const Application = () => {
                             )}
                         </Grid>
                     </Grid>
-                    <Divider style={{ marginTop: '0.5em', marginBottom: '0.5em' }} />
+                    <Divider className={classes.divider} />
                     <Box className={classes.central}>
                         {notes && (
                             <Box className={classes.section}>
@@ -313,8 +318,15 @@ const Application = () => {
                                 <Typography variant="body2">{notes}</Typography>
                             </Box>
                         )}
+                        {haveResearchedNotes && (
+                            <Box className={classes.section}>
+                                <Typography variant="subtitle2">Research:</Typography>
+                                <Typography variant="body2">{haveResearchedNotes}</Typography>
+                            </Box>
+                        )}
                         {appliedDate && <Typography variant="body2">Applied: {formatDate(appliedDate)}</Typography>}
                         {/* TABS */}
+                        <Divider className={classes.divider} />
                         <Paper elevation={0} className={classes.CRTcontainer}>
                             <Tabs
                                 centered
@@ -366,7 +378,13 @@ const Application = () => {
                                 />
                             </TabItem>
                         </Paper>
-                        <InterviewListSection interviewsArray={interviewsArray} refreshInterviews={refreshItems('interviewsArray')} applicationID={id} />
+                        <Divider className={classes.divider} />
+                        <InterviewListSection
+                            interviewsArray={interviewsArray}
+                            refreshInterviews={refreshItems('interviewsArray')}
+                            applicationID={id}
+                        />
+                        <Divider className={classes.divider} />
                     </Box>
                 </Box>
             </Paper>
