@@ -14,6 +14,7 @@ import TodoNew from '../components/TodoNew';
 
 import ContactListSection from '../components/ContactListSection';
 import ResumeListSection from '../components/ResumeListSection';
+import InterviewListSection from '../components/InterviewListSection'
 
 import AssetActionsPanel from '../components/AssetActionsPanel';
 
@@ -365,6 +366,7 @@ const Application = () => {
                                 />
                             </TabItem>
                         </Paper>
+                        <InterviewListSection interviewsArray={interviewsArray} refreshInterviews={refreshItems('interviewsArray')} applicationID={id} />
                     </Box>
                 </Box>
             </Paper>

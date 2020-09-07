@@ -105,10 +105,10 @@ module.exports = (router) => {
                 return;
             }
 
-            const applicationData = body
+            const applicationData = body;
 
             // if (interviewsArray) {
-                
+
             // }
             if (applicationData.todos) {
                 // Need to check if they're new or not, if new then I need to create them first using the application ID I have
@@ -194,6 +194,56 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
+    router.put(
+        '/api/applications/:applicationID/interviewsArray/:interviewID',
+        async ({ headers, params: { applicationID, interviewID }, body }, res) => {
+            try {
+                // const { session } = headers;
+
+                if (!applicationID || !interviewID) {
+                    res.status(400).send({ error: 'No application ID or interview ID included in delete request' });
+                    return;
+                }
+
+                const application = await db.Application.findByIdAndUpdate(
+                    { _id: applicationID, 'interviewsArray._id': interviewID },
+                    { $set: { 'interviewsArray.$': body } },
+                    { new: true }
+                );
+
+                res.status(200).send({ message: 'Updated interview', application });
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Something went wrong with the server' });
+            }
+        }
+    );
+    router.delete(
+        '/api/applications/:applicationID/interviewsArray/:interviewID',
+        async ({ headers, params: { applicationID, interviewID } }, res) => {
+            try {
+                // const { session } = headers;
+
+                if (!applicationID || !interviewID) {
+                    res.status(400).send({ error: 'No application ID or interview ID included in delete request' });
+                    return;
+                }
+
+                const application = await db.Application.findById({ _id: applicationID });
+                // console.log('application', application.interviewsArray);
+                application.interviewsArray = application.interviewsArray.filter(
+                    (interview) => String(interview._id) !== interviewID
+                );
+                // console.log(application.interviewsArray);
+                const updatedApplication = await application.save();
+
+                res.status(200).send({ message: 'Removed interview', application: updatedApplication });
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Something went wrong with the server' });
+            }
+        }
+    );
     // router.get('/api/applications', async ({ headers }, res) => {
     //     try {
     //         // const { session } = headers;
