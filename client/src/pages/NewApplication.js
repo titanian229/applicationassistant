@@ -52,42 +52,9 @@ import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
+import { Accordion, AccordionSummary } from '../components/Accordion';
+
 import { useGlobalStore } from '../components/GlobalStore';
-
-const Accordion = withStyles({
-    root: {
-        border: '1px solid rgba(0, 0, 0, .125)',
-        boxShadow: 'none',
-        '&:not(:last-child)': {
-            borderBottom: 0,
-        },
-        '&:before': {
-            display: 'none',
-        },
-        '&$expanded': {
-            margin: 'auto',
-        },
-    },
-    expanded: {},
-})(MuiAccordion);
-
-const AccordionSummary = withStyles({
-    root: {
-        backgroundColor: 'rgba(0, 0, 0, .03)',
-        borderBottom: '1px solid rgba(0, 0, 0, .125)',
-        marginBottom: -1,
-        minHeight: 56,
-        '&$expanded': {
-            minHeight: 56,
-        },
-    },
-    content: {
-        '&$expanded': {
-            margin: '12px 0',
-        },
-    },
-    expanded: {},
-})(MuiAccordionSummary);
 
 const useStyles = makeStyles((theme) => ({
     primaryInputBox: {
@@ -121,6 +88,11 @@ const NewApplication = () => {
     const defaultValues = {
         businessName: '',
         roleTitle: '',
+        location: '',
+        colour: 'none',
+        offers: [],
+        companyInfo: '',
+        description: '',
         requirementsNote: '',
         postLink: '',
         dateFound: null,
@@ -160,6 +132,10 @@ const NewApplication = () => {
         // TODO add confirmation before wipe
         setValues(defaultValues);
     };
+
+    const handleCancel = () => {
+        history.push(`/applications/${id || ''}`)
+    }
 
     // Todos
     const saveTodo = (todo) => {
@@ -281,6 +257,14 @@ const NewApplication = () => {
                 </MuiPickersUtilsProvider>
                 <InputField name="foundWhereNote" label="Where was it found?" {...{ values, handleChange }} />
                 <InputField name="postLink" label="Job Posting Link" {...{ values, handleChange }} />
+                <InputField name="location" label="Location" {...{ values, handleChange }} />
+                <InputField
+                    multiline
+                    rows={4}
+                    name="description"
+                    label="Job Description"
+                    {...{ values, handleChange }}
+                />
                 <InputField
                     multiline
                     rows={4}
@@ -288,6 +272,7 @@ const NewApplication = () => {
                     label="Job Requirements"
                     {...{ values, handleChange }}
                 />
+                <InputField multiline rows={4} name="companyInfo" label="Company Info" {...{ values, handleChange }} />
                 <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
                 <InputField multiline rows={4} name="notes" label="Notes" {...{ values, handleChange }} />
                 <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
@@ -438,9 +423,16 @@ const NewApplication = () => {
             </Accordion>
             <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
             <Grid container justify="space-evenly" alignItems="center">
-                <Button onClick={handleReset} variant="contained" color="secondary">
-                    Reset
-                </Button>
+                {!id && (
+                    <Button onClick={handleReset} variant="contained" color="secondary">
+                        Reset
+                    </Button>
+                )}
+                {id && (
+                    <Button onClick={handleCancel} variant="contained" color="secondary">
+                        Cancel
+                    </Button>
+                )}
                 <ResponsiveSave onClick={handleSave} buttonText="Save Application" />
             </Grid>
             {id && <LoadingOverlay />}

@@ -11,12 +11,16 @@ import TabItem from '../components/TabItem';
 import TodoListItemToggle from '../components/TodoListItemToggle';
 import AddButton from '../components/AddButton';
 import TodoNew from '../components/TodoNew';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import ContactListSection from '../components/ContactListSection';
 import ResumeListSection from '../components/ResumeListSection';
 import InterviewListSection from '../components/InterviewListSection';
+import OfferSection from '../components/OfferSection';
 
 import AssetActionsPanel from '../components/AssetActionsPanel';
+
+import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion';
 
 import { useGlobalStore } from '../components/GlobalStore';
 
@@ -88,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2),
     },
+    marginBottom: {
+        marginBottom: theme.spacing(3),
+    },
 }));
 
 const Application = () => {
@@ -106,26 +113,35 @@ const Application = () => {
     const [application, setApplication] = useState({
         businessName: '',
         roleTitle: '',
+        location: '',
+        colour: 'none',
+        offers: [],
+        companyInfo: '',
+        description: '',
         requirementsNote: '',
-        notes: '',
         postLink: '',
-        dateFound: '',
+        dateFound: null,
         foundWhereNote: '',
-        haveApplied: '',
-        appliedDate: '',
+        haveApplied: false,
+        appliedDate: null,
         interviewsArray: [],
-        haveResearched: '',
+        haveResearched: false,
         haveResearchedNotes: '',
         resumes: [],
         contacts: [],
         todos: [],
+        notes: '',
         createdAt: '',
     });
     const {
         businessName,
         roleTitle,
+        location,
+        colour,
+        offers,
+        companyInfo,
+        description,
         requirementsNote,
-        notes,
         postLink,
         dateFound,
         foundWhereNote,
@@ -137,6 +153,7 @@ const Application = () => {
         resumes,
         contacts,
         todos,
+        notes,
         // createdAt,
     } = application;
 
@@ -254,6 +271,48 @@ const Application = () => {
         }
     };
 
+    // OFFERS SECTION
+    const addOffer = async (offer) => {
+        console.log('adding offer', Boolean(offer._id), offer);
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = offer._id
+            ? await API.updateItem(id, offer, 'offers')
+            : await API.associateItem(id, offer, 'push', 'offers');
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (!serverUp) return;
+
+        if (serverResponse.application) {
+            setItems('offers')(serverResponse.application.offers);
+        }
+        if (serverResponse.offers) {
+            setItems('offers')(serverResponse.offers);
+        }
+    };
+
+    const removeOffer = async (offer) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.removeItem(id, offer._id, 'offers');
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (!serverUp) return;
+        if (serverResponse.offers) {
+            setItems('offers')(serverResponse.offers);
+        }
+    };
+
+    const updateOffer = async (offer) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.updateItem(id, offer, 'offers');
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (!serverUp) return;
+
+        if (serverResponse.offers) {
+            setItems('offers')(serverResponse.offers);
+        }
+    };
+
     return (
         <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
             <Paper elevation={12} className={classes.header}>
@@ -278,12 +337,6 @@ const Application = () => {
                             <Box className={classes.section}>
                                 <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />
                             </Box>
-                            {requirementsNote && (
-                                <Box className={classes.section}>
-                                    <Typography variant="subtitle2">Requirements:</Typography>
-                                    <Typography variant="body2">{requirementsNote}</Typography>
-                                </Box>
-                            )}
                         </Grid>
                         <Grid item xs={4}>
                             {(dateFound || foundWhereNote) && (
@@ -301,23 +354,62 @@ const Application = () => {
                                     {foundWhereNote}
                                 </Typography>
                             )}
-                            {postLink && (
-                                <Typography variant="subtitle2" align="right">
-                                    <a href={postLink} alt="Original Post">
-                                        Original Post
-                                    </a>
-                                </Typography>
-                            )}
                         </Grid>
                     </Grid>
                     <Divider className={classes.divider} />
                     <Box className={classes.central}>
+                        <Accordion className={classes.marginBottom}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="job-details-content"
+                                id="job-details-header"
+                            >
+                                <Typography variant="h6">Job and Company Information</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Grid container direction="column" justify="center">
+                                    {description && (
+                                        <Box className={classes.section}>
+                                            <Typography variant="subtitle2">Job Description:</Typography>
+                                            <Typography variant="body2">{description}</Typography>
+                                        </Box>
+                                    )}
+                                    {requirementsNote && (
+                                        <Box className={classes.section}>
+                                            <Typography variant="subtitle2">Requirements:</Typography>
+                                            <Typography variant="body2">{requirementsNote}</Typography>
+                                        </Box>
+                                    )}
+                                    {postLink && (
+                                        <Typography variant="subtitle2">
+                                            <a href={postLink} alt="Original Post">
+                                                Original Post
+                                            </a>
+                                        </Typography>
+                                    )}
+                                    {location && (
+                                        <Box className={classes.section}>
+                                            <Typography variant="subtitle2">Location:</Typography>
+                                            <Typography variant="body2">{location}</Typography>
+                                        </Box>
+                                    )}
+                                    {companyInfo && (
+                                        <Box className={classes.section}>
+                                            <Typography variant="subtitle2">Company Information:</Typography>
+                                            <Typography variant="body2">{companyInfo}</Typography>
+                                        </Box>
+                                    )}
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+
                         {notes && (
                             <Box className={classes.section}>
                                 <Typography variant="subtitle2">Notes:</Typography>
                                 <Typography variant="body2">{notes}</Typography>
                             </Box>
                         )}
+                        {/* TODO add in section to edit notes, send for update */}
                         {haveResearchedNotes && (
                             <Box className={classes.section}>
                                 <Typography variant="subtitle2">Research:</Typography>
@@ -385,6 +477,12 @@ const Application = () => {
                             applicationID={id}
                         />
                         <Divider className={classes.divider} />
+                        <OfferSection
+                            offers={offers}
+                            addOffer={addOffer}
+                            removeOffer={removeOffer}
+                            updateOffer={updateOffer}
+                        />
                     </Box>
                 </Box>
             </Paper>

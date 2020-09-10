@@ -26,6 +26,7 @@ import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 // import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 import StatusArray from '../StatusArray';
+// TODO set the colour based on the value
 
 const useStyles = makeStyles((theme) => ({
     applicationCard: {

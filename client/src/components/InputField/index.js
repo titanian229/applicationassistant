@@ -18,10 +18,10 @@ const InputField = (props) => {
     return (
         <TextField
             className={clsx(classes.inputField, className)}
-            onChange={handleChange(name, type || 'text')}
+            onChange={handleChange(name, 'text')}
             value={values[name]}
             label={label}
-            type="text"
+            type={type || 'text'}
             variant="outlined"
             required={required}
             rows={rows || undefined}

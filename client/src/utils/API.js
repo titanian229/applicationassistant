@@ -102,4 +102,8 @@ export default {
             itemID,
             itemAction,
         }),
+    updateItem: async (applicationID, item, itemType) =>
+        putRequest(`/api/applications/${applicationID}/${itemType}/${item._id}`, item),
+    removeItem: async (applicationID, itemID, itemType) =>
+        deleteRequest(`/api/applications/${applicationID}/${itemType}/${itemID}`),
 };

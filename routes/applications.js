@@ -244,6 +244,76 @@ module.exports = (router) => {
             }
         }
     );
+    router.delete(
+        '/api/applications/:applicationID/:itemType/:itemID',
+        async ({ headers, params: { applicationID, itemType, itemID } }, res) => {
+            try {
+                // const { session } = headers;
+
+                if (!applicationID || !itemType || !itemID) {
+                    res.status(400).send({ error: 'Delete request missing required information' });
+                    return;
+                }
+
+                const application = await db.Application.findById({ _id: applicationID });
+
+                if (!application[itemType]) {
+                    res.status(400).send({ error: 'Delete request for invalid item type' });
+                    return;
+                }
+
+                // console.log('application', application.interviewsArray);
+                application[itemType] = application[itemType].filter((item) => String(item._id) !== itemID);
+                // console.log(application.interviewsArray);
+                const updatedApplication = await application.save();
+
+                res.status(200).send({ message: `Item deleted`, [itemType]: updatedApplication[itemType] });
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Something went wrong with the server' });
+            }
+        }
+    );
+    router.put(
+        '/api/applications/:applicationID/:itemType/:itemID',
+        async ({ headers, params: { applicationID, itemType, itemID }, body }, res) => {
+            try {
+                // const { session } = headers;
+
+                if (!applicationID || !itemID || !itemType) {
+                    res.status(400).send({ error: 'Update request missing information' });
+                    return;
+                }
+
+                const application = await db.Application.findById({ _id: applicationID });
+
+                if (!application[itemType]) {
+                    res.status(400).send({ error: 'Delete request for invalid item type' });
+                    return;
+                }
+
+                application[itemType] = application[itemType].map((item) => {
+                    if (String(item._id) === itemID) {
+                        return body;
+                    }
+                    return item;
+                });
+
+                const newApplication = await application.save()
+
+                // const application = await db.Application.findByIdAndUpdate(
+                //     { _id: applicationID, [`${itemType}._id`]: itemID },
+                //     { $set: { [`${itemType}.$`]: body } },
+                //     { new: true }
+                // );
+
+                res.status(200).send({ message: 'Updated item', [itemType]: newApplication[itemType] });
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Something went wrong with the server' });
+            }
+        }
+    );
     // router.get('/api/applications', async ({ headers }, res) => {
     //     try {
     //         // const { session } = headers;

@@ -11,6 +11,40 @@ const applicationSchema = new Schema(
             type: String,
             required: true,
         },
+        location: {
+            type: String,
+        },
+        colour: {
+            type: String,
+            default: 'none',
+            enum: [
+                'none',
+                'red',
+                'pink',
+                'purple',
+                'deepPurple',
+                'indigo',
+                'blue',
+                'lightBlue',
+                'cyan',
+                'teal',
+                'green',
+                'lightGreen',
+                'lime',
+                'yellow',
+                'amber',
+                'orange',
+                'deepOrange',
+                'brown',
+                'grey',
+                'blueGrey',
+            ],
+        },
+        offers: [
+            { date: { type: Date }, notes: { type: String }, salary: { type: Number }, accepted: { type: Boolean } },
+        ],
+        description: { type: String },
+        companyInfo: { type: String },
         requirementsNote: {
             type: String,
         },
@@ -55,6 +89,10 @@ const applicationSchema = new Schema(
         },
         haveResearchedNotes: {
             type: String,
+        },
+        finalState: {
+            type: String,
+            enum: ['Unknown', 'Accepted', 'Rejected'],
         },
         resumes: [
             {
