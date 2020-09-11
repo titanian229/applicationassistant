@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import {
-    IconButton,
-    AppBar,
-    Toolbar,
-} from '@material-ui/core';
+import { IconButton, AppBar, Toolbar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
 
 import LargeLogo from '../Logo/LargeLogo';
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
     const classes = useStyles();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    // TODO after server side is setup, check for logged in state here
 
     return (
         <AppBar position="fixed">

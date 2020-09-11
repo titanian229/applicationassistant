@@ -21,6 +21,7 @@ import ConfirmationDialog from './components/ConfirmationDialog';
 import { GlobalStore } from './components/GlobalStore';
 import PrivateRoute from './components/PrivateRoute';
 import UserEntry from './pages/UserEntry';
+import Logout from './pages/Logout';
 
 // primary: {
 //     main: '#820263',
@@ -131,6 +132,7 @@ function App() {
                                     <Home />
                                 </Route>
                                 <Route exact path="/login" component={UserEntry} />
+                                <Route exact path="/logout" component={Logout} />
                                 <PrivateRoute exact path="/applications" component={Applications} />
                                 <PrivateRoute path="/applications/:id" component={Application} />
                                 <PrivateRoute exact path="/newapplication" component={NewApplication} />

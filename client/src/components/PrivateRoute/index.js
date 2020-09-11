@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
                 globalStore.isAuthenticated === true ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to={{ pathname: '/login', state: { referrerURL: props.location, test: 'yes' } }} />
+                    <Redirect to={{ pathname: '/login', state: { referrer: props.location.pathname } }} />
                 )
             }
         />

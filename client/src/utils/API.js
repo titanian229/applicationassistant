@@ -1,9 +1,11 @@
 const getRequest = async (url) => {
-    // let ret = await fetch(url)
-    // console.log(ret)
-    // ret = await ret.json()
-    // console.log(ret)
-    return fetch(url)
+    return fetch(url, {
+        method: 'get',
+        headers: {
+            Accept: 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            Session: localStorage.session ? localStorage.session : '',
+        }})
         .then((res) => res.json())
         .catch((err) => console.error(err));
 };
@@ -14,7 +16,7 @@ const putRequest = async (url, body) => {
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
-            // Session: localStorage.session ? localStorage.session : '',
+            Session: localStorage.session ? localStorage.session : '',
         },
         body: JSON.stringify(body),
     })
@@ -28,7 +30,7 @@ const postRequest = async (url, body) => {
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
-            // Session: localStorage.session ? localStorage.session : '',
+            Session: localStorage.session ? localStorage.session : '',
         },
         body: JSON.stringify(body),
     })
@@ -42,7 +44,7 @@ const deleteRequest = async (url) => {
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
-            // Session: localStorage.session ? localStorage.session : '',
+            Session: localStorage.session ? localStorage.session : '',
         },
     })
         .then((result) => result.json())
@@ -56,7 +58,7 @@ export default {
             headers: {
                 Accept: 'application/json, text/plain, */*',
                 'Content-Type': 'application/json',
-                // Session: localStorage.session ? localStorage.session : '',
+                Session: localStorage.session ? localStorage.session : '',
             },
             body: JSON.stringify(body),
         })
