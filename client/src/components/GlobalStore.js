@@ -17,7 +17,8 @@ const defaultGlobalStore = {
     messageDuration: 5000,
     user: '',
     session: '',
-    loggedIn: false,
+    isAuthenticated: false,
+    referrer: null,
     theme: 'light',
     loading: false,
     confirmationDialog: defaultConfirmationDialog,
@@ -78,8 +79,11 @@ function dispatcher(state, action) {
         case 'closeConfirmation':
             newState.confirmationDialog = defaultConfirmationDialog;
             return newState;
+        case 'setReferrer':
+            newState.referrer = action.referrer
+            return newState
         case 'login':
-            newState.loggedIn = true;
+            newState.isAuthenticated = true;
             return newState;
         case 'logout':
             return defaultGlobalStore;

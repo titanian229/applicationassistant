@@ -12,13 +12,15 @@ import Applications from './pages/Applications';
 import Application from './pages/Application';
 import NewApplication from './pages/NewApplication';
 import Contacts from './pages/Contacts';
-import Contact from './pages/Contact'
-import Resumes from './pages/Resumes'
-import Todos from './pages/Todos'
+import Contact from './pages/Contact';
+import Resumes from './pages/Resumes';
+import Todos from './pages/Todos';
 import Message from './components/Message';
 import Home from './pages/Home';
 import ConfirmationDialog from './components/ConfirmationDialog';
 import { GlobalStore } from './components/GlobalStore';
+import PrivateRoute from './components/PrivateRoute';
+import UserEntry from './pages/UserEntry';
 
 // primary: {
 //     main: '#820263',
@@ -128,30 +130,15 @@ function App() {
                                 <Route exact path="/">
                                     <Home />
                                 </Route>
-                                <Route exact path="/applications">
-                                    <Applications />
-                                </Route>
-                                <Route path="/applications/:id">
-                                    <Application />
-                                </Route>
-                                <Route exact path="/newapplication">
-                                    <NewApplication />
-                                </Route>
-                                <Route exact path="/editapplication/:id">
-                                    <NewApplication />
-                                </Route>
-                                <Route exact path="/contacts">
-                                    <Contacts />
-                                </Route>
-                                <Route path="/contacts/:id">
-                                    <Contact />
-                                </Route>
-                                <Route exact path="/resumes">
-                                    <Resumes />
-                                </Route>
-                                <Route exact path="/todos">
-                                    <Todos />
-                                </Route>
+                                <Route exact path="/login" component={UserEntry} />
+                                <PrivateRoute exact path="/applications" component={Applications} />
+                                <PrivateRoute path="/applications/:id" component={Application} />
+                                <PrivateRoute exact path="/newapplication" component={NewApplication} />
+                                <PrivateRoute exact path="/editapplication/:id" component={NewApplication} />
+                                <PrivateRoute exact path="/contacts" component={Contacts} />
+                                <PrivateRoute path="/contacts/:id" component={Contact} />
+                                <PrivateRoute exact path="/resumes" component={Resumes} />
+                                <PrivateRoute exact path="/todos" component={Todos} />
                             </Switch>
                         </Router>
                     </div>
