@@ -1,18 +1,34 @@
 const db = require('../models');
+const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
-    router.get('/api/todos', async ({ headers }, res) => {
+    router.get('/api/todos', authenticated, async ({ headers }, res) => {
         try {
-            // const { session } = headers;
+            const { session } = headers;
 
-            let todos = await db.Todo.find().populate('parentContact').populate('parentApplication');
+            const user = await db.User.findOne({ session })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentContact',
+                    },
+                })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentApplication',
+                    },
+                });
+
+            // let todos = await db.Todo.find().populate('parentContact').populate('parentApplication');
+            let todos = user.todos;
             // TODO add field to each item, containing the application it's from
 
             todos = todos.map((todo) => {
                 if (!todo.parentApplication) {
                     return todo;
                 }
-                todo = todo._doc
+                todo = todo._doc;
                 todo.applicationTitle = `${todo.parentApplication.businessName}${
                     todo.parentApplication.roleTitle ? ' - ' : ''
                 }${todo.parentApplication.roleTitle || ''}`;
@@ -29,11 +45,26 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.get('/api/todos/sorted', async ({ headers }, res) => {
+    //TODO add in route to provide reminders for upcoming todos
+    router.get('/api/todos/sorted', authenticated, async ({ headers }, res) => {
         try {
-            // const { session } = headers;
+            const { session } = headers;
 
-            const todos = await db.Todo.find().populate('parentContact').populate('parentApplication');
+            const user = await db.User.findOne({ session })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentContact',
+                    },
+                })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentApplication',
+                    },
+                });
+
+            let todos = user.todos;
 
             let sortedTodos = {};
 
@@ -51,9 +82,9 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/todos', async ({ headers, body }, res) => {
+    router.post('/api/todos', authenticated, async ({ headers, body }, res) => {
         try {
-            // const { session } = headers;
+            const { session } = headers;
             const { name, date, _id } = body.todo;
             const { parentID } = body;
             if (!name) {
@@ -67,6 +98,7 @@ module.exports = (router) => {
 
             const todo = await db.Todo.create({ name, date, parentApplication: parentID });
             await db.Application.findByIdAndUpdate({ _id: parentID }, { $push: { todos: todo._id } });
+            await db.User.findOneAndUpdate({ session }, { $push: { todos: todo._id } });
 
             res.status(200).send({ message: 'Todo saved', todo });
         } catch (err) {
@@ -74,7 +106,7 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/todos/:_id', async ({ headers, params: { _id }, body }, res) => {
+    router.put('/api/todos/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
         try {
             // const { session } = headers;
             // How MUI handles date, it gets removed from the body.  This is required to remove a date.
@@ -87,18 +119,22 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/todos/:_id/:applicationID', async ({ headers, params: { _id, applicationID } }, res) => {
-        try {
-            // const { session } = headers;
+    router.delete(
+        '/api/todos/:_id/:applicationID',
+        authenticated,
+        async ({ headers, params: { _id, applicationID } }, res) => {
+            try {
+                // const { session } = headers;
 
-            await db.Todo.findByIdAndDelete({ _id });
-            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
-            const application = await db.Application.findById({ _id: applicationID }).populate('todos');
+                await db.Todo.findByIdAndDelete({ _id });
+                await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
+                const application = await db.Application.findById({ _id: applicationID }).populate('todos');
 
-            res.status(200).send({ message: 'Todo deleted', todos: application.todos });
-        } catch (err) {
-            console.log(err);
-            res.status(500).send({ error: 'Something went wrong with the server' });
+                res.status(200).send({ message: 'Todo deleted', todos: application.todos });
+            } catch (err) {
+                console.log(err);
+                res.status(500).send({ error: 'Something went wrong with the server' });
+            }
         }
-    });
+    );
 };
