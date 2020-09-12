@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { IconButton, AppBar, Toolbar } from '@material-ui/core';
+import {Link} from 'react-router-dom'
+import { IconButton, AppBar, Toolbar, Typography } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -12,7 +13,9 @@ const useStyles = makeStyles((theme) => ({
     },
     logo: {
         flexGrow: 1,
-        margin: theme.spacing(1, 2),
+        margin: theme.spacing(1, 1),
+        textDecoration: 'none',
+        color: theme.palette.getContrastText(theme.palette.primary.main)
     },
     sideMenuButton: {},
 }));
@@ -24,7 +27,10 @@ const Navbar = () => {
     return (
         <AppBar position="fixed">
             <Toolbar>
-                <LargeLogo className={classes.logo} />
+                {/* <LargeLogo className={classes.logo} /> */}
+                <Typography variant="h6" className={classes.logo} component={Link} to="/">
+                    Application Assistant
+                </Typography>
 
                 <IconButton
                     className={classes.sideMenuButton}

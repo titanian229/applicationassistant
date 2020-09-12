@@ -16,8 +16,14 @@ const userSchema = new Schema(
         password: {
             type: String,
         },
-        sessionID: {
+        thumbnail: {
             type: String,
+        },
+        type: {
+            type: String,
+        },
+        session: {
+            type: String
         },
         applications: [
             {
