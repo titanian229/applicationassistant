@@ -9,7 +9,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined';
 
 const AssetActionsPanel = (props) => {
-    const { handleEdit, handleDelete, handleDissociate, asset } = props;
+    const { handleEdit, handleDelete, handleDissociate, asset, sideComponent } = props;
 
     return (
         <Grid container justify="space-evenly">
@@ -28,6 +28,7 @@ const AssetActionsPanel = (props) => {
                     <DeleteIcon />
                 </IconButton>
             )}
+            {sideComponent}
         </Grid>
     );
 };

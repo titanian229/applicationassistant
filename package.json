@@ -8,7 +8,7 @@
     "license": "MIT",
     "scripts": {
         "start": "node server.js",
-        "start:dev": "concurrently \"nodemon --ignore 'client'\" \"yarn run client\"",
+        "start:dev": "concurrently \"nodemon --ignore client\" \"yarn run client\"",
         "client": "cd client && yarn run start",
         "install": "cd client && yarn install",
         "build": "cd client && yarn run build",

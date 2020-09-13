@@ -47,6 +47,8 @@ import ContactListSection from '../components/ContactListSection';
 
 import LoadingOverlay from '../components/LoadingOverlay';
 
+import ColourChooser from '../components/ColourChooser'
+
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
@@ -218,10 +220,18 @@ const NewApplication = () => {
         setValues({ ...values, [itemType]: itemList });
     };
 
+    const setColour = (colour) => {
+        setValues({...values, colour})
+    }
+
     return (
         <div>
             <Grid container direction="column">
                 <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
+                    <Grid container direction='row' justify='space-between' alignItems='center'>
+                        <Typography variant='subtitle1'>New Application</Typography>
+                        <ColourChooser colour={values.colour} setColour={setColour} />
+                    </Grid>
                     <TextField
                         className={classes.inputBoxInput}
                         onChange={handleChange('businessName')}

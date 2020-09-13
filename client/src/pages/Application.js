@@ -1,7 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import clsx from 'clsx';
 import { Backdrop, CircularProgress, Typography, Grid, Paper, Box, Divider, Tabs, Tab, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {
+    red,
+    pink,
+    purple,
+    deepPurple,
+    indigo,
+    blue,
+    lightBlue,
+    cyan,
+    teal,
+    green,
+    lightGreen,
+    lime,
+    yellow,
+    amber,
+    orange,
+    deepOrange,
+    brown,
+    grey,
+    blueGrey,
+} from '@material-ui/core/colors/';
+
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
 import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
@@ -18,11 +41,14 @@ import ResumeListSection from '../components/ResumeListSection';
 import InterviewListSection from '../components/InterviewListSection';
 import OfferSection from '../components/OfferSection';
 
+import ColourChooser from '../components/ColourChooser';
 import AssetActionsPanel from '../components/AssetActionsPanel';
 
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion';
 
 import { useGlobalStore } from '../components/GlobalStore';
+
+const colourShade = 300;
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -33,10 +59,11 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         width: '100vw',
         height: '100%',
-        backgroundColor: theme.palette.secondary.light,
+        // backgroundColor: theme.palette.secondary.light,
         margin: theme.spacing(-1),
         padding: theme.spacing(1, 3),
     },
+
     header: {
         width: 340,
         // outline: '1px solid blue',
@@ -45,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     main: {
         position: 'relative',
         top: -40,
-        paddingTop: 40,
+        paddingTop: 50,
         width: '100%',
         height: '100%',
         minHeight: '80vh',
@@ -94,6 +121,66 @@ const useStyles = makeStyles((theme) => ({
     },
     marginBottom: {
         marginBottom: theme.spacing(3),
+    },
+    none: {
+        backgroundColor: theme.palette.secondary.light,
+    },
+    red: {
+        backgroundColor: red[colourShade],
+    },
+    pink: {
+        backgroundColor: pink[colourShade],
+    },
+    purple: {
+        backgroundColor: purple[colourShade],
+    },
+    deepPurple: {
+        backgroundColor: deepPurple[colourShade],
+    },
+    indigo: {
+        backgroundColor: indigo[colourShade],
+    },
+    blue: {
+        backgroundColor: blue[colourShade],
+    },
+    lightBlue: {
+        backgroundColor: lightBlue[colourShade],
+    },
+    cyan: {
+        backgroundColor: cyan[colourShade],
+    },
+    teal: {
+        backgroundColor: teal[colourShade],
+    },
+    green: {
+        backgroundColor: green[colourShade],
+    },
+    lightGreen: {
+        backgroundColor: lightGreen[colourShade],
+    },
+    lime: {
+        backgroundColor: lime[colourShade],
+    },
+    yellow: {
+        backgroundColor: yellow[colourShade],
+    },
+    amber: {
+        backgroundColor: amber[colourShade],
+    },
+    orange: {
+        backgroundColor: orange[colourShade],
+    },
+    deepOrange: {
+        backgroundColor: deepOrange[colourShade],
+    },
+    brown: {
+        backgroundColor: brown[colourShade],
+    },
+    grey: {
+        backgroundColor: grey[colourShade],
+    },
+    blueGrey: {
+        backgroundColor: blueGrey[colourShade],
     },
 }));
 
@@ -313,8 +400,26 @@ const Application = () => {
         }
     };
 
+    const setColour = async (colour) => {
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.updateApplication(id, { colour });
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (!serverUp) return;
+
+        if (serverResponse.application) {
+            setApplication(serverResponse.application);
+        }
+    };
+
     return (
-        <Grid container direction="column" justify="center" alignItems="center" className={classes.container}>
+        <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            className={clsx(classes.container, classes[colour])}
+        >
             <Paper elevation={12} className={classes.header}>
                 <Typography variant="h4" align="center" className={classes.title}>
                     {businessName}
@@ -332,7 +437,9 @@ const Application = () => {
                                 text: 'Permanently delete application?',
                                 confirmText: 'Delete',
                             })}
+                            sideComponent={<ColourChooser colour={colour} setColour={setColour} />}
                         />
+
                         <Grid item xs={8}>
                             <Box className={classes.section}>
                                 <StatusArray {...{ haveApplied, haveResearched, interviewsArray }} />

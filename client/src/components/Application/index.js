@@ -16,6 +16,29 @@ import {
     Badge,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {
+    red,
+    pink,
+    purple,
+    deepPurple,
+    indigo,
+    blue,
+    lightBlue,
+    cyan,
+    teal,
+    green,
+    lightGreen,
+    lime,
+    yellow,
+    amber,
+    orange,
+    deepOrange,
+    brown,
+    grey,
+    blueGrey,
+} from '@material-ui/core/colors/';
+
+import clsx from 'clsx'
 
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -28,6 +51,8 @@ import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
 import StatusArray from '../StatusArray';
 // TODO set the colour based on the value
 
+const colourShade = 200;
+
 const useStyles = makeStyles((theme) => ({
     applicationCard: {
         // maxWidth: 320,
@@ -36,6 +61,63 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('sm')]: {
             maxWidth: 320,
         },
+    },
+    red: {
+        backgroundColor: red[colourShade],
+    },
+    pink: {
+        backgroundColor: pink[colourShade],
+    },
+    purple: {
+        backgroundColor: purple[colourShade],
+    },
+    deepPurple: {
+        backgroundColor: deepPurple[colourShade],
+    },
+    indigo: {
+        backgroundColor: indigo[colourShade],
+    },
+    blue: {
+        backgroundColor: blue[colourShade],
+    },
+    lightBlue: {
+        backgroundColor: lightBlue[colourShade],
+    },
+    cyan: {
+        backgroundColor: cyan[colourShade],
+    },
+    teal: {
+        backgroundColor: teal[colourShade],
+    },
+    green: {
+        backgroundColor: green[colourShade],
+    },
+    lightGreen: {
+        backgroundColor: lightGreen[colourShade],
+    },
+    lime: {
+        backgroundColor: lime[colourShade],
+    },
+    yellow: {
+        backgroundColor: yellow[colourShade],
+    },
+    amber: {
+        backgroundColor: amber[colourShade],
+    },
+    orange: {
+        backgroundColor: orange[colourShade],
+    },
+    deepOrange: {
+        backgroundColor: deepOrange[colourShade],
+    },
+    brown: {
+        backgroundColor: brown[colourShade],
+    },
+    grey: {
+        backgroundColor: grey[colourShade],
+    },
+    blueGrey: {
+        backgroundColor: blueGrey[colourShade],
     },
 
     cardContent: {
@@ -108,6 +190,7 @@ const Application = (props) => {
         resumes,
         contacts,
         todos,
+        colour,
         // createdAt,
     } = props.applicationData;
 
@@ -116,7 +199,7 @@ const Application = (props) => {
     );
 
     return (
-        <Card className={classes.applicationCard}>
+        <Card className={clsx(classes.applicationCard, classes[colour])}>
             <CardActionArea component={Link} to={'/applications/' + _id}>
                 <CardHeader
                     avatar={<Avatar className={classes.avatarColour}>{businessName[0]}</Avatar>}
