@@ -8,8 +8,6 @@ const compression = require('compression');
 const cors = require('cors');
 const uuid = require('uuid').v4;
 
-//AUTH
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -20,7 +18,6 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(logger(":method :url :status :res[content-length] - :response-time ms"));
 app.use(logger('dev'));
 
 app.use(cors());
