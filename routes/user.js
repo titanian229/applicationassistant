@@ -1,5 +1,6 @@
 const db = require('../models');
 const createSession = require('../app/createSession')
+const bcrypt = require('bcrypt')
 
 module.exports = (router) => {
     // local user creation
@@ -74,8 +75,9 @@ module.exports = (router) => {
         }
     });
 
-    router.post('/logout', async ({ body }, req) => {
-        const user = User.findOneAndUpdate({ session: body.session }, { session: '' });
+    router.post('/logout', async ({ body, headers }, req) => {
+        const user = db.User.findOneAndUpdate({ session: headers.session }, { session: '' });
+        console.log("user", user)
         if (!user) {
             console.log('Logout attempted for null user');
         }

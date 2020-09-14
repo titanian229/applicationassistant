@@ -3,7 +3,7 @@ import React, { useContext, useReducer, createContext } from 'react';
 // import processServerResponse from '../utils/processServerResponse';
 import { useSnackbar } from 'notistack';
 
-import { handleChange as changeHandler, formatDate, API, keyCatcher } from '../utils';
+import { handleChange as changeHandler, formatDate, API, keyCatcher, handleLocalStorage } from '../utils';
 
 const defaultConfirmationDialog = {
     open: false,
@@ -12,7 +12,7 @@ const defaultConfirmationDialog = {
     confirmText: '',
 };
 
-const defaultGlobalStore = {
+const initialGlobalStoreValues = {
     message: { text: '', type: '' },
     messageDuration: 5000,
     user: '',
@@ -41,7 +41,7 @@ function dispatcher(state, action) {
             newState.message.text = action.message.text;
             return newState;
         case 'clearMessage':
-            newState.message = defaultGlobalStore.message;
+            newState.message = initialGlobalStoreValues.message;
             return newState;
         case 'processServerResponse':
             if (!action.serverResponse) {
@@ -80,13 +80,13 @@ function dispatcher(state, action) {
             newState.confirmationDialog = defaultConfirmationDialog;
             return newState;
         case 'setReferrer':
-            newState.referrer = action.referrer
-            return newState
+            newState.referrer = action.referrer;
+            return newState;
         case 'login':
             newState.isAuthenticated = true;
             return newState;
         case 'logout':
-            return defaultGlobalStore;
+            return initialGlobalStoreValues;
         default:
             console.log(`unknown action called from GlobalStore: ${action.do}`);
             return newState;
@@ -98,6 +98,7 @@ const sharedFunctions = {
     changeHandler,
     API,
     keyCatcher,
+    handleLocalStorage,
 };
 
 const formatMessage = (message, variant) => {
@@ -105,7 +106,7 @@ const formatMessage = (message, variant) => {
 };
 
 function GlobalStore(props) {
-    const [globalData, dispatch] = useReducer(dispatcher, defaultGlobalStore);
+    const [globalData, dispatch] = useReducer(dispatcher, initialGlobalStoreValues);
     const { enqueueSnackbar } = useSnackbar();
 
     const processServerResponse = (serverResponse) => {

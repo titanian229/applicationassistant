@@ -5,7 +5,8 @@ const getRequest = async (url) => {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
             Session: localStorage.session ? localStorage.session : '',
-        }})
+        },
+    })
         .then((res) => res.json())
         .catch((err) => console.error(err));
 };
@@ -108,4 +109,6 @@ export default {
         putRequest(`/api/applications/${applicationID}/${itemType}/${item._id}`, item),
     removeItem: async (applicationID, itemID, itemType) =>
         deleteRequest(`/api/applications/${applicationID}/${itemType}/${itemID}`),
+    checkAuthenticated: async () => getRequest('/authentication'),
+    logout: async () => postRequest('/logout', {}),
 };
