@@ -178,6 +178,7 @@ const NewApplication = () => {
     // Saving to DB
     const handleSave = async () => {
         let applicationData = JSON.parse(JSON.stringify(values));
+        console.log("handleSave -> applicationData", applicationData)
         // Removing the temporary IDs created, so they're replaced on the server by UUIDs.
         applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
             if (Number.isInteger(interview._id)) delete interview._id;

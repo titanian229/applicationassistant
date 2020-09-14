@@ -90,45 +90,17 @@ module.exports = (router) => {
         try {
             const { session } = headers;
 
-            const {
-                businessName,
-                roleTitle,
-                requirementsNote,
-                notes,
-                postLink,
-                dateFound,
-                foundWhereNote,
-                haveApplied,
-                appliedDate,
-                interviewsArray,
-                haveResearched,
-                haveResearchedNotes,
-                resumes,
-                contacts,
-                todos: fullTodos,
-            } = body;
-
-            if (!businessName || !roleTitle) {
+            if (!body.businessName || !body.roleTitle) {
                 res.status(400).send({ error: 'Application must have a business name and role title' });
                 return;
             }
+            let fullTodos;
+            if (body.todos) {
+                fullTodos = JSON.parse(JSON.stringify(body.todos));
+                delete body.todos;
+            }
 
-            let application = await db.Application.create({
-                businessName,
-                roleTitle,
-                requirementsNote,
-                notes,
-                postLink,
-                dateFound,
-                foundWhereNote,
-                haveApplied,
-                appliedDate,
-                interviewsArray,
-                haveResearched,
-                haveResearchedNotes,
-                resumes,
-                contacts,
-            });
+            let application = await db.Application.create(body);
 
             let todos = [];
 
