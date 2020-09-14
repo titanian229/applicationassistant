@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useGlobalStore } from '../components/GlobalStore';
 import { Redirect } from 'react-router';
 
+import LinkedInOAuthButton from '../components/LinkedInOAuthButton';
+
 import clsx from 'clsx';
 
 import {
@@ -20,6 +22,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import TabItem from '../components/TabItem';
+import ResponsiveSave from '../components/ResponsiveSave';
 
 const Tabs = withStyles((theme) => ({
     indicator: {
@@ -146,8 +149,10 @@ const UserEntry = (props) => {
         if (validate === false) {
             return;
         }
+        dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await API.post('/login', { email, password });
         const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
         if (!serverUp) return;
 
         if (serverResponse.session) {
@@ -175,7 +180,7 @@ const UserEntry = (props) => {
             sendMessage('Password field is empty', { variant: 'error', key: 'missingpassword' });
             errorPassword = true;
         }
-        if (! (password === password2)) {
+        if (!(password === password2)) {
             sendMessage('Passwords do not match', { variant: 'error', key: 'passwordmatch' });
             errorPassword2 = true;
         }
@@ -197,8 +202,10 @@ const UserEntry = (props) => {
         if (validate === false) {
             return;
         }
+        dispatch({ do: 'setLoading', loading: true });
         const serverResponse = await API.post('/register', { name, email, password });
         const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
         if (!serverUp) return;
 
         if (serverResponse.session) {
@@ -210,6 +217,16 @@ const UserEntry = (props) => {
     const handleRegister = (event) => {
         event.preventDefault();
         submitRegister();
+    };
+
+    const oAuthloginComplete = (returnedData) => {
+        const serverUp = processServerResponse(returnedData);
+        if (serverUp === false) return;
+
+        if (returnedData.session) {
+            saveToLocal('session', returnedData.session);
+            dispatch({ do: 'login' });
+        }
     };
 
     if (globalStore.isAuthenticated) return <Redirect to={referrer} />;
@@ -259,14 +276,13 @@ const UserEntry = (props) => {
                                     ),
                                 }}
                             />
-                            <Button className={classes.margin} onClick={handleSubmit}>
+                            {/* <Button className={classes.margin} onClick={handleSubmit}>
                                 Submit
-                            </Button>
+                            </Button> */}
+                            <ResponsiveSave onClick={handleSubmit} buttonText="Submit" />
+                            <LinkedInOAuthButton loginComplete={oAuthloginComplete} />
                         </Grid>
                     </form>
-
-                    {/* <InputField name="email" label="Email" {...{ values, handleChange }} /> */}
-                    {/* <InputField name="password" label="Password" type="password" {...{ values, handleChange }} /> */}
                 </TabItem>
                 <TabItem tab={1} currentTab={values.tab}>
                     <form className={classes.formRoot} autoComplete="on">
@@ -341,14 +357,9 @@ const UserEntry = (props) => {
                                     ),
                                 }}
                             />
-                            <Button className={classes.margin} onClick={handleRegister}>
-                                Register
-                            </Button>
+                            <ResponsiveSave onClick={handleRegister} buttonText="Register" />
                         </Grid>
                     </form>
-
-                    {/* <InputField name="email" label="Email" {...{ values, handleChange }} /> */}
-                    {/* <InputField name="password" label="Password" type="password" {...{ values, handleChange }} /> */}
                 </TabItem>
             </Paper>
         </Grid>

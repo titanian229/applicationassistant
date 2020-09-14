@@ -1,12 +1,10 @@
 const passport = require('passport');
 const session = require('express-session');
-const User = require('./models/userLogin');
 const { OAuth2Strategy: LinkedInStrategy } = require('passport-linkedin-oauth2');
 // const { Strategy: LocalStrategy } = require('passport-local');
-const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-module.exports = (app, baseURL, createSession) => {
+module.exports = (app, baseURL) => {
     console.log('initializing authentication');
 
     app.use(session({ secret: process.env.SECRET, resave: true, saveUninitialized: true }));

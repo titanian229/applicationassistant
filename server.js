@@ -27,6 +27,8 @@ app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 
+require('./app/oAuth')(app, baseURL);
+
 app.use(routes);
 
 app.use(express.static('client/build'));
