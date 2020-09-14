@@ -30,6 +30,7 @@ import Application from '../components/Application';
 import { useGlobalStore } from '../components/GlobalStore';
 import SectionTitle from '../components/SectionTitle';
 import FilterAndSearch from '../components/FilterAndSearch';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -72,7 +73,7 @@ const filterOptions = [
 const Applications = (props) => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
-    const [, , { loadResource, API }] = useGlobalStore();
+    const [, , { loadResource, API, checkReminders }] = useGlobalStore();
     const emptyValues = {
         search: '',
         filter: [],
@@ -86,6 +87,7 @@ const Applications = (props) => {
 
     useEffect(() => {
         loadResource(async () => API.getApplications(), 'applications', setApplicationData);
+        checkReminders()
         // eslint-disable-next-line
     }, []);
 
@@ -217,6 +219,7 @@ const Applications = (props) => {
                     <Application applicationData={application} key={application._id} />
                 ))}
             </Grid>
+            <LoadingOverlay />
         </div>
     );
 };

@@ -126,7 +126,13 @@ module.exports = (router) => {
             try {
                 // const { session } = headers;
 
-                await db.Todo.findByIdAndDelete({ _id });
+                
+                const todo = await db.Todo.findByIdAndDelete({ _id });
+                console.log("todo", todo)
+                if (applicationID === 'none') {
+                    applicationID = todo.parentApplication
+                    console.log("applicationID", applicationID)
+                }
                 await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
                 const application = await db.Application.findById({ _id: applicationID }).populate('todos');
 
@@ -137,4 +143,44 @@ module.exports = (router) => {
             }
         }
     );
+    router.get('/api/todos/reminders/', authenticated, async ({ headers }, res) => {
+        try {
+            const { session } = headers;
+            const today = new Date();
+
+            const user = await db.User.findOne({ session })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentContact',
+                    },
+                })
+                .populate({
+                    path: 'todos',
+                    populate: {
+                        path: 'parentApplication',
+                    },
+                });
+
+            let todos = user.todos;
+
+            // Checking for reminders today or in the past
+            const reminders = todos
+                .filter((todo) => todo.date)
+                .filter((todo) => {
+                    const date = new Date(todo.date);
+                    return (
+                        date.getTime() < today.getTime() ||
+                        (date.getFullYear() === today.getFullYear() &&
+                            date.getMonth() === today.getMonth() &&
+                            date.getDate() === today.getDate())
+                    );
+                });
+
+            res.status(200).send({ reminders });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
 };

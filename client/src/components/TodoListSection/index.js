@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { List, Typography, Collapse, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import clsx from 'clsx';
+
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -32,7 +34,12 @@ const useListSectionStyles = makeStyles((theme) => ({
     nested: {
         paddingLeft: theme.spacing(4),
     },
+    red: {
+        color: 'red',
+    },
 }));
+
+const today = new Date();
 
 const ApplicationListSection = (props) => {
     const [open, setOpen] = useState(false);
@@ -49,7 +56,7 @@ const ApplicationListSection = (props) => {
                 <ListItemIcon>
                     <BusinessCenterOutlinedIcon />
                 </ListItemIcon>
-                <ListItemText primary={title} />
+                <ListItemText primary={title} className={clsx(todos[0].colour === 'red' && classes.red)} />
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -66,11 +73,12 @@ const ApplicationListSection = (props) => {
 const TodoListSection = (props) => {
     const { todos, refreshTodos, sortMethod } = props;
 
-    const [newTodoOpen, setNewTodoOpen] = useState(false);
+    const [todoNewOpen, setTodoNewOpen] = useState(false);
+    const [viewTodoItem, setViewTodoItem] = useState({});
     const [sortedTodos, setSortedTodos] = useState({});
     const [unsortedTodos, setUnsortedTodos] = useState([]);
     // const [sortMethod, setSortMethod] = useState('date');
-    const [, , { processServerResponse, API, formatDate }] = useGlobalStore();
+    const [, dispatch, { processServerResponse, API, formatDate }] = useGlobalStore();
 
     useEffect(() => {
         const [sortedTodosList, unsortedTodosList] = sortTodos(todos);
@@ -79,7 +87,33 @@ const TodoListSection = (props) => {
     }, [todos, sortMethod]);
 
     const viewTodo = (todo) => {
-        console.log(todo);
+        setViewTodoItem(todo);
+        setTodoNewOpen(true);
+    };
+
+    const saveTodo = async (todo) => {
+        setTodoNewOpen(false);
+        setViewTodoItem({});
+        if (!todo) return;
+
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.updateTodo(todo);
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        refreshTodos();
+    };
+
+    const removeTodo = async (todo) => {
+        console.log('removeTodo -> todo', todo);
+        setTodoNewOpen(false);
+        setViewTodoItem({});
+        dispatch({ do: 'setLoading', loading: true });
+        const serverResponse = await API.deleteTodo(todo._id, 'none');
+        const serverUp = processServerResponse(serverResponse);
+        dispatch({ do: 'setLoading', loading: false });
+        if (serverUp === false) return;
+        refreshTodos();
     };
 
     const sortTodos = (todos) => {
@@ -89,14 +123,24 @@ const TodoListSection = (props) => {
 
         todos.forEach((todo) => {
             if (todo[sortMethod] === undefined || todo[sortMethod] === '' || todo[sortMethod] === null) {
-                console.log('unsorted', todo, sortMethod, todo[sortMethod])
+                console.log('unsorted', todo, sortMethod, todo[sortMethod]);
                 unsortedTodos.push(todo);
                 return;
             }
-            console.log(todo)
 
             let sortValue = todo[sortMethod];
-            if (sortMethod === 'date') sortValue = formatDate(sortValue);
+            if (sortMethod === 'date') {
+                sortValue = formatDate(sortValue);
+                let date = new Date(todo.date);
+                if (
+                    date.getTime() < today.getTime() ||
+                    (date.getFullYear() === today.getFullYear() &&
+                        date.getMonth() === today.getMonth() &&
+                        date.getDate() === today.getDate())
+                ) {
+                    todo.colour = 'red';
+                }
+            }
 
             if (sortedTodos[sortValue]) {
                 sortedTodos[sortValue].push(todo);
@@ -137,13 +181,23 @@ const TodoListSection = (props) => {
 
     return (
         <List>
-            {Object.keys(sortedTodos).map((application, index) => (
-                <ApplicationListSection key={index} title={application} todos={sortedTodos[application]} viewTodo={viewTodo} />
-            ))}
+            {Object.keys(sortedTodos)
+                .sort()
+                .map((application, index) => (
+                    <ApplicationListSection
+                        key={index}
+                        title={application}
+                        todos={sortedTodos[application]}
+                        viewTodo={viewTodo}
+                    />
+                ))}
             {/* {todos.map((todo) => (
                 <TodoListItemToggle key={todo._id} viewTodo={viewTodo} {...todo} />
             ))} */}
-            {unsortedTodos.length > 0 && <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} />}
+            {unsortedTodos.length > 0 && (
+                <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} />
+            )}
+            <TodoNew open={todoNewOpen} todo={viewTodoItem} saveTodo={saveTodo} todoCount={0} removeTodo={removeTodo} />
         </List>
     );
 };

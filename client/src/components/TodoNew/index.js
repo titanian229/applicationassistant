@@ -58,7 +58,7 @@ const TodoNew = (props) => {
     };
 
     const handleDelete = () => {
-        removeTodo(values._id)
+        removeTodo(values)
         setValues(defaultValues)
     }
 

@@ -140,7 +140,8 @@ function App() {
                                 <PrivateRoute exact path="/contacts" component={Contacts} />
                                 <PrivateRoute path="/contacts/:id" component={Contact} />
                                 <PrivateRoute exact path="/resumes" component={Resumes} />
-                                <PrivateRoute exact path="/todos" component={Todos} />
+                                <PrivateRoute path="/todos/:filter" component={Todos} />
+                                <PrivateRoute exact path="/todos/" component={Todos} />
                             </Switch>
                         </Router>
                     </div>

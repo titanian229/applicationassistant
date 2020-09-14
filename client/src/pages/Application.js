@@ -289,10 +289,10 @@ const Application = () => {
         }
     };
 
-    const removeTodo = async (todoID) => {
+    const removeTodo = async (todo) => {
         setTodoNewOpen(false);
         dispatch({ do: 'setLoading', loading: true });
-        const serverResponse = await API.deleteTodo(todoID, id);
+        const serverResponse = await API.deleteTodo(todo._id, id);
         const serverUp = processServerResponse(serverResponse);
         dispatch({ do: 'setLoading', loading: false });
         if (serverUp === false) return;

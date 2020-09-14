@@ -22,6 +22,7 @@ const initialGlobalStoreValues = {
     theme: 'light',
     loading: false,
     confirmationDialog: defaultConfirmationDialog,
+    reminders: 0,
 };
 
 // let previousMessage = { text: '', time: undefined };
@@ -82,6 +83,9 @@ function dispatcher(state, action) {
         case 'setReferrer':
             newState.referrer = action.referrer;
             return newState;
+        case 'setReminders':
+            newState.reminders = action.reminders || 0;
+            return newState;
         case 'login':
             newState.isAuthenticated = true;
             return newState;
@@ -108,6 +112,15 @@ const formatMessage = (message, variant) => {
 function GlobalStore(props) {
     const [globalData, dispatch] = useReducer(dispatcher, initialGlobalStoreValues);
     const { enqueueSnackbar } = useSnackbar();
+
+    const checkReminders = async () => {
+        const serverResponse = await API.checkReminders();
+        const serverUp = processServerResponse(serverResponse);
+        if (serverUp === false) return;
+        if (serverResponse.reminders) {
+            dispatch({do: 'setReminders', reminders: serverResponse.reminders.length})
+        }
+    }
 
     const processServerResponse = (serverResponse) => {
         console.log('processServerResponse -> serverResponse', serverResponse);
@@ -153,6 +166,7 @@ function GlobalStore(props) {
                     processServerResponse,
                     loadResource,
                     confirmAction,
+                    checkReminders,
                     ...sharedFunctions,
                 },
             ]}
