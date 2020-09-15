@@ -43,7 +43,7 @@ const today = new Date();
 
 const ApplicationListSection = (props) => {
     const [open, setOpen] = useState(false);
-    const { title, todos, viewTodo } = props;
+    const { title, todos, viewTodo, refreshTodos } = props;
     const classes = useListSectionStyles();
 
     const handleClick = () => {
@@ -62,7 +62,7 @@ const ApplicationListSection = (props) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List dense component="div" disablePadding>
                     {todos.map((todo) => (
-                        <TodoListItemToggle key={todo._id} viewTodo={viewTodo} className={classes.nested} {...todo} />
+                        <TodoListItemToggle key={todo._id} viewTodo={viewTodo} className={classes.nested} refreshTodos={refreshTodos} {...todo} />
                     ))}
                 </List>
             </Collapse>
@@ -133,10 +133,10 @@ const TodoListSection = (props) => {
                 sortValue = formatDate(sortValue);
                 let date = new Date(todo.date);
                 if (
-                    date.getTime() < today.getTime() ||
+                    (date.getTime() < today.getTime() ||
                     (date.getFullYear() === today.getFullYear() &&
                         date.getMonth() === today.getMonth() &&
-                        date.getDate() === today.getDate())
+                        date.getDate() === today.getDate())) && !todo.completed
                 ) {
                     todo.colour = 'red';
                 }
@@ -189,13 +189,14 @@ const TodoListSection = (props) => {
                         title={application}
                         todos={sortedTodos[application]}
                         viewTodo={viewTodo}
+                        refreshTodos={refreshTodos}
                     />
                 ))}
             {/* {todos.map((todo) => (
                 <TodoListItemToggle key={todo._id} viewTodo={viewTodo} {...todo} />
             ))} */}
             {unsortedTodos.length > 0 && (
-                <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} />
+                <ApplicationListSection title="None" todos={unsortedTodos} viewTodo={viewTodo} refreshTodos={refreshTodos} />
             )}
             <TodoNew open={todoNewOpen} todo={viewTodoItem} saveTodo={saveTodo} todoCount={0} removeTodo={removeTodo} />
         </List>

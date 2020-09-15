@@ -59,6 +59,10 @@ const Todos = () => {
         //eslint-disable-next-line
     }, [filter]);
 
+    useEffect(() => {
+        checkReminders()
+    }, [todos])
+
     const sortMethodSetter = (event) => {
         const e = event;
         if (e === 0) {

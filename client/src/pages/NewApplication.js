@@ -202,7 +202,7 @@ const NewApplication = () => {
             setValues(defaultValues);
             setTimeout(() => {
                 console.log('SUCCESS MOVING TO NEXT PAGE');
-                history.push('/applications');
+                history.push(`/applications/${serverResponse.application._id}`);
             }, 2000);
         }
     };

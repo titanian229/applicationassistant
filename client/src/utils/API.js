@@ -96,7 +96,7 @@ export default {
     getTodos: async () => getRequest('/api/todos'),
     getTodosSorted: async () => getRequest('/api/todos/sorted'),
     addTodo: async (todo, parentID) => postRequest('/api/todos', { todo, parentID }),
-    toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
+    // toggleTodo: async (id, toggleState) => putRequest('/api/todos/' + id, { completed: toggleState }),
     updateTodo: async (todo) => putRequest('/api/todos/' + todo._id, todo),
     deleteTodo: async (todoID, applicationID) => deleteRequest('/api/todos/' + todoID + '/' + applicationID),
     checkReminders: async () => getRequest('/api/todos/reminders'),

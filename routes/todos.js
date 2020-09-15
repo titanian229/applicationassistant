@@ -107,9 +107,12 @@ module.exports = (router) => {
         }
     });
     router.put('/api/todos/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
+    console.log("body", body)
         try {
             // const { session } = headers;
             // How MUI handles date, it gets removed from the body.  This is required to remove a date.
+            // let todo = await db.Todo.findById({_id})
+            // if 
             if (!body.date) body.date = '';
             const todo = await db.Todo.findByIdAndUpdate({ _id }, { ...body }, { new: true });
 
@@ -166,7 +169,7 @@ module.exports = (router) => {
 
             // Checking for reminders today or in the past
             const reminders = todos
-                .filter((todo) => todo.date)
+                .filter((todo) => todo.date && !todo.completed)
                 .filter((todo) => {
                     const date = new Date(todo.date);
                     return (
