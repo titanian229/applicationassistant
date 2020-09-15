@@ -107,6 +107,7 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
+        paddingBottom: theme.spacing(6),
         [theme.breakpoints.down('sm')]: {
             paddingTop: theme.spacing(7),
         },
