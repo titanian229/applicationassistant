@@ -1,6 +1,6 @@
 const db = require('../models');
-const createSession = require('../app/createSession')
-const bcrypt = require('bcrypt')
+const createSession = require('../app/createSession');
+const bcrypt = require('bcrypt');
 
 module.exports = (router) => {
     // local user creation
@@ -19,6 +19,15 @@ module.exports = (router) => {
         } catch (err) {
             console.log('error occurred inside new user registration', err);
             res.status(400).send({ error: 'Something happened creating your user account, please try again' });
+        }
+    });
+
+    router.put('/user', async ({ body, headers }, res) => {
+        try {
+            const user = await db.User.findOneAndUpdate({ session: headers.session }, body, {new: true});
+            res.status(200).send({ user: { name: user.name }, message: 'User profile updated' });
+        } catch (err) {
+            res.status(400).send({ error: 'Error saving user profile' });
         }
     });
 
@@ -68,7 +77,7 @@ module.exports = (router) => {
                 return;
             }
 
-            res.status(200).send({ isAuthenticated: true });
+            res.status(200).send({ isAuthenticated: true, name: user.name });
         } catch (err) {
             console.log('Error checking for logged in state', err);
             res.status(500).send({ error: 'Something has gone wrong checking the login state' });
@@ -77,7 +86,7 @@ module.exports = (router) => {
 
     router.post('/logout', async ({ body, headers }, req) => {
         const user = db.User.findOneAndUpdate({ session: headers.session }, { session: '' });
-        console.log("user", user)
+        console.log('user', user);
         if (!user) {
             console.log('Logout attempted for null user');
         }

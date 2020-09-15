@@ -111,7 +111,7 @@ const UserEntry = (props) => {
         const { isAuthenticated } = serverResponse;
         if (isAuthenticated === true) {
             // clearLocal();
-            dispatch({ do: 'login' });
+            dispatch({ do: 'login', name: serverResponse.name });
         }
     };
 
@@ -120,11 +120,6 @@ const UserEntry = (props) => {
     }, []);
 
     // TODO implement grabbing stored settings from server for this user
-
-    const handleLogin = () => {
-        console.log('login clicked');
-        dispatch({ do: 'login' });
-    };
 
     const validateLoginFields = (email, password) => {
         console.log('validate called', email, password);
@@ -157,7 +152,7 @@ const UserEntry = (props) => {
 
         if (serverResponse.session) {
             saveToLocal('session', serverResponse.session);
-            dispatch({ do: 'login' });
+            dispatch({ do: 'login', name: serverResponse.name });
         }
     };
 
@@ -210,7 +205,7 @@ const UserEntry = (props) => {
 
         if (serverResponse.session) {
             saveToLocal('session', serverResponse.session);
-            dispatch({ do: 'login' });
+            dispatch({ do: 'login', name: serverResponse.name });
         }
     };
 
@@ -314,9 +309,6 @@ const UserEntry = (props) => {
                                 error={values.errorPassword}
                                 onChange={handleChange('password', 'text')}
                                 autoComplete="password"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') submitLogin();
-                                }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">

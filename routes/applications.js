@@ -89,29 +89,29 @@ module.exports = (router) => {
     router.post('/api/applications', authenticated, async ({ headers, body }, res) => {
         try {
             const { session } = headers;
+            const user = await db.User.findOne({session})
 
             if (!body.businessName || !body.roleTitle) {
                 res.status(400).send({ error: 'Application must have a business name and role title' });
                 return;
             }
-            let fullTodos;
-            if (body.todos) {
-                fullTodos = JSON.parse(JSON.stringify(body.todos));
-                delete body.todos;
-            }
+            
+            let todos = JSON.parse(JSON.stringify(body.todos))
+            console.log("todos", todos)
+            delete body.todos
 
             let application = await db.Application.create(body);
 
-            let todos = [];
-
-            if (fullTodos.length > 0) {
+            if (todos.length > 0) {
                 // Make the todos, add the ids to an array
-                todos = fullTodos.map((todo) => db.Todo.create({ ...todo, parentApplication: application.id }));
+                todos = todos.map((todo) => db.Todo.create({ ...todo, parentApplication: application._id }));
                 todos = await Promise.all(todos);
+                user.todos = user.todos.concat(todos.map(todo => todo._id))
+                await user.save()
                 // todos = todos.map((todo) => ({_id: todo._id}));
+                application = await db.Application.findByIdAndUpdate({ _id: application._id }, { todos }, { new: true });
             }
 
-            application = await db.Application.findByIdAndUpdate({ _id: application._id }, { todos }, { new: true });
 
             await db.User.findOneAndUpdate({ session }, { $push: { applications: application._id } });
 

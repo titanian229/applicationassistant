@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = () => {
-    const [, dispatch] = useGlobalStore();
+    const [globalStore, dispatch] = useGlobalStore();
     const classes = useStyles();
 
     return (
@@ -54,9 +54,10 @@ const Home = () => {
             <Box className={classes.hero}>
                 <Box className={classes.heroTextContainer}>
                     <Typography variant="h6" className={classes.heroText}>
-                        Welcome to <span className={classes.highlight}>Application Assistant</span>
+                        Welcome to <span className={classes.highlight}>Application Assistant</span> {globalStore.user.name && globalStore.user.name}
                     </Typography>
-                    <Button variant='contained' color='primary' component={Link} to='/login'>Register</Button>
+                    {!globalStore.isAuthenticated && (<Button variant='contained' color='primary' component={Link} to='/login'>Register</Button>)}
+                    {globalStore.isAuthenticated && (<Button variant='contained' color='primary' component={Link} to='/applications'>See My Applications</Button>)}
                 </Box>
             </Box>
             <Box className={classes.bodyContainer}>

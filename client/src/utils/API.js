@@ -66,6 +66,8 @@ export default {
             .then((result) => result.json())
             .catch((err) => console.log(err));
     },
+    put: async (url, body) => putRequest(url, body),
+
     //Applications
     getApplication: async (id) => getRequest('/api/applications/' + id),
     getApplications: async () => getRequest('/api/applications'),

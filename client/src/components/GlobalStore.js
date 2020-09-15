@@ -15,7 +15,7 @@ const defaultConfirmationDialog = {
 const initialGlobalStoreValues = {
     message: { text: '', type: '' },
     messageDuration: 5000,
-    user: '',
+    user: {},
     session: '',
     isAuthenticated: false,
     referrer: null,
@@ -86,8 +86,12 @@ function dispatcher(state, action) {
         case 'setReminders':
             newState.reminders = action.reminders || 0;
             return newState;
+        case 'setUser':
+            newState.user.name = action.name
+            return newState
         case 'login':
             newState.isAuthenticated = true;
+            newState.user.name = action.name
             return newState;
         case 'logout':
             return initialGlobalStoreValues;

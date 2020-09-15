@@ -22,6 +22,7 @@ import { GlobalStore } from './components/GlobalStore';
 import PrivateRoute from './components/PrivateRoute';
 import UserEntry from './pages/UserEntry';
 import Logout from './pages/Logout';
+import Settings from './pages/Settings';
 
 // primary: {
 //     main: '#820263',
@@ -142,6 +143,7 @@ function App() {
                                 <PrivateRoute exact path="/resumes" component={Resumes} />
                                 <PrivateRoute path="/todos/:filter" component={Todos} />
                                 <PrivateRoute exact path="/todos/" component={Todos} />
+                                <PrivateRoute exact path="/settings" component={Settings} />
                             </Switch>
                         </Router>
                     </div>
