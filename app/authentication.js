@@ -14,7 +14,7 @@ module.exports = {
         let existingUser;
         //Route for linkedin login
         if (user.type === 'linkedin') {
-            existingUser = await User.findOne({ authId: user.authId });
+            existingUser = await User.findOne({ authID: user.authId });
         } else {
             // local user login
             existingUser = await User.findOne({ email: user.email });
@@ -45,7 +45,7 @@ module.exports = {
             newUserLoginData.password = await bcrypt.hash(user.password, 10);
             newUserLoginData.type = 'local';
         } else if (user.type === 'linkedin') {
-            newUserLoginData.authId = user.authId;
+            newUserLoginData.authID = user.authId;
             newUserLoginData.type = user.type;
             newUserLoginData.thumbnail = user.thumbnail;
         }

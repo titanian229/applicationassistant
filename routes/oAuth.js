@@ -17,7 +17,7 @@ module.exports = (router) => {
         async ({ user: returnedUser }, res) => {
             console.log('returned user from linkedin', returnedUser);
             const user = {
-                name: returnedUser.displayName,
+                name: returnedUser.displayName || returnedUser.name,
                 thumbnail: returnedUser.photos[0] ? returnedUser.photos[0].value : '',
                 email: returnedUser.emails[0] ? returnedUser.emails[0].value : '',
                 authId: returnedUser.id,
