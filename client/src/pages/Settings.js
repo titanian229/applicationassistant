@@ -171,7 +171,7 @@ const Settings = (props) => {
                             ),
                         }}
                     />
-                    <ResponsiveSave onClick={submitSave} buttonText="Register" />
+                    <ResponsiveSave onClick={submitSave} buttonText="Update" />
                 </Grid>
             </form>
         </Grid>
