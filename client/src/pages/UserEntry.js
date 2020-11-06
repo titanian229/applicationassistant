@@ -220,8 +220,6 @@ const UserEntry = (props) => {
 
         if (returnedData.session) {
             saveToLocal('session', returnedData.session);
-            console.log('returnedData', returnedData)
-            console.log("Linkedin worked")
             dispatch({ do: 'login', name: returnedData.name });
         }
     };

@@ -31,6 +31,7 @@ import { useGlobalStore } from '../components/GlobalStore';
 import SectionTitle from '../components/SectionTitle';
 import FilterAndSearch from '../components/FilterAndSearch';
 import LoadingOverlay from '../components/LoadingOverlay';
+import NewUser from '../components/NewUser'
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -218,6 +219,7 @@ const Applications = (props) => {
                 {(filteredApplications !== null ? filteredApplications : applicationData).map((application) => (
                     <Application applicationData={application} key={application._id} />
                 ))}
+                {(filteredApplications === null && applicationData.length === 0) && <NewUser />}
             </Grid>
             <LoadingOverlay />
         </div>
