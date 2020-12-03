@@ -114,6 +114,10 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('sm')]: {
             paddingTop: theme.spacing(8),
         },
+        [theme.breakpoints.up('sm')]: {
+            maxWidth: '80vw',
+            margin: '0 auto',
+        },
     },
 }));
 
