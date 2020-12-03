@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const NewUser = (props) => {
+const NewUser = () => {
     // Greeting for new user if no applications present, explaining how to use application
     // USAGE => What it's for, what each page is, how to make a new application,
     // button to create a new application
     const classes = useStyles()
-    
+
     return (
         <>
             <Typography variant="h4" className={classes.title}>

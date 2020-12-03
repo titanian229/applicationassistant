@@ -5,6 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useGlobalStore } from '../components/GlobalStore';
 
+import sideOneImage from './images/jess-bailey-q10VITrVYUM-unsplash.jpg';
+import sideTwoImage from './images/cookie-the-pom-gySMaocSdqs-unsplash.jpg';
+
 const useStyles = makeStyles((theme) => ({
     hero: {
         height: 400,
@@ -46,6 +49,19 @@ const useStyles = makeStyles((theme) => ({
     margin: {
         marginTop: theme.spacing(3),
     },
+    searchOne: {},
+    sideOneImage: {
+        width: '100%',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
+    sideTwoImage: {
+        width: '100%',
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+    },
 }));
 
 const Home = () => {
@@ -72,32 +88,42 @@ const Home = () => {
                     )}
                 </Box>
             </Box>
-            <Box className={classes.bodyContainer}>
-                <Typography variant="body1" className={classes.body}>
-                    Hunting for a new job is hard. There are so many things to keep track of, contact information,
-                    details of how your interviews have gone, salaries, the list is endless. Application Assistant helps
-                    you keep track of all that in a central location. You can track your employment opportunities,
-                    networking contacts, todos and reminders on actions you need to take, store the resume versions for
-                    each application, every piece of data you need to track. Application Assistant is here to make the
-                    search easier for you so you can spend your time where it counts.
-                </Typography>
-                <Typography variant="subtitle1" className={classes.margin}>
-                    Key Features
-                </Typography>
-                <Typography variant="body2" className={classes.body} component='div'>
-                    <ul>
-                        <li>
-                            Save opportunities you've found with links to posts and all the key information such as
-                            requirements and salary
-                        </li>
-                        <li>Add networking contacts and keep contacts saved with each application</li>
-                        <li>Add todos and reminders, view with each application or unified together</li>
-                        <li>Save versions of resumes and cover letters with each application</li>
-                        <li>Store information about each interview you go through</li>
-                        <li>Save job offers as you get them, and compare all your opportunities</li>
-                    </ul>
-                </Typography>
-            </Box>
+            <Grid container spacing={3} alignItems="center" justify="center" className={classes.bodyContainer}>
+                <Grid item md={6}>
+                    <Typography variant="body1" className={classes.body}>
+                        Hunting for a new job is hard. There are so many things to keep track of, contact information,
+                        details of how your interviews have gone, salaries, the list is endless. Application Assistant
+                        helps you keep track of all that in a central location. You can track your employment
+                        opportunities, networking contacts, todos and reminders on actions you need to take, store the
+                        resume versions for each application, every piece of data you need to track. Application
+                        Assistant is here to make the search easier for you so you can spend your time where it counts.
+                    </Typography>
+                </Grid>
+                <Grid item md={6}>
+                    <img src={sideOneImage} className={classes.sideOneImage} alt="Work Image" />
+                </Grid>
+                <Grid item md={6}>
+                    <img src={sideTwoImage} className={classes.sideTwoImage} alt="Hard at work" />
+                </Grid>
+                <Grid item md={6}>
+                    <Typography variant="subtitle1" className={classes.margin}>
+                        Key Features
+                    </Typography>
+                    <Typography variant="body2" className={classes.body} component="div">
+                        <ul>
+                            <li>
+                                Save opportunities you've found with links to posts and all the key information such as
+                                requirements and salary
+                            </li>
+                            <li>Add networking contacts and keep contacts saved with each application</li>
+                            <li>Add todos and reminders, view with each application or unified together</li>
+                            <li>Save versions of resumes and cover letters with each application</li>
+                            <li>Store information about each interview you go through</li>
+                            <li>Save job offers as you get them, and compare all your opportunities</li>
+                        </ul>
+                    </Typography>
+                </Grid>
+            </Grid>
         </div>
     );
 };
