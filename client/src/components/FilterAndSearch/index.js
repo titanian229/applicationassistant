@@ -31,7 +31,10 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1, 0, 0, 0),
     },
     textField: {
-        // width: '100%',
+        width: '100%',
+        // [theme.breakpoints.up('sm')]: {
+        //     padding: '0 1em'
+        // },
     },
     select: {
         // width: '100%',
@@ -49,6 +52,15 @@ const useStyles = makeStyles((theme) => ({
     button: {
         margin: theme.spacing(1),
     },
+    fieldContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        // justifyContent: 'center',
+        // alignItems: 'stretch',
+        // [theme.breakpoints.up('sm')]: {
+        //     flexDirection: 'row',
+        // },
+    }
 }));
 
 const ITEM_HEIGHT = 48;
@@ -100,7 +112,6 @@ const FilterAndSearch = (props) => {
 
     const filterAssets = (resetCalled = false) => {
         if (resetCalled === true) {
-            console.log('reset');
             setAssets(assets);
             return;
         }
@@ -141,8 +152,8 @@ const FilterAndSearch = (props) => {
 
     const resetFilter = () => {
         setValues({ ...values, filters: [], searchField: '' });
-        if (sortOptions){
-            sortSetter(0)
+        if (sortOptions) {
+            sortSetter(0);
         }
         filterAssets(true);
     };
@@ -150,23 +161,32 @@ const FilterAndSearch = (props) => {
     return (
         <Paper elevation={1}>
             <Box padding={1}>
-                <Grid container direction="column" justify="center" alignItems="stretch">
-                    <TextField
-                        label="Search"
-                        id="search-field"
-                        variant="outlined"
-                        className={clsx(classes.margin, classes.textField)}
-                        value={values.searchField}
-                        onChange={handleChange('searchField', 'text')}
-                        onKeyDown={keyCatcher(onEnter, 'Enter')}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchOutlinedIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
+                <Grid
+                    container
+                    spacing={2}
+                    // className={classes.fieldContainer}
+                    // direction="column"
+                    // justify="center"
+                    // alignItems="stretch"
+                >
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Search"
+                            id="search-field"
+                            variant="outlined"
+                            className={clsx(classes.margin, classes.textField)}
+                            value={values.searchField}
+                            onChange={handleChange('searchField', 'text')}
+                            onKeyDown={keyCatcher(onEnter, 'Enter')}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchOutlinedIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </Grid>
                     {/* <Grid container direction="row">
                         <FormControlLabel
                             control={
@@ -181,67 +201,70 @@ const FilterAndSearch = (props) => {
                             label="Hide Completed"
                         />
                     </Grid> */}
-                    {sortOptions && (
-                        <>
-                            <FormControl className={classes.margin} variant="outlined">
-                                <FormHelperText>Sort</FormHelperText>
-                                {/* <InputLabel id="sort-selection-label">Sort</InputLabel> */}
-                                <Select
-                                    labelId="sort-selection-label"
-                                    id="sort-selection"
-                                    variant="outlined"
-                                    value={sortOptionChoice}
-                                    onChange={sortSetter}
-                                >
-                                    {sortOptions.map((sortOption, index) => (
-                                        <MenuItem key={sortOption.key} value={index}>
-                                            {sortOption.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </>
-                    )}
-                    {filterOptions && (
-                        <>
-                            <FormControl className={classes.margin}>
-                                <InputLabel id="multiple-filter-label">Filter</InputLabel>
-                                <Select
-                                    labelId="multiple-filter-label"
-                                    id="multiple-filter"
-                                    multiple
-                                    value={values.filters}
-                                    onChange={handleFilterChange}
-                                    input={<Input id="multiple-filter-input" />}
-                                    renderValue={(selected) => (
-                                        <div className={classes.chips}>
-                                            {selected.map((value) => (
-                                                <Chip
-                                                    key={value}
-                                                    label={value}
-                                                    className={classes.chip}
-                                                    color="primary"
-                                                    size="small"
-                                                    classes={{ label: classes.chipLabel }}
-                                                />
-                                            ))}
-                                        </div>
-                                    )}
-                                    MenuProps={MenuProps}
-                                >
-                                    {filterOptions.map((filterOption) => (
-                                        <MenuItem
-                                            key={filterOption.key}
-                                            value={filterOption.name}
-                                            style={getStyles(filterOption.name, values.filters, theme)}
-                                        >
-                                            {filterOption.name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </>
-                    )}
+                    <Grid item xs={12} sm={6}>
+                        {sortOptions && (
+                            <>
+                                <FormControl className={clsx(classes.margin, classes.textField)}>
+                                    {/* <FormHelperText>Sort</FormHelperText> */}
+                                    <InputLabel id="sort-label">Sort</InputLabel>
+                                    {/* <InputLabel id="sort-selection-label">Sort</InputLabel> */}
+                                    <Select
+                                        labelId="sort-selection-label"
+                                        id="sort-selection"
+                                        // variant="outlined"
+                                        value={sortOptionChoice}
+                                        onChange={sortSetter}
+                                    >
+                                        {sortOptions.map((sortOption, index) => (
+                                            <MenuItem key={sortOption.key} value={index}>
+                                                {sortOption.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </>
+                        )}
+                        {filterOptions && (
+                            <>
+                                <FormControl className={clsx(classes.margin, classes.textField)}>
+                                    <InputLabel id="multiple-filter-label">Filter</InputLabel>
+                                    <Select
+                                        labelId="multiple-filter-label"
+                                        id="multiple-filter"
+                                        multiple
+                                        value={values.filters}
+                                        onChange={handleFilterChange}
+                                        input={<Input id="multiple-filter-input" />}
+                                        renderValue={(selected) => (
+                                            <div className={classes.chips}>
+                                                {selected.map((value) => (
+                                                    <Chip
+                                                        key={value}
+                                                        label={value}
+                                                        className={classes.chip}
+                                                        color="primary"
+                                                        size="small"
+                                                        classes={{ label: classes.chipLabel }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+                                        MenuProps={MenuProps}
+                                    >
+                                        {filterOptions.map((filterOption) => (
+                                            <MenuItem
+                                                key={filterOption.key}
+                                                value={filterOption.name}
+                                                style={getStyles(filterOption.name, values.filters, theme)}
+                                            >
+                                                {filterOption.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </>
+                        )}
+                    </Grid>
                     <Grid container justify="center" className={classes.margin}>
                         <Button className={classes.button} onClick={resetFilter}>
                             Reset Filter

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import clsx from 'clsx'
 import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
@@ -47,7 +48,7 @@ import ContactListSection from '../components/ContactListSection';
 
 import LoadingOverlay from '../components/LoadingOverlay';
 
-import ColourChooser from '../components/ColourChooser'
+import ColourChooser from '../components/ColourChooser';
 
 import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
 import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
@@ -63,7 +64,8 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.light,
         color: theme.palette.getContrastText(theme.palette.secondary.light),
         padding: theme.spacing(1),
-        margin: theme.spacing(1, 0),
+        margin: theme.spacing(2, 0, 1, 0),
+        borderRadius: 5,
     },
     secondaryInputBox: {
         backgroundColor: theme.palette.primary.light,
@@ -72,8 +74,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1, 0),
     },
     inputBoxInput: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
+        // marginTop: theme.spacing(1),
+        // marginBottom: theme.spacing(1),
+        width: '100%',
     },
     badgeIcon: {
         marginRight: theme.spacing(4),
@@ -81,6 +84,9 @@ const useStyles = makeStyles((theme) => ({
     spaceTop: {
         marginTop: theme.spacing(1),
     },
+    extraMargin: {
+        marginTop: '16px'
+    }
 }));
 
 const NewApplication = () => {
@@ -136,8 +142,8 @@ const NewApplication = () => {
     };
 
     const handleCancel = () => {
-        history.push(`/applications/${id || ''}`)
-    }
+        history.push(`/applications/${id || ''}`);
+    };
 
     // Todos
     const saveTodo = (todo) => {
@@ -178,7 +184,7 @@ const NewApplication = () => {
     // Saving to DB
     const handleSave = async () => {
         let applicationData = JSON.parse(JSON.stringify(values));
-        console.log("handleSave -> applicationData", applicationData)
+        console.log('handleSave -> applicationData', applicationData);
         // Removing the temporary IDs created, so they're replaced on the server by UUIDs.
         applicationData.interviewsArray = applicationData.interviewsArray.map((interview) => {
             if (Number.isInteger(interview._id)) delete interview._id;
@@ -222,70 +228,125 @@ const NewApplication = () => {
     };
 
     const setColour = (colour) => {
-        setValues({...values, colour})
-    }
+        setValues({ ...values, colour });
+    };
 
     return (
         <div>
-            <Grid container direction="column">
-                <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
-                    <Grid container direction='row' justify='space-between' alignItems='center'>
-                        <Typography variant='subtitle1'>New Application</Typography>
+            <Grid container spacing={1}>
+                <Grid container className={classes.primaryInputBox} display="flex" flexDirection="column" spacing={2}>
+                    <Grid container direction="row" justify="space-between" alignItems="center">
+                        <Typography variant="subtitle1">New Application</Typography>
                         <ColourChooser colour={values.colour} setColour={setColour} />
                     </Grid>
-                    <TextField
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            className={classes.inputBoxInput}
+                            onChange={handleChange('businessName')}
+                            value={values.businessName}
+                            label="Business Name"
+                            type="text"
+                            variant="filled"
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            className={classes.inputBoxInput}
+                            onChange={handleChange('roleTitle')}
+                            value={values.roleTitle}
+                            label="Role"
+                            type="text"
+                            variant="filled"
+                            required
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            margin="normal"
+                            id="date-found-picker"
+                            label="Date Found"
+                            format="dd/MM/yyyy"
+                            value={values.dateFound}
+                            className={classes.inputBoxInput}
+                            onChange={handleChange('dateFound', 'date')}
+                            inputVariant="outlined"
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
+                        className={clsx(classes.inputBoxInput, classes.extraMargin)}
+                        name="foundWhereNote"
+                        label="Where was it found?"
+                        {...{ values, handleChange }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
                         className={classes.inputBoxInput}
-                        onChange={handleChange('businessName')}
-                        value={values.businessName}
-                        label="Business Name"
-                        type="text"
-                        variant="filled"
-                        required
+                        name="postLink"
+                        label="Job Posting Link"
+                        {...{ values, handleChange }}
                     />
-                    <TextField
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
                         className={classes.inputBoxInput}
-                        onChange={handleChange('roleTitle')}
-                        value={values.roleTitle}
-                        label="Role"
-                        type="text"
-                        variant="filled"
-                        required
+                        name="location"
+                        label="Location"
+                        {...{ values, handleChange }}
                     />
-                </Box>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                        margin="normal"
-                        id="date-found-picker"
-                        label="Date Found"
-                        format="dd/MM/yyyy"
-                        value={values.dateFound}
-                        onChange={handleChange('dateFound', 'date')}
-                        inputVariant="outlined"
-                        KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                        }}
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
+                        multiline
+                        className={classes.inputBoxInput}
+                        rows={4}
+                        name="description"
+                        label="Job Description"
+                        {...{ values, handleChange }}
                     />
-                </MuiPickersUtilsProvider>
-                <InputField name="foundWhereNote" label="Where was it found?" {...{ values, handleChange }} />
-                <InputField name="postLink" label="Job Posting Link" {...{ values, handleChange }} />
-                <InputField name="location" label="Location" {...{ values, handleChange }} />
-                <InputField
-                    multiline
-                    rows={4}
-                    name="description"
-                    label="Job Description"
-                    {...{ values, handleChange }}
-                />
-                <InputField
-                    multiline
-                    rows={4}
-                    name="requirementsNote"
-                    label="Job Requirements"
-                    {...{ values, handleChange }}
-                />
-                <InputField multiline rows={4} name="companyInfo" label="Company Info" {...{ values, handleChange }} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
+                        multiline
+                        className={classes.inputBoxInput}
+                        rows={4}
+                        name="requirementsNote"
+                        label="Job Requirements"
+                        {...{ values, handleChange }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <InputField
+                        multiline
+                        className={classes.inputBoxInput}
+                        rows={4}
+                        name="companyInfo"
+                        label="Company Info"
+                        {...{ values, handleChange }}
+                    />
+                </Grid>
+
                 <Divider style={{ marginTop: '1em', marginBottom: '1em' }} />
-                <InputField multiline rows={4} name="notes" label="Notes" {...{ values, handleChange }} />
+                <Grid item xs={12} sm={6}>
+                    <InputField
+                        multiline
+                        className={classes.inputBoxInput}
+                        rows={4}
+                        name="notes"
+                        label="Notes"
+                        {...{ values, handleChange }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+
                 <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <FormGroup row>
                         <FormControlLabel
@@ -316,6 +377,9 @@ const NewApplication = () => {
                         </MuiPickersUtilsProvider>
                     )}
                 </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+
                 <Box className={classes.primaryInputBox} display="flex" flexDirection="column" borderRadius={5}>
                     <FormGroup row>
                         <FormControlLabel
@@ -339,6 +403,7 @@ const NewApplication = () => {
                         />
                     )}
                 </Box>
+                </Grid>
             </Grid>
             <Accordion
                 className={classes.spaceTop}

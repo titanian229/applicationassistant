@@ -31,7 +31,7 @@ import { useGlobalStore } from '../components/GlobalStore';
 import SectionTitle from '../components/SectionTitle';
 import FilterAndSearch from '../components/FilterAndSearch';
 import LoadingOverlay from '../components/LoadingOverlay';
-import NewUser from '../components/NewUser'
+import NewUser from '../components/NewUser';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -50,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
         right: theme.spacing(2),
         zIndex: 1000,
     },
+    // mainContainer: {
+    //     [theme.breakpoints.up('sm')]: {
+    //         maxWidth: '80vw',
+    //         margin: '0 auto',
+    //     },
+    // },
 }));
 
 const ITEM_HEIGHT = 48;
@@ -88,7 +94,7 @@ const Applications = (props) => {
 
     useEffect(() => {
         loadResource(async () => API.getApplications(), 'applications', setApplicationData);
-        checkReminders()
+        checkReminders();
         // eslint-disable-next-line
     }, []);
 
@@ -155,7 +161,7 @@ const Applications = (props) => {
     };
 
     return (
-        <div>
+        <div className={classes.mainContainer}>
             <Fab component={Link} to="/newapplication" className={classes.fab} color="primary" aria-label="add">
                 <AddIcon />
             </Fab>
@@ -219,7 +225,7 @@ const Applications = (props) => {
                 {(filteredApplications !== null ? filteredApplications : applicationData).map((application) => (
                     <Application applicationData={application} key={application._id} />
                 ))}
-                {(filteredApplications === null && applicationData.length === 0) && <NewUser />}
+                {filteredApplications === null && applicationData.length === 0 && <NewUser />}
             </Grid>
             <LoadingOverlay />
         </div>

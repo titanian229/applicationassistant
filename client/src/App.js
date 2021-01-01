@@ -108,11 +108,15 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
         paddingBottom: theme.spacing(6),
-        [theme.breakpoints.down('sm')]: {
-            paddingTop: theme.spacing(7),
-        },
+        paddingTop: theme.spacing(7),
+        // [theme.breakpoints.down('sm')]: {
+        // },
+        // [theme.breakpoints.up('sm')]: {
+        //     paddingTop: theme.spacing(7),
+        // },
         [theme.breakpoints.up('sm')]: {
-            paddingTop: theme.spacing(8),
+            maxWidth: '80vw',
+            margin: '0 auto',
         },
     },
 }));

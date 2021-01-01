@@ -57,11 +57,20 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         position: 'relative',
-        width: '100vw',
+        // width: '100vw',
         height: '100%',
         // backgroundColor: theme.palette.secondary.light,
         margin: theme.spacing(-1),
         padding: theme.spacing(1, 3),
+    },
+    colouredBG: {
+        // zIndex: 0,
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        // backgroundColor: 'red'
     },
 
     header: {
@@ -418,8 +427,10 @@ const Application = () => {
             direction="column"
             justify="center"
             alignItems="center"
-            className={clsx(classes.container, classes[colour])}
+            // className={clsx(classes.container, classes[colour])}
+            className={clsx(classes.container)}
         >
+            <div className={clsx(classes.colouredBG, classes[colour])}></div>
             <Paper elevation={12} className={classes.header}>
                 <Typography variant="h4" align="center" className={classes.title}>
                     {businessName}
