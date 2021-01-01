@@ -204,13 +204,14 @@ const FilterAndSearch = (props) => {
                     <Grid item xs={12} sm={6}>
                         {sortOptions && (
                             <>
-                                <FormControl className={classes.margin} variant="outlined">
-                                    <FormHelperText>Sort</FormHelperText>
+                                <FormControl className={clsx(classes.margin, classes.textField)}>
+                                    {/* <FormHelperText>Sort</FormHelperText> */}
+                                    <InputLabel id="sort-label">Sort</InputLabel>
                                     {/* <InputLabel id="sort-selection-label">Sort</InputLabel> */}
                                     <Select
                                         labelId="sort-selection-label"
                                         id="sort-selection"
-                                        variant="outlined"
+                                        // variant="outlined"
                                         value={sortOptionChoice}
                                         onChange={sortSetter}
                                     >

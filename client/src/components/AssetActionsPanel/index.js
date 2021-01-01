@@ -40,6 +40,7 @@ const AssetActionsPanel = (props) => {
                         color="secondary"
                         className={classes.button}
                         startIcon={<EditOutlinedIcon />}
+                        onClick={() => handleEdit(asset)}
                     >
                         Edit
                     </Button>
@@ -55,6 +56,7 @@ const AssetActionsPanel = (props) => {
                         color="secondary"
                         className={classes.button}
                         startIcon={<HighlightOffOutlinedIcon />}
+                        onClick={() => handleDissociate(asset)}
                     >
                         Remove
                     </Button>
@@ -65,7 +67,13 @@ const AssetActionsPanel = (props) => {
                     <IconButton className={classes.iconButton} onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
-                    <Button variant="contained" color="delete" className={classes.button} startIcon={<DeleteIcon />}>
+                    <Button
+                        variant="contained"
+                        color="delete"
+                        className={classes.button}
+                        startIcon={<DeleteIcon />}
+                        onClick={handleDelete}
+                    >
                         Delete
                     </Button>
                 </>
