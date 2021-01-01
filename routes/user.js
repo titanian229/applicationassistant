@@ -15,6 +15,13 @@ module.exports = (router) => {
         };
         try {
             const sessionData = await createSession(user);
+
+            //catching a user that has previously registered trying to register again with a diff password
+            if (sessionData.error) {
+                res.status(400).send({ error: sessionData.error });
+                return
+            }
+
             res.status(200).send(sessionData);
         } catch (err) {
             console.log('error occurred inside new user registration', err);
@@ -24,7 +31,7 @@ module.exports = (router) => {
 
     router.put('/user', async ({ body, headers }, res) => {
         try {
-            const user = await db.User.findOneAndUpdate({ session: headers.session }, body, {new: true});
+            const user = await db.User.findOneAndUpdate({ session: headers.session }, body, { new: true });
             res.status(200).send({ user: { name: user.name }, message: 'User profile updated' });
         } catch (err) {
             res.status(400).send({ error: 'Error saving user profile' });
