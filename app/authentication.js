@@ -18,6 +18,23 @@ module.exports = {
         } else {
             // local user login
             existingUser = await User.findOne({ email: user.email });
+            console.log('User has previously logged in locally, comparing passwords');
+            let validPassword;
+            try {
+                validPassword = await bcrypt.compare(existingUser.password, user.password);
+            } catch (err) {
+                console.log('error inside registration', err);
+                return {
+                    error: 'Error inside registration',
+                };
+            }
+
+            if (!validPassword) {
+                console.log('invalid password in registration for new user');
+                return {
+                    error: 'User already registered, passwords do not match',
+                };
+            }
         }
         console.log('existingUser', existingUser);
 
@@ -56,10 +73,10 @@ module.exports = {
             console.log('there was an error creating the new user', err);
             return { error: 'Error creating user' };
         }
-        console.log(newUser)
+        console.log(newUser);
         return {
             message: `Welcome ${newUser.name}!`,
-            session: newUser.session
+            session: newUser.session,
         };
     },
 };
