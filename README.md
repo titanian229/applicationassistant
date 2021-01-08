@@ -1,7 +1,7 @@
 # Application Assistant
 
-- [Description](#description)
-- [Demo](#demo) 
+- [Description](#Description)
+- [Walkthrough](#Walkthrough) 
 - [Technologies](#technologies) 
 - [License](#license) 
 
