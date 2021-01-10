@@ -1,6 +1,7 @@
 const db = require('../models');
 const passport = require('passport');
-const createSession = require('../app/createSession')
+const createSession = require('../app/createSession');
+const { registerUser } = require('../app/authentication');
 
 module.exports = (router) => {
     router.get('/oauth/linkedin', (req, res, next) => {
@@ -23,7 +24,8 @@ module.exports = (router) => {
                 authId: returnedUser.id,
                 type: 'linkedin',
             };
-            const sessionData = JSON.stringify(await createSession(user));
+            const session = createSession();
+            const sessionData = JSON.stringify(await registerUser(user, session));
             res.send(
                 `<html><body><script>window.opener.postMessage('${sessionData}', '*');</script>Please wait...</body></html>`
             );
