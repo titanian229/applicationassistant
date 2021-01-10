@@ -1,5 +1,6 @@
 const db = require('../models');
 const createSession = require('../app/createSession');
+const { saveSession, registerUser } = require('../app/authentication');
 const bcrypt = require('bcrypt');
 
 module.exports = (router) => {
@@ -14,12 +15,17 @@ module.exports = (router) => {
             type: 'local',
         };
         try {
-            const sessionData = await createSession(user);
+            // ! instead of creating the session, check for the existing user first, then save the session and user together
+
+            const session = createSession();
+            const sessionData = await registerUser(user, session)
+
+
 
             //catching a user that has previously registered trying to register again with a diff password
             if (sessionData.error) {
                 res.status(400).send({ error: sessionData.error });
-                return
+                return;
             }
 
             res.status(200).send(sessionData);
@@ -39,6 +45,7 @@ module.exports = (router) => {
     });
 
     router.post('/login', async ({ body }, res) => {
+        // TODO save date last logged in to DB as well
         const { email, password } = body;
 
         if (!(email && password)) {
@@ -66,9 +73,11 @@ module.exports = (router) => {
         }
 
         try {
-            const sessionData = await createSession(user);
+            const session = createSession();
+            const sessionData = await saveSession(user, session);
             res.status(200).send(sessionData);
         } catch (err) {
+            console.log(err)
             console.log('error creating session for login', user);
             res.status(403).send({ error: 'Error creating new session' });
         }

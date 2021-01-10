@@ -2,7 +2,33 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
 module.exports = {
+    saveSession: async (user, session) => {
+        //User must be a return from the database query, session is a UUID created ID
+        console.log('Saving session');
+
+        if (!user || !session || session.length !== 36) {
+            console.log('No user or no session id', user, session);
+            return { error: 'Invalid user data for registration' };
+        }
+
+        if (!user._id) {
+            console.log('User passed to save session was missing ID, likely not a User returned from the database.');
+            return { error: 'Database error saving session' };
+        }
+
+        let updatedUser = await User.findByIdAndUpdate({ _id: user._id }, { session }, { new: true });
+        return {
+            message: 'Welcome back ' + updatedUser.name,
+            id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            thumbnail: updatedUser.thumbnail,
+            session,
+        };
+    },
+
     registerUser: async (user, session) => {
+        //User is a direct return from the front end, password is not hashed yet, session is a UUID created ID
         console.log('REGISTERING USER ', user);
 
         if (!user || !session || session.length !== 36) {
@@ -10,36 +36,38 @@ module.exports = {
             return { error: 'Invalid user data for registration' };
         }
 
-        let newUser;
-        let existingUser;
-        //Route for linkedin login
+        let newUser, existingUser;
         if (user.type === 'linkedin') {
+            //Route for linkedin login
+            console.log('LinkedIn user login');
             existingUser = await User.findOne({ authID: user.authId });
         } else {
             // local user login
             existingUser = await User.findOne({ email: user.email });
-            console.log('User has previously logged in locally, comparing passwords');
-            let validPassword;
-            try {
-                validPassword = await bcrypt.compare(existingUser.password, user.password);
-            } catch (err) {
-                console.log('error inside registration', err);
-                return {
-                    error: 'Error inside registration',
-                };
-            }
-
-            if (!validPassword) {
-                console.log('invalid password in registration for new user');
-                return {
-                    error: 'User already registered, passwords do not match',
-                };
-            }
         }
-        console.log('existingUser', existingUser);
 
         if (existingUser && existingUser._id) {
             console.log('User has previously logged in, saving new session', user, existingUser);
+            if (user.type !== 'linkedin'){
+                //checking for valid password, skipping registration and just logging them in
+                let validPassword;
+                try {
+                    validPassword = await bcrypt.compare(user.password, existingUser.password);
+                } catch (err) {
+                    console.log('error inside registration', err);
+                    return {
+                        error: 'Error inside registration',
+                    };
+                }
+    
+                if (!validPassword) {
+                    console.log('invalid password in registration for new user, password do not match');
+                    return {
+                        error: 'Email address already registered, passwords do not match',
+                    };
+                }
+            }
+
             newUser = await User.findByIdAndUpdate({ _id: existingUser._id }, { session });
             console.log('newUser', newUser);
             return {
