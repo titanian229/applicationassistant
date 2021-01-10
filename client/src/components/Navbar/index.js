@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { IconButton, AppBar, Toolbar, Typography } from '@material-ui/core';
+import { IconButton, AppBar, Toolbar, Typography, Tooltip, Divider } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useGlobalStore } from '../GlobalStore';
 
-import LargeLogo from '../Logo/LargeLogo';
+// import LargeLogo from '../Logo/LargeLogo';
 import Sidebar from './Sidebar';
 
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+
+import ContactsIcon from '@material-ui/icons/ContactsTwoTone';
+import DescriptionIcon from '@material-ui/icons/DescriptionTwoTone';
+import AddAlertIcon from '@material-ui/icons/AddAlertTwoTone';
+import WorkIcon from '@material-ui/icons/WorkTwoTone';
+import SettingsIcon from '@material-ui/icons/SettingsApplicationsTwoTone';
+import ExitToAppIcon from '@material-ui/icons/ExitToAppTwoTone';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,6 +34,17 @@ const useStyles = makeStyles((theme) => ({
     hidden: {
         display: 'none',
     },
+    desktopNavIcons: {
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+        margin: theme.spacing(0, 1, 0, 0),
+    },
+    hideonDesktop: {
+        [theme.breakpoints.up('sm')]: {
+            display: 'none',
+        },
+    },
 }));
 
 const Navbar = () => {
@@ -40,7 +59,82 @@ const Navbar = () => {
                 <Typography variant="h6" className={classes.logo} component={Link} to="/">
                     Application Assistant
                 </Typography>
+                {/* //icons visible on desktop view */}
+                <Tooltip title="Applications">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Applications"
+                        component={Link}
+                        to="/applications"
+                    >
+                        <WorkIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Contacts">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Contacts"
+                        component={Link}
+                        to="/contacts"
+                    >
+                        <ContactsIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Resumes">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Resumes"
+                        component={Link}
+                        to="/resumes"
+                    >
+                        <DescriptionIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Todos and Reminders">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Todos and Reminders"
+                        component={Link}
+                        to="/todos"
+                    >
+                        <AddAlertIcon />
+                    </IconButton>
+                </Tooltip>
+                <Divider className={classes.desktopNavIcons} orientation="vertical" flexItem />
 
+                <Tooltip title="Settings and Profile">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Settings and Profile"
+                        component={Link}
+                        to="/settings"
+                    >
+                        <SettingsIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Log Out">
+                    <IconButton
+                        className={classes.desktopNavIcons}
+                        edge="start"
+                        color="inherit"
+                        aria-label="Log out"
+                        component={Link}
+                        to="/logout"
+                    >
+                        <ExitToAppIcon />
+                    </IconButton>
+                </Tooltip>
+                {/* //END DESKTOP BUTTONS */}
                 <IconButton
                     className={clsx(globalStore.reminders === 0 && classes.hidden)}
                     edge="start"
@@ -52,7 +146,7 @@ const Navbar = () => {
                     <NotificationsActiveIcon />
                 </IconButton>
                 <IconButton
-                    className={classes.sideMenuButton}
+                    className={clsx(classes.sideMenuButton, classes.hideonDesktop)}
                     edge="start"
                     color="inherit"
                     aria-label="menu"
