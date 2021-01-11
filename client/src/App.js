@@ -2,7 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 
+import './global.css'
+
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 import { orange, deepPurple } from '@material-ui/core/colors/';
 
@@ -108,7 +111,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
         paddingBottom: theme.spacing(6),
-        paddingTop: theme.spacing(7),
+        paddingTop: theme.spacing(8),
         // [theme.breakpoints.down('sm')]: {
         // },
         // [theme.breakpoints.up('sm')]: {
@@ -119,6 +122,10 @@ const useStyles = makeStyles((theme) => ({
             margin: '0 auto',
         },
     },
+    wrapper: {
+        minHeight: '100vh',
+        position: 'relative'
+    }
 }));
 
 function App() {
@@ -128,29 +135,32 @@ function App() {
         <ThemeProvider theme={theme}>
             <SnackbarProvider maxSnack={3} preventDuplicate anchorOrigin={{ horizontal: 'center', vertical: 'top' }}>
                 <GlobalStore>
-                    <div className={classes.mainContainer}>
-                        <ConfirmationDialog />
-                        <Router>
-                            <Navbar />
-                            <Message />
-                            <Switch>
-                                <Route exact path="/">
-                                    <Home />
-                                </Route>
-                                <Route exact path="/login" component={UserEntry} />
-                                <Route exact path="/logout" component={Logout} />
-                                <PrivateRoute exact path="/applications" component={Applications} />
-                                <PrivateRoute path="/applications/:id" component={Application} />
-                                <PrivateRoute exact path="/newapplication" component={NewApplication} />
-                                <PrivateRoute exact path="/editapplication/:id" component={NewApplication} />
-                                <PrivateRoute exact path="/contacts" component={Contacts} />
-                                <PrivateRoute path="/contacts/:id" component={Contact} />
-                                <PrivateRoute exact path="/resumes" component={Resumes} />
-                                <PrivateRoute path="/todos/:filter" component={Todos} />
-                                <PrivateRoute exact path="/todos/" component={Todos} />
-                                <PrivateRoute exact path="/settings" component={Settings} />
-                            </Switch>
-                        </Router>
+                    <div className={classes.wrapper}>
+                        <div className={classes.mainContainer}>
+                            <ConfirmationDialog />
+                            <Router>
+                                <Navbar />
+                                <Message />
+                                <Switch>
+                                    <Route exact path="/">
+                                        <Home />
+                                    </Route>
+                                    <Route exact path="/login" component={UserEntry} />
+                                    <Route exact path="/logout" component={Logout} />
+                                    <PrivateRoute exact path="/applications" component={Applications} />
+                                    <PrivateRoute path="/applications/:id" component={Application} />
+                                    <PrivateRoute exact path="/newapplication" component={NewApplication} />
+                                    <PrivateRoute exact path="/editapplication/:id" component={NewApplication} />
+                                    <PrivateRoute exact path="/contacts" component={Contacts} />
+                                    <PrivateRoute path="/contacts/:id" component={Contact} />
+                                    <PrivateRoute exact path="/resumes" component={Resumes} />
+                                    <PrivateRoute path="/todos/:filter" component={Todos} />
+                                    <PrivateRoute exact path="/todos/" component={Todos} />
+                                    <PrivateRoute exact path="/settings" component={Settings} />
+                                </Switch>
+                            </Router>
+                        </div>
+                        <Footer />
                     </div>
                 </GlobalStore>
             </SnackbarProvider>
