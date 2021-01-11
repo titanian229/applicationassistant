@@ -97,10 +97,7 @@ const UserEntry = (props) => {
     const checkIsAuthenticated = async () => {
         const serverResponse = await API.checkAuthenticated();
         const serverUp = processServerResponse(serverResponse);
-        console.log("LOG- -------------------------------------------------------------------------------")
-        console.log("LOG- ~ file: UserEntry.js ~ line 100 ~ checkIsAuthenticated ~ serverUp", serverUp)
-        console.log("LOG- -------------------------------------------------------------------------------")
-        if (!serverUp) return
+        if (!serverUp) return;
         const { isAuthenticated } = serverResponse;
         if (isAuthenticated === true) {
             // clearLocal();
@@ -112,6 +109,11 @@ const UserEntry = (props) => {
         checkIsAuthenticated();
         //eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        setValues({ ...values, tab: props.location.pathname === '/login/register' ? 1 : 0 });
+        //eslint-disable-next-line
+    }, [props.location.pathname])
 
     // TODO implement grabbing stored settings from server for this user
 

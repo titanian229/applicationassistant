@@ -145,7 +145,7 @@ function App() {
                                     <Route exact path="/">
                                         <Home />
                                     </Route>
-                                    <Route exact path="/login" component={UserEntry} />
+                                    <Route path="/login" component={UserEntry} />
                                     <Route exact path="/logout" component={Logout} />
                                     <PrivateRoute exact path="/applications" component={Applications} />
                                     <PrivateRoute path="/applications/:id" component={Application} />

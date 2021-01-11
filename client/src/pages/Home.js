@@ -92,7 +92,7 @@ const Home = () => {
                         {globalStore.user.name && globalStore.user.name}
                     </Typography>
                     {!globalStore.isAuthenticated && (
-                        <Button variant="contained" color="primary" component={Link} to="/login">
+                        <Button variant="contained" color="primary" component={Link} to="/login/register">
                             Register
                         </Button>
                     )}
