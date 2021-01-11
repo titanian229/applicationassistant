@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const OfferListItem = (props) => {
+    //temp until variables are utilized
+    //eslint-disable-next-line
     const { handleRemove, handleEdit, _id, date, notes, salary, accepted } = props;
     const [showDetails, setShowDetails] = useState(false);
     const classes = useStyles();

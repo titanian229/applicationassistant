@@ -1,29 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    // Typography,
-    TextField,
-    // Button,
-    InputAdornment,
-    IconButton,
-    // Box,
-    // Paper,
-    Grid,
-    // Container,
-    Select,
-    Input,
-    InputLabel,
-    Checkbox,
-    MenuItem,
-    FormControl,
-    // List,
-    // ListItem,
-    ListItemText,
-    Divider,
-    Fab,
-} from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { Grid, Divider, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
@@ -58,16 +36,16 @@ const useStyles = makeStyles((theme) => ({
     // },
 }));
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//     PaperProps: {
+//         style: {
+//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//             width: 250,
+//         },
+//     },
+// };
 
 const filterOptions = [
     { name: 'Applied', key: 'applied' },
@@ -77,15 +55,15 @@ const filterOptions = [
     { name: 'Heard back', key: 'heardBack' },
 ];
 
-const Applications = (props) => {
+const Applications = () => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
     const [, , { loadResource, API, checkReminders }] = useGlobalStore();
-    const emptyValues = {
-        search: '',
-        filter: [],
-    };
-    const [values, setValues] = useState(emptyValues);
+    // const emptyValues = {
+    //     search: '',
+    //     filter: [],
+    // };
+    // const [values, setValues] = useState(emptyValues);
     const [applicationData, setApplicationData] = useState([]);
     const [filteredApplications, setFilteredApplications] = useState(null);
     // const fetchApplications = async () => {
@@ -98,36 +76,35 @@ const Applications = (props) => {
         // eslint-disable-next-line
     }, []);
 
-    const handleChange = (property) => (event) => {
-        setValues({ ...values, [property]: event.target.value });
-    };
+    // const handleChange = (property) => (event) => {
+    //     setValues({ ...values, [property]: event.target.value });
+    // };
 
-    const handleSearchSubmit = () => {};
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSearchSubmit();
-            return;
-        }
-    };
+    // const handleKeyDown = (event) => {
+    //     if (event.key === 'Enter') {
+    //         handleSearchSubmit();
+    //         return;
+    //     }
+    // };
 
-    const extractNames = (keysArray) => {
-        console.log('keysArray', keysArray);
-        console.log(
-            'index, item',
-            filterOptions.map((option) => option.key)
-        );
+    // const extractNames = (keysArray) => {
+    //     console.log('keysArray', keysArray);
+    //     console.log(
+    //         'index, item',
+    //         filterOptions.map((option) => option.key)
+    //     );
 
-        keysArray.forEach((key) => {
-            const index = filterOptions.map((option) => option.key).indexOf(key);
-            console.log('extractNames -> index', index);
-            console.log('index value', keysArray[index]);
-        });
+    //     keysArray.forEach((key) => {
+    //         const index = filterOptions.map((option) => option.key).indexOf(key);
+    //         console.log('extractNames -> index', index);
+    //         console.log('index value', keysArray[index]);
+    //     });
 
-        let ret = keysArray.map((key) => filterOptions[filterOptions.map((option) => option.key).indexOf(key)].name);
-        console.log('extractNames -> ret', ret);
-        return ret;
-    };
+    //     let ret = keysArray.map((key) => filterOptions[filterOptions.map((option) => option.key).indexOf(key)].name);
+    //     console.log('extractNames -> ret', ret);
+    //     return ret;
+    // };
 
     const filterApplicationsTags = (applications, filter) => {
         console.log('filter function called in parent', filter);

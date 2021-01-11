@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Grid, List, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddButton from '../AddButton';
@@ -28,10 +28,10 @@ const newOfferValues = {
 };
 
 const OfferSection = (props) => {
-    const { offers, addOffer, removeOffer, updateOffer } = props;
+    const { offers, addOffer, removeOffer } = props;  //updateOffer removed
     const [offerNewOpen, setOfferNewOpen] = useState(false);
     const [offerValues, setOfferValues] = useState(newOfferValues);
-    const [, dispatch, { processServerResponse, API, formatDate, changeHandler }] = useGlobalStore();
+    const [, , { changeHandler }] = useGlobalStore();
     const handleChange = changeHandler(offerValues, setOfferValues);
     const classes = useStyles();
 
