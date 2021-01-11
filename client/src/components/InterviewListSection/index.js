@@ -2,28 +2,19 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Typography,
-    TextField,
-    Button,
     Grid,
-    Box,
     List,
-    FormGroup,
-    FormControlLabel,
-    Switch,
-    Divider,
-    Accordion as MuiAccordion,
-    AccordionSummary as MuiAccordionSummary,
-    AccordionDetails,
-    Badge,
+    // Accordion as MuiAccordion,
+    // AccordionSummary as MuiAccordionSummary,
 } from '@material-ui/core';
 
 import { useGlobalStore } from '../GlobalStore';
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InterviewInformation from '../InterviewInformation';
 import InterviewAddition from '../InterviewAddition';
 import AddButton from '../AddButton';
-import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
+// import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
 
 const useStyles = makeStyles((theme) => ({
     primaryInputBox: {
@@ -80,16 +71,15 @@ const InterviewListSection = (props) => {
         const serverResponse = await API.associateItem(applicationID, interview, 'push', 'interviewsArray');
         const serverUp = processServerResponse(serverResponse);
         if (serverUp === false) return;
-        if (serverResponse.application){
-            setShowAddInterview(false)
+        if (serverResponse.application) {
+            setShowAddInterview(false);
             refreshInterviews();
         }
-
     };
 
     return (
         <Grid container direction="column">
-            <Typography className={classes.title} variant="h6" align='center'>
+            <Typography className={classes.title} variant="h6" align="center">
                 Interviews
             </Typography>
             {interviewsArray.length > 0 && (

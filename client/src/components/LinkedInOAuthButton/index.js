@@ -70,7 +70,7 @@ function OAuth({ loginComplete, ...rest }) {
             color="primary"
             aria-label="login with linkedin"
         >
-            <img src={LinkedInButtonImage} style={{ width: '200px', height: 'auto' }} />
+            <img src={LinkedInButtonImage} alt='login with linkedin' style={{ width: '200px', height: 'auto' }} />
         </Button>
     );
 }

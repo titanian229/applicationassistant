@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Button,
     Grid,
-    Select,
-    InputLabel,
-    MenuItem,
-    FormControl,
     FormGroup,
     FormControlLabel,
     Switch,
@@ -17,7 +13,7 @@ import { useGlobalStore } from '../GlobalStore';
 
 const OfferNew = (props) => {
     const { saveOffer, offerValues, handleChange } = props;
-    const [, , { sendMessage, changeHandler, formatDate }] = useGlobalStore();
+    const [, , { sendMessage }] = useGlobalStore();
 
     const handleSave = () => {
         if (offerValues.date === null) {

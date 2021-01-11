@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { useGlobalStore } from '../GlobalStore';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-    const [globalStore, dispatcher] = useGlobalStore();
+    const [globalStore] = useGlobalStore();
 
     return (
         <Route

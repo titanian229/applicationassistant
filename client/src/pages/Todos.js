@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-    Typography,
+    // Typography,
     Box,
-    Collapse,
-    IconButton,
-    Paper,
+    // Collapse,
+    // IconButton,
+    // Paper,
     Grid,
-    List,
-    ListItem,
-    ListItemText,
-    Divider,
-    Avatar,
+    // List,
+    // ListItem,
+    // ListItemText,
+    // Divider,
+    // Avatar,
 } from '@material-ui/core';
 // import { makeStyles } from '@material-ui/core/styles';
 // import SearchIcon from '@material-ui/icons/Search';
@@ -19,7 +19,7 @@ import {
 
 import { useGlobalStore } from '../components/GlobalStore';
 import LoadingOverlay from '../components/LoadingOverlay';
-import TodoListItemToggle from '../components/TodoListItemToggle';
+// import TodoListItemToggle from '../components/TodoListItemToggle';
 import TodoListSection from '../components/TodoListSection';
 import FilterAndSearch from '../components/FilterAndSearch';
 import SectionTitle from '../components/SectionTitle';
@@ -61,6 +61,7 @@ const Todos = () => {
 
     useEffect(() => {
         checkReminders()
+        //eslint-disable-next-line
     }, [todos])
 
     const sortMethodSetter = (event) => {

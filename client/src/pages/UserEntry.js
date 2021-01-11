@@ -6,17 +6,7 @@ import LinkedInOAuthButton from '../components/LinkedInOAuthButton';
 
 import clsx from 'clsx';
 
-import {
-    Grid,
-    Typography,
-    Tab as MuiTab,
-    Tabs as MuiTabs,
-    Paper,
-    Button,
-    TextField,
-    InputAdornment,
-    IconButton,
-} from '@material-ui/core';
+import { Grid, Tab as MuiTab, Tabs as MuiTabs, Paper, TextField, InputAdornment, IconButton } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -87,7 +77,7 @@ const UserEntry = (props) => {
             API,
             processServerResponse,
             changeHandler,
-            handleLocalStorage: { clearLocal, saveToLocal },
+            handleLocalStorage: { saveToLocal },
             sendMessage,
         },
     ] = useGlobalStore();
@@ -106,8 +96,7 @@ const UserEntry = (props) => {
 
     const checkIsAuthenticated = async () => {
         const serverResponse = await API.checkAuthenticated();
-        const serverUp = processServerResponse(serverResponse);
-
+        processServerResponse(serverResponse);
         const { isAuthenticated } = serverResponse;
         if (isAuthenticated === true) {
             // clearLocal();
@@ -117,6 +106,7 @@ const UserEntry = (props) => {
 
     useEffect(() => {
         checkIsAuthenticated();
+        //eslint-disable-next-line
     }, []);
 
     // TODO implement grabbing stored settings from server for this user

@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = () => {
-    const [globalStore, dispatch] = useGlobalStore();
+    const [globalStore] = useGlobalStore();
     const classes = useStyles();
 
     return (
@@ -100,7 +100,7 @@ const Home = () => {
                     </Typography>
                 </Grid>
                 <Grid item md={6}>
-                    <img src={sideOneImage} className={classes.sideOneImage} alt="Work Image" />
+                    <img src={sideOneImage} className={classes.sideOneImage} alt="Work" />
                 </Grid>
                 <Grid item md={6}>
                     <img src={sideTwoImage} className={classes.sideTwoImage} alt="Hard at work" />

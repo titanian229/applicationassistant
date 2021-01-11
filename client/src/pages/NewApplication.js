@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx'
 import { useHistory, useParams } from 'react-router-dom';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
     Typography,
     TextField,
@@ -27,8 +27,8 @@ import {
     Divider,
     // Tab,
     // Tabs,
-    Accordion as MuiAccordion,
-    AccordionSummary as MuiAccordionSummary,
+    // Accordion as MuiAccordion,
+    // AccordionSummary as MuiAccordionSummary,
     AccordionDetails,
     Badge,
 } from '@material-ui/core';
@@ -130,6 +130,7 @@ const NewApplication = () => {
             console.log('ID Change UseEffect called', id);
             loadResource(async () => API.getApplication(id), 'application', setExistingApplicationValues);
         }
+        //eslint-disable-next-line
     }, [id]);
 
     const setExistingApplicationValues = (application) => {
