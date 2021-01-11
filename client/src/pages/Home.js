@@ -146,10 +146,19 @@ const Home = () => {
                     <Typography variant="body2" className={classes.body}>
                         Application Assistant was created by James Lee, a full stack developer and avid automator from
                         Toronto, Ontario. Learn more about James and see more of his projects on his{' '}
-                        <Link to="https://jamesdeveloping.ca">personal webpage</Link>. Application Assistant uses a
-                        back-end NodeJS environment running an Express server, and a ReactJS front-end using Material-UI
-                        components. See Application Assistant's source on GitHub{' '}
-                        <Link to="https://github.com/titanian229/applicationassistant/">here</Link>.
+                        <a href="https://jamesdeveloping.ca" target="_blank" rel="noreferrer noopener">
+                            personal webpage
+                        </a>
+                        . Application Assistant uses a back-end NodeJS environment running an Express server, and a
+                        ReactJS front-end using Material-UI components. See Application Assistant's source on GitHub{' '}
+                        <a
+                            href="https://github.com/titanian229/applicationassistant/"
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            here
+                        </a>
+                        .
                     </Typography>
                 </Box>
             </Grid>

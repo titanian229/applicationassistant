@@ -500,7 +500,7 @@ const Application = () => {
                                     )}
                                     {postLink && (
                                         <Typography variant="subtitle2">
-                                            <a href={postLink} alt="Original Post">
+                                            <a href={postLink} target="_blank" rel="noreferrer noopener" alt="Original Post">
                                                 Original Post
                                             </a>
                                         </Typography>
