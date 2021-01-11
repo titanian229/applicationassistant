@@ -9,6 +9,10 @@
 
 Application Assistant is a web application for tracking the details of your job searching journey.  In a job hunt there are lots of things to keep track of, usually relegated to a dry spreadsheet somewhere.  Application Assistant collects and displays the data to help make your journey easier, suggesting next steps and leveraging the data to show areas to improve in.  Networking contacts, todos and next step reminders, company background information, and information about each step with a posting from initial application to a final interview and offer.  I created Application Assistant to help make what can be a frustrating process just a little friendlier.
 
+
+[Use Application Assistant, hosted by Heroku](https://applicationassistant.herokuapp.com)
+
+
 ## Walkthrough
 
 User login or initial registration is accomplished on the entry page, either using a username/password pair, or with LinkedIn integration.
