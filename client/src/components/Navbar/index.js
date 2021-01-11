@@ -38,12 +38,18 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
-        margin: theme.spacing(0, 1, 0, 0),
+        margin: theme.spacing(0, 2, 0, 0),
     },
     hideonDesktop: {
         [theme.breakpoints.up('sm')]: {
             display: 'none',
         },
+    },
+    divider: {
+        [theme.breakpoints.down('sm')]: {
+            display: 'none',
+        },
+        margin: theme.spacing(0, 3, 0, 1),
     },
 }));
 
@@ -108,7 +114,7 @@ const Navbar = () => {
                         <AddAlertIcon />
                     </IconButton>
                 </Tooltip>
-                <Divider className={classes.desktopNavIcons} orientation="vertical" flexItem />
+                <Divider className={classes.divider} orientation="vertical" flexItem />
 
                 <Tooltip title="Settings and Profile">
                     <IconButton

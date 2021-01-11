@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Box, Button, Typography } from '@material-ui/core';
+import { Grid, Box, Button, Typography, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useGlobalStore } from '../components/GlobalStore';
@@ -61,6 +61,21 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down('sm')]: {
             display: 'none',
         },
+    },
+    divider: {
+        margin: theme.spacing(2, 0),
+    },
+    aboutContainer: {
+        // width: '100%',
+        borderRadius: '5px',
+        padding: '20px',
+        borderStyle: 'solid',
+        borderWidth: '4px',
+        borderColor: theme.palette.secondary.main,
+        // border: "4px solid "
+    },
+    aboutContainerMargin: {
+        margin: theme.spacing(4, 0),
     },
 }));
 
@@ -123,6 +138,20 @@ const Home = () => {
                         </ul>
                     </Typography>
                 </Grid>
+            </Grid>
+            <Divider className={classes.divider} />
+            <Grid container justify="center" className={classes.aboutContainerMargin}>
+                <Box alignItems="center" justify="center" className={classes.aboutContainer} bgcolor="primary.main">
+                    <Typography variant="subtitle1">About Application Assistant</Typography>
+                    <Typography variant="body2" className={classes.body}>
+                        Application Assistant was created by James Lee, a full stack developer and avid automator from
+                        Toronto, Ontario. Learn more about James and see more of his projects on his{' '}
+                        <Link to="https://jamesdeveloping.ca">personal webpage</Link>. Application Assistant uses a
+                        back-end NodeJS environment running an Express server, and a ReactJS front-end using Material-UI
+                        components. See Application Assistant's source on GitHub{' '}
+                        <Link to="https://github.com/titanian229/applicationassistant/">here</Link>.
+                    </Typography>
+                </Box>
             </Grid>
         </div>
     );
