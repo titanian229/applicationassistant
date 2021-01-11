@@ -143,6 +143,7 @@ function GlobalStore(props) {
             enqueueSnackbar(message, options);
             return true;
         }
+        return true
     };
 
     const loadResource = async (APIFunction, resourceName, stateSetter, showLoading = true) => {

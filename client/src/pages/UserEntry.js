@@ -96,7 +96,11 @@ const UserEntry = (props) => {
 
     const checkIsAuthenticated = async () => {
         const serverResponse = await API.checkAuthenticated();
-        processServerResponse(serverResponse);
+        const serverUp = processServerResponse(serverResponse);
+        console.log("LOG- -------------------------------------------------------------------------------")
+        console.log("LOG- ~ file: UserEntry.js ~ line 100 ~ checkIsAuthenticated ~ serverUp", serverUp)
+        console.log("LOG- -------------------------------------------------------------------------------")
+        if (!serverUp) return
         const { isAuthenticated } = serverResponse;
         if (isAuthenticated === true) {
             // clearLocal();
