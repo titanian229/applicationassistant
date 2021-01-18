@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Grid, Box, Button, Typography, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import clsx from 'clsx'
+
 import { useGlobalStore } from '../components/GlobalStore';
 
 import sideOneImage from './images/jess-bailey-q10VITrVYUM-unsplash.jpg';
@@ -45,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
     body: {
         // color: '#fff',
         maxWidth: '60ch',
+        margin: '0 auto',
+
     },
     margin: {
         marginTop: theme.spacing(3),
@@ -121,7 +125,7 @@ const Home = () => {
                     <img src={sideTwoImage} className={classes.sideTwoImage} alt="Hard at work" />
                 </Grid>
                 <Grid item md={6}>
-                    <Typography variant="subtitle1" className={classes.margin}>
+                    <Typography variant="subtitle1" className={clsx(classes.margin, classes.body)}>
                         Key Features
                     </Typography>
                     <Typography variant="body2" className={classes.body} component="div">

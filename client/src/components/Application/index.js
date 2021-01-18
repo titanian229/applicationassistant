@@ -38,7 +38,7 @@ import {
     blueGrey,
 } from '@material-ui/core/colors/';
 
-import clsx from 'clsx'
+import clsx from 'clsx';
 
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 // import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -103,6 +103,7 @@ const useStyles = makeStyles((theme) => ({
     },
     amber: {
         backgroundColor: amber[colourShade],
+        color: theme.palette.getContrastText(amber[colourShade]),
     },
     orange: {
         backgroundColor: orange[colourShade],
@@ -202,7 +203,7 @@ const Application = (props) => {
         <Card className={clsx(classes.applicationCard, classes[colour])}>
             <CardActionArea component={Link} to={'/applications/' + _id}>
                 <CardHeader
-                    avatar={<Avatar className={classes.avatarColour}>{businessName[0]}</Avatar>}
+                    avatar={<Avatar className={classes.avatarColour}>{businessName[0] + (businessName.length > 1 ? businessName[1].toLowerCase() : '')}</Avatar>}
                     title={<Typography variant="subtitle1">{businessName}</Typography>}
                     subheader={
                         <>
