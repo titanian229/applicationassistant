@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Divider, Fab, IconButton } from '@material-ui/core';
+import { Grid, Divider, Fab, IconButton, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
@@ -94,6 +94,21 @@ const Applications = () => {
     //SORT OPTIONS
     const [ascOrDesc, setAscOrDesc] = useState(1);
     const [sortOption, setSortOption] = useState('dateFound');
+
+    const [sortAnchorEl, setSortAnchorEl] = useState(null);
+
+    const handleSortClick = (e) => {
+        setSortAnchorEl(e.currentTarget);
+    };
+
+    const handleSortClose = (e) => {
+        setSortAnchorEl(null);
+    };
+
+    const handleSortItemClick = (key) => () => {
+        setSortOption(key);
+        setSortAnchorEl(null);
+    };
 
     // const fetchApplications = async () => {
     //     loadResource(async () => API.getApplications(), 'applications', setApplicationData)
@@ -231,9 +246,40 @@ const Applications = () => {
                     <IconButton aria-label="Sort option" onClick={() => setAscOrDesc(-1 * ascOrDesc)}>
                         {ascOrDesc === -1 ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                     </IconButton>
-                    <IconButton aria-label="Sort direction">
+                    <IconButton aria-label="Sort direction" onClick={handleSortClick}>
                         <SortIcon />
                     </IconButton>
+                    <Menu
+                        id="sort-menu"
+                        anchorEl={sortAnchorEl}
+                        keepMounted
+                        open={Boolean(sortAnchorEl)}
+                        onClose={handleSortClose}
+                        PaperProps={{
+                            style: {
+                                maxHeight: 216,
+                                width: '20ch',
+                            },
+                        }}
+                    >
+                        <MenuItem
+                            key="dateFound"
+                            selected={sortOption === 'dateFound'}
+                            onClick={handleSortItemClick('dateFound')}
+                        >
+                            Date Found
+                        </MenuItem>
+                        <MenuItem
+                            key="appliedDate"
+                            selected={sortOption === 'appliedDate'}
+                            onClick={handleSortItemClick('appliedDate')}
+                        >
+                            Date Applied
+                        </MenuItem>
+                        <MenuItem key="alpha" selected={sortOption === 'alpha'} onClick={handleSortItemClick('alpha')}>
+                            Alphabetical
+                        </MenuItem>
+                    </Menu>
                 </div>
             </div>
             <Divider />
