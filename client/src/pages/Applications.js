@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Divider, Fab } from '@material-ui/core';
+import { Grid, Divider, Fab, IconButton, Menu, MenuItem } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
@@ -10,6 +10,10 @@ import SectionTitle from '../components/SectionTitle';
 import FilterAndSearch from '../components/FilterAndSearch';
 import LoadingOverlay from '../components/LoadingOverlay';
 import NewUser from '../components/NewUser';
+
+import SortIcon from '@material-ui/icons/Sort';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -27,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
         zIndex: 1000,
+    },
+    sortBar: {
+        display: 'flex',
+        justifyContent: 'flex-end',
     },
     // mainContainer: {
     //     [theme.breakpoints.up('sm')]: {
@@ -55,6 +63,22 @@ const filterOptions = [
     { name: 'Heard back', key: 'heardBack' },
 ];
 
+const sorter = (sortOption, ascOrDesc) => {
+    if (sortOption === 'alpha') {
+        return (a, b) => {
+            if (a.businessName[0] === b.businessName[0]) return 0;
+            return a.businessName[0] > b.businessName[0] ? ascOrDesc * 1 : ascOrDesc * -1;
+        };
+    }
+
+    return (a, b) => {
+        if (a[sortOption] && !b[sortOption]) return ascOrDesc * -1;
+        if (!a[sortOption] && b[sortOption]) return ascOrDesc * 1;
+        if (!a[sortOption] && b[sortOption]) return 0;
+        return ascOrDesc * (new Date(a[sortOption]).getTime() - new Date(b[sortOption]).getTime());
+    };
+};
+
 const Applications = () => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
@@ -66,6 +90,26 @@ const Applications = () => {
     // const [values, setValues] = useState(emptyValues);
     const [applicationData, setApplicationData] = useState([]);
     const [filteredApplications, setFilteredApplications] = useState(null);
+
+    //SORT OPTIONS
+    const [ascOrDesc, setAscOrDesc] = useState(1);
+    const [sortOption, setSortOption] = useState('dateFound');
+
+    const [sortAnchorEl, setSortAnchorEl] = useState(null);
+
+    const handleSortClick = (e) => {
+        setSortAnchorEl(e.currentTarget);
+    };
+
+    const handleSortClose = (e) => {
+        setSortAnchorEl(null);
+    };
+
+    const handleSortItemClick = (key) => () => {
+        setSortOption(key);
+        setSortAnchorEl(null);
+    };
+
     // const fetchApplications = async () => {
     //     loadResource(async () => API.getApplications(), 'applications', setApplicationData)
     // };
@@ -79,7 +123,6 @@ const Applications = () => {
     // const handleChange = (property) => (event) => {
     //     setValues({ ...values, [property]: event.target.value });
     // };
-
 
     // const handleKeyDown = (event) => {
     //     if (event.key === 'Enter') {
@@ -136,6 +179,9 @@ const Applications = () => {
 
         return filteredApplications;
     };
+
+    // const sortOption = 'alpha'; //options: dateFound, appliedDate, alpha
+    // const ascOrDesc = -1; // 1 or -1 for asc or desc
 
     return (
         <div className={classes.mainContainer}>
@@ -196,12 +242,53 @@ const Applications = () => {
                         </Select>
                     </FormControl>
                 </Grid> */}
+                <div className={classes.sortBar}>
+                    <IconButton aria-label="Sort option" onClick={() => setAscOrDesc(-1 * ascOrDesc)}>
+                        {ascOrDesc === -1 ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                    </IconButton>
+                    <IconButton aria-label="Sort direction" onClick={handleSortClick}>
+                        <SortIcon />
+                    </IconButton>
+                    <Menu
+                        id="sort-menu"
+                        anchorEl={sortAnchorEl}
+                        keepMounted
+                        open={Boolean(sortAnchorEl)}
+                        onClose={handleSortClose}
+                        PaperProps={{
+                            style: {
+                                maxHeight: 216,
+                                width: '20ch',
+                            },
+                        }}
+                    >
+                        <MenuItem
+                            key="dateFound"
+                            selected={sortOption === 'dateFound'}
+                            onClick={handleSortItemClick('dateFound')}
+                        >
+                            Date Found
+                        </MenuItem>
+                        <MenuItem
+                            key="appliedDate"
+                            selected={sortOption === 'appliedDate'}
+                            onClick={handleSortItemClick('appliedDate')}
+                        >
+                            Date Applied
+                        </MenuItem>
+                        <MenuItem key="alpha" selected={sortOption === 'alpha'} onClick={handleSortItemClick('alpha')}>
+                            Alphabetical
+                        </MenuItem>
+                    </Menu>
+                </div>
             </div>
             <Divider />
             <Grid container className={classes.applicationsContainer}>
-                {(filteredApplications !== null ? filteredApplications : applicationData).map((application) => (
-                    <Application applicationData={application} key={application._id} />
-                ))}
+                {(filteredApplications !== null ? filteredApplications : applicationData)
+                    .sort(sorter(sortOption || 'dateFound', ascOrDesc))
+                    .map((application) => (
+                        <Application applicationData={application} key={application._id} />
+                    ))}
                 {filteredApplications === null && applicationData.length === 0 && <NewUser />}
             </Grid>
             <LoadingOverlay />
