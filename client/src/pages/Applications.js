@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Divider, Fab } from '@material-ui/core';
+import { Grid, Divider, Fab, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
 import Application from '../components/Application';
@@ -10,6 +10,10 @@ import SectionTitle from '../components/SectionTitle';
 import FilterAndSearch from '../components/FilterAndSearch';
 import LoadingOverlay from '../components/LoadingOverlay';
 import NewUser from '../components/NewUser';
+
+import SortIcon from '@material-ui/icons/Sort';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
     filterHeader: {
@@ -27,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
         bottom: theme.spacing(2),
         right: theme.spacing(2),
         zIndex: 1000,
+    },
+    sortBar: {
+        display: 'flex',
+        justifyContent: 'flex-end',
     },
     // mainContainer: {
     //     [theme.breakpoints.up('sm')]: {
@@ -71,15 +79,6 @@ const sorter = (sortOption, ascOrDesc) => {
     };
 };
 
-const sortOptions = [
-    (a, b) => {
-        if (a.dateFound && !b.dateFound) return 1;
-        if (!a.dateFound && b.dateFound) return -1;
-        if (!a.dateFound && b.dateFound) return 0;
-        return new Date(a.dateFound).getTime() - new Date(b.dateFound).getTime();
-    },
-];
-
 const Applications = () => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
@@ -91,6 +90,11 @@ const Applications = () => {
     // const [values, setValues] = useState(emptyValues);
     const [applicationData, setApplicationData] = useState([]);
     const [filteredApplications, setFilteredApplications] = useState(null);
+
+    //SORT OPTIONS
+    const [ascOrDesc, setAscOrDesc] = useState(1);
+    const [sortOption, setSortOption] = useState('dateFound');
+
     // const fetchApplications = async () => {
     //     loadResource(async () => API.getApplications(), 'applications', setApplicationData)
     // };
@@ -161,8 +165,8 @@ const Applications = () => {
         return filteredApplications;
     };
 
-    const sortOption = 'alpha'; //options: dateFound, appliedDate, alpha
-    const ascOrDesc = -1; // 1 or -1 for asc or desc
+    // const sortOption = 'alpha'; //options: dateFound, appliedDate, alpha
+    // const ascOrDesc = -1; // 1 or -1 for asc or desc
 
     return (
         <div className={classes.mainContainer}>
@@ -223,6 +227,14 @@ const Applications = () => {
                         </Select>
                     </FormControl>
                 </Grid> */}
+                <div className={classes.sortBar}>
+                    <IconButton aria-label="Sort option" onClick={() => setAscOrDesc(-1 * ascOrDesc)}>
+                        {ascOrDesc === -1 ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                    </IconButton>
+                    <IconButton aria-label="Sort direction">
+                        <SortIcon />
+                    </IconButton>
+                </div>
             </div>
             <Divider />
             <Grid container className={classes.applicationsContainer}>
