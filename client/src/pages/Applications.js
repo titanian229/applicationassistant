@@ -55,6 +55,31 @@ const filterOptions = [
     { name: 'Heard back', key: 'heardBack' },
 ];
 
+const sorter = (sortOption, ascOrDesc) => {
+    if (sortOption === 'alpha') {
+        return (a, b) => {
+            if (a.businessName[0] === b.businessName[0]) return 0;
+            return a.businessName[0] > b.businessName[0] ? ascOrDesc * 1 : ascOrDesc * -1;
+        };
+    }
+
+    return (a, b) => {
+        if (a[sortOption] && !b[sortOption]) return ascOrDesc * -1;
+        if (!a[sortOption] && b[sortOption]) return ascOrDesc * 1;
+        if (!a[sortOption] && b[sortOption]) return 0;
+        return ascOrDesc * (new Date(a[sortOption]).getTime() - new Date(b[sortOption]).getTime());
+    };
+};
+
+const sortOptions = [
+    (a, b) => {
+        if (a.dateFound && !b.dateFound) return 1;
+        if (!a.dateFound && b.dateFound) return -1;
+        if (!a.dateFound && b.dateFound) return 0;
+        return new Date(a.dateFound).getTime() - new Date(b.dateFound).getTime();
+    },
+];
+
 const Applications = () => {
     // Sidenav on desktop, top header on mobile
     const classes = useStyles();
@@ -79,7 +104,6 @@ const Applications = () => {
     // const handleChange = (property) => (event) => {
     //     setValues({ ...values, [property]: event.target.value });
     // };
-
 
     // const handleKeyDown = (event) => {
     //     if (event.key === 'Enter') {
@@ -136,6 +160,9 @@ const Applications = () => {
 
         return filteredApplications;
     };
+
+    const sortOption = 'alpha'; //options: dateFound, appliedDate, alpha
+    const ascOrDesc = -1; // 1 or -1 for asc or desc
 
     return (
         <div className={classes.mainContainer}>
@@ -199,9 +226,11 @@ const Applications = () => {
             </div>
             <Divider />
             <Grid container className={classes.applicationsContainer}>
-                {(filteredApplications !== null ? filteredApplications : applicationData).map((application) => (
-                    <Application applicationData={application} key={application._id} />
-                ))}
+                {(filteredApplications !== null ? filteredApplications : applicationData)
+                    .sort(sorter(sortOption || 'dateFound', ascOrDesc))
+                    .map((application) => (
+                        <Application applicationData={application} key={application._id} />
+                    ))}
                 {filteredApplications === null && applicationData.length === 0 && <NewUser />}
             </Grid>
             <LoadingOverlay />

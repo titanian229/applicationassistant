@@ -24,7 +24,6 @@ module.exports = (router) => {
                         path: 'resumes',
                     },
                 });
-            console.log(user);
             // .populate('todos')
             // .populate('contacts')
             // .populate('resumes');
