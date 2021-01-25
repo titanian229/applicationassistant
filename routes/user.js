@@ -1,8 +1,9 @@
 const db = require('../models');
-const { saveSession, registerUser } = require('../app/authentication');
+const { registerUser, loginUser } = require('../app/authentication');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authenticated = require('./middleware/authenticated');
+const generateAccessToken = require('../app/generateToken');
 
 module.exports = (router) => {
     // local user creation
@@ -43,55 +44,46 @@ module.exports = (router) => {
     router.post('/login', async ({ body }, res) => {
         // TODO save date last logged in to DB as well
         const { email, password } = body;
+        const sessionData = await loginUser({ email, password });
 
-        if (!(email && password)) {
-            res.status(403).send({ error: 'Email and password not included in request' });
-            return;
-        }
+        res.status(sessionData.error ? 403 : 200).send(sessionData);
 
-        const user = await db.User.findOne({ email: email });
-        if (!user) {
-            res.status(403).send({ error: 'No user with that email' });
-            return;
-        }
-        let validPassword;
-        try {
-            validPassword = await bcrypt.compare(password, user.password);
-        } catch (err) {
-            console.log('error inside login', err);
-            res.status(403).send({ error: 'Error finding login' });
-            return;
-        }
+        // if (!(email && password)) {
+        //     res.status(403).send({ error: 'Email and password not included in request' });
+        //     return;
+        // }
 
-        if (!validPassword) {
-            res.status(403).send({ error: 'Invalid password' });
-            return;
-        }
+        // const user = await db.User.findOne({ email: email });
+        // if (!user) {
+        //     res.status(403).send({ error: 'No user with that email' });
+        //     return;
+        // }
 
-        try {
-            const session = createSession();
-            const sessionData = await saveSession(user, session);
-            res.status(200).send(sessionData);
-        } catch (err) {
-            console.log(err);
-            console.log('error creating session for login', user);
-            res.status(403).send({ error: 'Error creating new session' });
-        }
-    });
+        // let validPassword;
+        // try {
+        //     validPassword = await bcrypt.compare(password, user.password);
+        // } catch (err) {
+        //     console.log('error inside login', err);
+        //     res.status(403).send({ error: 'Error finding login' });
+        //     return;
+        // }
 
-    router.post('/loginJWT', async (req, res) => {
-        const username = req.body.username;
+        // if (!validPassword) {
+        //     res.status(403).send({ error: 'Invalid password' });
+        //     return;
+        // }
 
-        if (!username) {
-            console.log('No user present in login request');
-            res.status(403).send({ error: 'No user in login request' });
-            return;
-        }
+        // try {
+        //     const refreshToken = jwt.sign({ email: user.email, id: user._id }, process.env.REFRESH_TOKEN_SECRET);
+        //     const accessToken = generateAccessToken({ email: user.email, id: user._id });
 
-        const user = { name: username };
-
-        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-        res.json({ accessToken });
+        //     const sessionData = await saveSession(user, session);
+        //     res.status(200).send(sessionData);
+        // } catch (err) {
+        //     console.log(err);
+        //     console.log('error creating session for login', user);
+        //     res.status(403).send({ error: 'Error creating new session' });
+        // }
     });
 
     router.get('/authentication', authenticated, async (req, res) => {
@@ -131,7 +123,7 @@ module.exports = (router) => {
             res.status(403).send({ error: 'Logout attempted for null user' });
             return;
         }
-        const user = db.User.findByIdAndUpdate({ _id: req.user.id }, { refreshToken: '' });
+        await db.User.findByIdAndUpdate({ _id: req.user.id }, { refreshToken: '' });
         res.status(200).send({ message: 'Log out successful' });
     });
 };

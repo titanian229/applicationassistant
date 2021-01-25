@@ -95,4 +95,47 @@ module.exports = {
             accessToken,
         };
     },
+    loginUser: async (loginUserCredentials) => {
+        //given email and password, this is a local login
+        if (!loginUserCredentials.email || !loginUserCredentials.password) {
+            console.log('Authentication loginUser failed, missing email or password', loginUserCredentials);
+            return {
+                error: 'Missing email or password',
+            };
+        }
+
+        const user = await User.findOne({ email: loginUserCredentials.email });
+
+        if (!user) {
+            console.log('No user with email found');
+            return { error: 'No user with that email' };
+        }
+
+        let validPassword;
+        try {
+            validPassword = await bcrypt.compare(loginUserCredentials.password, user.password);
+        } catch (err) {
+            console.log('Error inside login', err);
+            return { error: 'Server error attempting login' };
+        }
+
+        if (!validPassword) {
+            return { error: 'Invalid password' };
+        }
+
+        try {
+            const refreshToken = jwt.sign({ email: user.email, id: user._id }, process.env.REFRESH_TOKEN_SECRET);
+            const accessToken = generateAccessToken({ email: user.email, id: user._id });
+            await User.findByIdAndUpdate({ _id: user._id }, { refreshToken });
+
+            return {
+                message: `Welcome back ${user.name}!`,
+                refreshToken,
+                accessToken,
+            };
+        } catch (err) {
+            console.log('Error inside login', err);
+            return { error: 'Server error attempting login' };
+        }
+    },
 };
