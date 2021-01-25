@@ -2,10 +2,9 @@ const db = require('../models');
 const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
-    router.get('/api/applications', authenticated, async ({ headers }, res) => {
+    router.get('/api/applications', authenticated, async (req, res) => {
         try {
-            const { session } = headers;
-            const user = await db.User.findOne({ session })
+            const user = await db.User.findById({ _id: req.user.id })
                 .populate({
                     path: 'applications',
                     populate: {
@@ -24,9 +23,7 @@ module.exports = (router) => {
                         path: 'resumes',
                     },
                 });
-            // .populate('todos')
-            // .populate('contacts')
-            // .populate('resumes');
+
             const applications = user.applications;
 
             res.status(200).send({ applications });
@@ -35,34 +32,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    // router.get('/testing/applications', async ({ headers }, res) => {
-    //     try {
-    //         const { session } = headers;
-    //         let contacts = await db.Contact.find();
-    //         contacts = contacts.map((app) => app._id);
-    //         let resumes = await db.Resume.find()
-    //         resumes = resumes.map((app) => app._id);
-    //         let todos = await db.Todo.find()
-    //         t odos = todos.map((app) => app._id);
-    //         const user = await db.User.findOneAndUpdate({ session }, { contacts, resumes, todos });
 
-    //         // const user = await db.User.find({ session }).populate({
-    //         //     path: 'applications',
-    //         //     populate: {
-    //         //       path: 'todos',
-    //         //     }
-    //         //  })
-    //         // .populate('todos')
-    //         // .populate('contacts')
-    //         // .populate('resumes');
-
-    //         res.status(200).send({ message: 'IT WORKED' });
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
-    router.get('/api/applications/:id', authenticated, async ({ headers, params }, res) => {
+    router.get('/api/applications/:id', authenticated, async ({ params }, res) => {
         try {
             const { id } = params;
             const application = await db.Application.findById({ _id: id })
@@ -75,7 +46,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.get('/api/applications/:id/:itemType', authenticated, async ({ headers, params }, res) => {
+
+    router.get('/api/applications/:id/:itemType', authenticated, async ({ params }, res) => {
         try {
             const { id, itemType } = params;
             const application = await db.Application.findById({ _id: id }).populate(itemType);
@@ -85,19 +57,19 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/applications', authenticated, async ({ headers, body }, res) => {
+
+    router.post('/api/applications', authenticated, async ({ user: authenticatedUser, body }, res) => {
         try {
-            const { session } = headers;
-            const user = await db.User.findOne({session})
+            const user = await db.User.findById({ _id: authenticatedUser.id });
 
             if (!body.businessName || !body.roleTitle) {
                 res.status(400).send({ error: 'Application must have a business name and role title' });
                 return;
             }
-            
-            let todos = JSON.parse(JSON.stringify(body.todos))
-            console.log("todos", todos)
-            delete body.todos
+
+            let todos = JSON.parse(JSON.stringify(body.todos));
+            console.log('todos', todos);
+            delete body.todos;
 
             let application = await db.Application.create(body);
 
@@ -105,25 +77,30 @@ module.exports = (router) => {
                 // Make the todos, add the ids to an array
                 todos = todos.map((todo) => db.Todo.create({ ...todo, parentApplication: application._id }));
                 todos = await Promise.all(todos);
-                user.todos = user.todos.concat(todos.map(todo => todo._id))
-                await user.save()
+                user.todos = user.todos.concat(todos.map((todo) => todo._id));
+                await user.save();
                 // todos = todos.map((todo) => ({_id: todo._id}));
-                application = await db.Application.findByIdAndUpdate({ _id: application._id }, { todos }, { new: true });
+                application = await db.Application.findByIdAndUpdate(
+                    { _id: application._id },
+                    { todos },
+                    { new: true }
+                );
             }
 
-
-            await db.User.findOneAndUpdate({ session }, { $push: { applications: application._id } });
+            await db.User.findByIdAndUpdate(
+                { _id: authenticatedUser.id },
+                { $push: { applications: application._id } }
+            );
 
             res.status(200).send({ message: 'Application saved', application });
-            // res.status(200).send({ message: 'Application saved' });
         } catch (err) {
             console.log(err);
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/applications/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
+    router.put('/api/applications/:_id', authenticated, async ({ params: { _id }, body }, res) => {
         try {
-            // const { session } = headers;
+
             if (!body) {
                 res.status(400).send({ error: 'No application included in update' });
                 return;
@@ -159,56 +136,39 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put(
-        '/api/applications/associateItem/:_id',
-        authenticated,
-        async ({ headers, params: { _id }, body }, res) => {
-            try {
-                // const { session } = headers;
-                if (!body) {
-                    res.status(400).send({ error: 'No application included in update' });
-                    return;
-                }
 
-                const { itemType, itemID, itemAction } = body;
-
-                if (!(itemType && itemID && itemAction)) {
-                    res.status(400).send({ error: 'Association request missing data' });
-                    return;
-                }
-
-                // const existingApplication = await db.Application.findById({ _id });
-
-                // if (itemAction === 'push' && existingApplication.contacts.includes(itemID)) {
-                //     res.status(400).send({ error: 'Application already includes item' });
-                //     return;
-                // }
-                // if (itemAction === 'pull' && !existingApplication.contacts.includes(itemID)) {
-                //     res.status(400).send({ error: 'Application does not include item' });
-                //     console.log("Critical error, item being dissocated from application it doesn't belong to", body);
-                //     return;
-                // }
-
-                const application = await db.Application.findByIdAndUpdate(
-                    { _id },
-                    { [`$${itemAction}`]: { [itemType]: itemID } },
-                    { new: true }
-                )
-                    .populate('contacts')
-                    .populate('todos')
-                    .populate('resumes');
-
-                res.status(200).send({ message: 'Application updated', application });
-            } catch (err) {
-                console.log(err);
-                res.status(500).send({ error: 'Something went wrong with the server' });
-            }
-        }
-    );
-    router.delete('/api/applications/:_id', authenticated, async ({ headers, params: { _id } }, res) => {
+    router.put('/api/applications/associateItem/:_id', authenticated, async ({ params: { _id }, body }, res) => {
         try {
-            // const { session } = headers;
+            if (!body) {
+                res.status(400).send({ error: 'No application included in update' });
+                return;
+            }
 
+            const { itemType, itemID, itemAction } = body;
+
+            if (!(itemType && itemID && itemAction)) {
+                res.status(400).send({ error: 'Association request missing data' });
+                return;
+            }
+
+            const application = await db.Application.findByIdAndUpdate(
+                { _id },
+                { [`$${itemAction}`]: { [itemType]: itemID } },
+                { new: true }
+            )
+                .populate('contacts')
+                .populate('todos')
+                .populate('resumes');
+
+            res.status(200).send({ message: 'Application updated', application });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
+
+    router.delete('/api/applications/:_id', authenticated, async ({ params: { _id } }, res) => {
+        try {
             if (!_id) {
                 res.status(400).send({ error: 'No application ID included in delete request' });
                 return;
@@ -222,13 +182,12 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
+
     router.put(
         '/api/applications/:applicationID/interviewsArray/:interviewID',
         authenticated,
-        async ({ headers, params: { applicationID, interviewID }, body }, res) => {
+        async ({ params: { applicationID, interviewID }, body }, res) => {
             try {
-                // const { session } = headers;
-
                 if (!applicationID || !interviewID) {
                     res.status(400).send({ error: 'No application ID or interview ID included in delete request' });
                     return;
@@ -247,13 +206,12 @@ module.exports = (router) => {
             }
         }
     );
+
     router.delete(
         '/api/applications/:applicationID/interviewsArray/:interviewID',
         authenticated,
-        async ({ headers, params: { applicationID, interviewID } }, res) => {
+        async ({ params: { applicationID, interviewID } }, res) => {
             try {
-                // const { session } = headers;
-
                 if (!applicationID || !interviewID) {
                     res.status(400).send({ error: 'No application ID or interview ID included in delete request' });
                     return;
@@ -277,10 +235,8 @@ module.exports = (router) => {
     router.delete(
         '/api/applications/:applicationID/:itemType/:itemID',
         authenticated,
-        async ({ headers, params: { applicationID, itemType, itemID } }, res) => {
+        async ({ params: { applicationID, itemType, itemID } }, res) => {
             try {
-                // const { session } = headers;
-
                 if (!applicationID || !itemType || !itemID) {
                     res.status(400).send({ error: 'Delete request missing required information' });
                     return;
@@ -308,10 +264,8 @@ module.exports = (router) => {
     router.put(
         '/api/applications/:applicationID/:itemType/:itemID',
         authenticated,
-        async ({ headers, params: { applicationID, itemType, itemID }, body }, res) => {
+        async ({ params: { applicationID, itemType, itemID }, body }, res) => {
             try {
-                // const { session } = headers;
-
                 if (!applicationID || !itemID || !itemType) {
                     res.status(400).send({ error: 'Update request missing information' });
                     return;
@@ -346,14 +300,4 @@ module.exports = (router) => {
             }
         }
     );
-    // router.get('/api/applications', async ({ headers }, res) => {
-    //     try {
-    //         // const { session } = headers;
-
-    //         res.status(200).send('Route not yet implemented');
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
 };
