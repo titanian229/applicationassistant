@@ -2,11 +2,9 @@ const db = require('../models');
 const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
-    router.get('/api/todos', authenticated, async ({ headers }, res) => {
+    router.get('/api/todos', authenticated, async ({ user: authenticatedUser }, res) => {
         try {
-            const { session } = headers;
-
-            const user = await db.User.findOne({ session })
+            const user = await db.User.findById({ _id: authenticatedUser.id })
                 .populate({
                     path: 'todos',
                     populate: {
@@ -46,11 +44,9 @@ module.exports = (router) => {
         }
     });
     //TODO add in route to provide reminders for upcoming todos
-    router.get('/api/todos/sorted', authenticated, async ({ headers }, res) => {
+    router.get('/api/todos/sorted', authenticated, async ({ user: authenticatedUser }, res) => {
         try {
-            const { session } = headers;
-
-            const user = await db.User.findOne({ session })
+            const user = await db.User.findById({ _id: authenticatedUser.id })
                 .populate({
                     path: 'todos',
                     populate: {
@@ -82,9 +78,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/todos', authenticated, async ({ headers, body }, res) => {
+    router.post('/api/todos', authenticated, async ({ user: authenticatedUser, body }, res) => {
         try {
-            const { session } = headers;
             const { name, date, _id } = body.todo;
             const { parentID } = body;
             if (!name) {
@@ -98,7 +93,7 @@ module.exports = (router) => {
 
             const todo = await db.Todo.create({ name, date, parentApplication: parentID });
             await db.Application.findByIdAndUpdate({ _id: parentID }, { $push: { todos: todo._id } });
-            await db.User.findOneAndUpdate({ session }, { $push: { todos: todo._id } });
+            await db.User.findByIdAndUpdate({ _id: authenticatedUser.id }, { $push: { todos: todo._id } });
 
             res.status(200).send({ message: 'Todo saved', todo });
         } catch (err) {
@@ -106,13 +101,11 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/todos/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
-    console.log("body", body)
+    router.put('/api/todos/:_id', authenticated, async ({ params: { _id }, body }, res) => {
         try {
-            // const { session } = headers;
             // How MUI handles date, it gets removed from the body.  This is required to remove a date.
             // let todo = await db.Todo.findById({_id})
-            // if 
+            // if
             if (!body.date) body.date = '';
             const todo = await db.Todo.findByIdAndUpdate({ _id }, { ...body }, { new: true });
 
@@ -122,36 +115,28 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete(
-        '/api/todos/:_id/:applicationID',
-        authenticated,
-        async ({ headers, params: { _id, applicationID } }, res) => {
-            try {
-                // const { session } = headers;
-
-                
-                const todo = await db.Todo.findByIdAndDelete({ _id });
-                console.log("todo", todo)
-                if (applicationID === 'none') {
-                    applicationID = todo.parentApplication
-                    console.log("applicationID", applicationID)
-                }
-                await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
-                const application = await db.Application.findById({ _id: applicationID }).populate('todos');
-
-                res.status(200).send({ message: 'Todo deleted', todos: application.todos });
-            } catch (err) {
-                console.log(err);
-                res.status(500).send({ error: 'Something went wrong with the server' });
-            }
-        }
-    );
-    router.get('/api/todos/reminders/', authenticated, async ({ headers }, res) => {
+    router.delete('/api/todos/:_id/:applicationID', authenticated, async ({ params: { _id, applicationID } }, res) => {
         try {
-            const { session } = headers;
+            const todo = await db.Todo.findByIdAndDelete({ _id });
+            console.log('todo', todo);
+            if (applicationID === 'none') {
+                applicationID = todo.parentApplication;
+                console.log('applicationID', applicationID);
+            }
+            await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { todos: _id } });
+            const application = await db.Application.findById({ _id: applicationID }).populate('todos');
+
+            res.status(200).send({ message: 'Todo deleted', todos: application.todos });
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({ error: 'Something went wrong with the server' });
+        }
+    });
+    router.get('/api/todos/reminders/', authenticated, async ({ user: authenticatedUser }, res) => {
+        try {
             const today = new Date();
 
-            const user = await db.User.findOne({ session })
+            const user = await db.User.findById({ _id: authenticatedUser.id })
                 .populate({
                     path: 'todos',
                     populate: {
