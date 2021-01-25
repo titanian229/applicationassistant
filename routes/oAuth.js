@@ -1,6 +1,5 @@
 const db = require('../models');
 const passport = require('passport');
-const createSession = require('../app/createSession');
 const { registerUser } = require('../app/authentication');
 
 module.exports = (router) => {

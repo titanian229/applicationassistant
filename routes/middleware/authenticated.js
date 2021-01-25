@@ -17,12 +17,12 @@ module.exports = async (req, res, next) => {
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
         console.log('Token missing', req.headers);
-        res.status(403).send({ error: 'Access to this route requires a valid token' });
+        res.status(403).send({serverError: "Missing token"});
         return;
     }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.status(403).send({ error: 'Invalid token' });
+        if (err) return res.status(401).send({ serverError: 'Invalid token' });
         req.user = user;
         next();
     });

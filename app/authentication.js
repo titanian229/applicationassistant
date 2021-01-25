@@ -80,7 +80,6 @@ module.exports = {
 
         try {
             newUser = await User.create(newUserLoginData);
-            //TODO UPDATE THIS TO REMOVE THE ID IF IT TURNS OUT JWT DOES NOT SAVE IT AS I WANT
             accessToken = generateAccessToken({ email: newUser.email, id: newUser._id });
             refreshToken = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.REFRESH_TOKEN_SECRET);
             await User.findByIdAndUpdate({ _id: newUser._id }, { refreshToken });
@@ -137,5 +136,14 @@ module.exports = {
             console.log('Error inside login', err);
             return { error: 'Server error attempting login' };
         }
+    },
+    useRefreshToken: async (refreshToken) => {
+        return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+            if (err) return { serverError: 'Invalid token' };
+
+            const { email, id } = user;
+            const accessToken = generateAccessToken({ email, id });
+            return { accessToken };
+        });
     },
 };
