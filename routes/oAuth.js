@@ -24,8 +24,7 @@ module.exports = (router) => {
                 authId: returnedUser.id,
                 type: 'linkedin',
             };
-            const session = createSession();
-            const sessionData = JSON.stringify(await registerUser(user, session));
+            const sessionData = JSON.stringify(await registerUser(user));
             res.send(
                 `<html><body><script>window.opener.postMessage('${sessionData}', '*');</script>Please wait...</body></html>`
             );
