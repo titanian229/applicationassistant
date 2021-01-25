@@ -1,42 +1,44 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const generateAccessToken = require('./generateToken');
+const jwt = require('jsonwebtoken')
 
 module.exports = {
-    saveSession: async (user, session) => {
-        //User must be a return from the database query, session is a UUID created ID
-        console.log('Saving session');
+    // saveSession: async (user, session) => {
+    //     //User must be a return from the database query, session is a UUID created ID
+    //     console.log('Saving session');
 
-        if (!user || !session || session.length !== 36) {
-            console.log('No user or no session id', user, session);
-            return { error: 'Invalid user data for registration' };
-        }
+    //     if (!user || !session || session.length !== 36) {
+    //         console.log('No user or no session id', user, session);
+    //         return { error: 'Invalid user data for registration' };
+    //     }
 
-        if (!user._id) {
-            console.log('User passed to save session was missing ID, likely not a User returned from the database.');
-            return { error: 'Database error saving session' };
-        }
+    //     if (!user._id) {
+    //         console.log('User passed to save session was missing ID, likely not a User returned from the database.');
+    //         return { error: 'Database error saving session' };
+    //     }
 
-        let updatedUser = await User.findByIdAndUpdate({ _id: user._id }, { session }, { new: true });
-        return {
-            message: 'Welcome back ' + updatedUser.name,
-            id: updatedUser._id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            thumbnail: updatedUser.thumbnail,
-            session,
-        };
-    },
+    //     let updatedUser = await User.findByIdAndUpdate({ _id: user._id }, { session }, { new: true });
+    //     return {
+    //         message: 'Welcome back ' + updatedUser.name,
+    //         id: updatedUser._id,
+    //         name: updatedUser.name,
+    //         email: updatedUser.email,
+    //         thumbnail: updatedUser.thumbnail,
+    //         session,
+    //     };
+    // },
 
-    registerUser: async (user, session) => {
-        //User is a direct return from the front end, password is not hashed yet, session is a UUID created ID
+    registerUser: async (user) => {
+        //User is a direct return from the front end, password is not hashed yet
         console.log('REGISTERING USER ', user);
 
-        if (!user || !session || session.length !== 36) {
-            console.log('No user or no session id', user, session);
+        if (!user) {
+            console.log('No user ', user);
             return { error: 'Invalid user data for registration' };
         }
 
-        let newUser, existingUser;
+        let newUser, existingUser, accessToken, refreshToken;
         if (user.type === 'linkedin') {
             //Route for linkedin login
             console.log('LinkedIn user login');
@@ -47,8 +49,8 @@ module.exports = {
         }
 
         if (existingUser && existingUser._id) {
-            console.log('User has previously logged in, saving new session', user, existingUser);
-            if (user.type !== 'linkedin'){
+            console.log('User has previously logged in, updating token', user, existingUser);
+            if (user.type !== 'linkedin') {
                 //checking for valid password, skipping registration and just logging them in
                 let validPassword;
                 try {
@@ -59,7 +61,7 @@ module.exports = {
                         error: 'Error inside registration',
                     };
                 }
-    
+
                 if (!validPassword) {
                     console.log('invalid password in registration for new user, password do not match');
                     return {
@@ -68,22 +70,28 @@ module.exports = {
                 }
             }
 
-            newUser = await User.findByIdAndUpdate({ _id: existingUser._id }, { session });
-            console.log('newUser', newUser);
+            accessToken = generateAccessToken({ email: existingUser.email, id: existingUser._id });
+            refreshToken = jwt.sign(
+                { email: existingUser.email, id: existingUser._id },
+                process.env.REFRESH_TOKEN_SECRET
+            );
+
+            await User.findByIdAndUpdate({ _id: existingUser._id }, { refreshToken });
+
             return {
-                message: 'Welcome back ' + newUser.name,
-                id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-                thumbnail: newUser.thumbnail,
-                session,
+                message: 'Welcome back ' + existingUser.name,
+                id: existingUser._id,
+                name: existingUser.name,
+                email: existingUser.email,
+                thumbnail: existingUser.thumbnail && existingUser.thumbNail,
+                accessToken,
+                refreshToken,
             };
         }
 
-        newUserLoginData = {
+        let newUserLoginData = {
             email: user.email,
             name: user.name,
-            session,
         };
 
         if (!user.type || user.type === 'local') {
@@ -97,6 +105,10 @@ module.exports = {
 
         try {
             newUser = await User.create(newUserLoginData);
+            //TODO UPDATE THIS TO REMOVE THE ID IF IT TURNS OUT JWT DOES NOT SAVE IT AS I WANT
+            accessToken = generateAccessToken({ email: newUser.email, id: newUser._id });
+            refreshToken = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.REFRESH_TOKEN_SECRET);
+            await User.findByIdAndUpdate({ _id: newUser._id }, { refreshToken });
         } catch (err) {
             console.log('there was an error creating the new user', err);
             return { error: 'Error creating user' };
@@ -104,7 +116,8 @@ module.exports = {
         console.log(newUser);
         return {
             message: `Welcome ${newUser.name}!`,
-            session: newUser.session,
+            refreshToken,
+            accessToken,
         };
     },
 };

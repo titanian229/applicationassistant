@@ -1,7 +1,7 @@
 const db = require('../models');
-const createSession = require('../app/createSession');
 const { saveSession, registerUser } = require('../app/authentication');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = (router) => {
     // local user creation
@@ -15,12 +15,8 @@ module.exports = (router) => {
             type: 'local',
         };
         try {
-            // ! instead of creating the session, check for the existing user first, then save the session and user together
 
-            const session = createSession();
-            const sessionData = await registerUser(user, session)
-
-
+            const sessionData = await registerUser(user);
 
             //catching a user that has previously registered trying to register again with a diff password
             if (sessionData.error) {
@@ -77,10 +73,25 @@ module.exports = (router) => {
             const sessionData = await saveSession(user, session);
             res.status(200).send(sessionData);
         } catch (err) {
-            console.log(err)
+            console.log(err);
             console.log('error creating session for login', user);
             res.status(403).send({ error: 'Error creating new session' });
         }
+    });
+
+    router.post('/loginJWT', async (req, res) => {
+        const username = req.body.username;
+
+        if (!username){
+            console.log("No user present in login request")
+            res.status(403).send({error: "No user in login request"})
+            return
+        }
+
+        const user = { name: username };
+
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+        res.json({ accessToken });
     });
 
     router.get('/authentication', async ({ headers }, res) => {

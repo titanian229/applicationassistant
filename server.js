@@ -6,7 +6,8 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
-const uuid = require('uuid').v4;
+// const uuid = require('uuid').v4;
+const jwt = require('jsonwebtoken')
 
 const app = express();
 const PORT = process.env.PORT || 3001;
