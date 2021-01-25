@@ -1,11 +1,10 @@
 const db = require('../models');
-const authenticated = require('./middleware/authenticated')
+const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
-    router.get('/api/resumes', authenticated, async ({ headers }, res) => {
+    router.get('/api/resumes', authenticated, async ({ user: authenticatedUser }, res) => {
         try {
-            const { session } = headers;
-            const user = await db.User.findOne({ session }).populate('resumes');
+            const user = await db.User.findById({ _id: authenticatedUser.id }).populate('resumes');
             const resumes = user.resumes;
 
             res.status(200).send({ resumes });
@@ -14,9 +13,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/resumes', authenticated, async ({ headers, body }, res) => {
+    router.post('/api/resumes', authenticated, async ({ user: authenticatedUser, body }, res) => {
         try {
-            const { session } = headers;
             const { name, link, notes, associatedApplications } = body;
 
             if (!name || !link) {
@@ -25,7 +23,7 @@ module.exports = (router) => {
             }
 
             const resume = await db.Resume.create({ name, link, notes, associatedApplications });
-            await db.User.findOneAndUpdate({ session }, { $push: { resumes: resume._id } });
+            await db.User.findByIdAndUpdate({ _id: authenticatedUser.id }, { $push: { resumes: resume._id } });
 
             res.status(200).send({ message: 'Resume saved', resume });
         } catch (err) {
@@ -33,10 +31,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/resumes/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
+    router.put('/api/resumes/:_id', authenticated, async ({ params: { _id }, body }, res) => {
         try {
-            // const { session } = headers;
-
             if (!body) {
                 res.status(400).send({ error: 'Resume missing for update' });
                 return;
@@ -50,10 +46,8 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/resumes/:_id/', authenticated, async ({ headers, params: { _id } }, res) => {
+    router.delete('/api/resumes/:_id/', authenticated, async ({ params: { _id } }, res) => {
         try {
-            // const { session } = headers;
-
             await db.Resume.findByIdAndDelete({ _id });
 
             res.status(200).send({ message: 'Resume deleted' });
@@ -62,14 +56,4 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    // router.get('/api/applications', async ({ headers }, res) => {
-    //     try {
-    //         // const { session } = headers;
-
-    //         res.status(200).send('Route not yet implemented');
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
 };
