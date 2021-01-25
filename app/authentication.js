@@ -1,34 +1,9 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const generateAccessToken = require('./generateToken');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 module.exports = {
-    // saveSession: async (user, session) => {
-    //     //User must be a return from the database query, session is a UUID created ID
-    //     console.log('Saving session');
-
-    //     if (!user || !session || session.length !== 36) {
-    //         console.log('No user or no session id', user, session);
-    //         return { error: 'Invalid user data for registration' };
-    //     }
-
-    //     if (!user._id) {
-    //         console.log('User passed to save session was missing ID, likely not a User returned from the database.');
-    //         return { error: 'Database error saving session' };
-    //     }
-
-    //     let updatedUser = await User.findByIdAndUpdate({ _id: user._id }, { session }, { new: true });
-    //     return {
-    //         message: 'Welcome back ' + updatedUser.name,
-    //         id: updatedUser._id,
-    //         name: updatedUser.name,
-    //         email: updatedUser.email,
-    //         thumbnail: updatedUser.thumbnail,
-    //         session,
-    //     };
-    // },
-
     registerUser: async (user) => {
         //User is a direct return from the front end, password is not hashed yet
         console.log('REGISTERING USER ', user);

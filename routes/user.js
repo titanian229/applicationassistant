@@ -2,6 +2,7 @@ const db = require('../models');
 const { saveSession, registerUser } = require('../app/authentication');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
     // local user creation
@@ -15,7 +16,6 @@ module.exports = (router) => {
             type: 'local',
         };
         try {
-
             const sessionData = await registerUser(user);
 
             //catching a user that has previously registered trying to register again with a diff password
@@ -82,10 +82,10 @@ module.exports = (router) => {
     router.post('/loginJWT', async (req, res) => {
         const username = req.body.username;
 
-        if (!username){
-            console.log("No user present in login request")
-            res.status(403).send({error: "No user in login request"})
-            return
+        if (!username) {
+            console.log('No user present in login request');
+            res.status(403).send({ error: 'No user in login request' });
+            return;
         }
 
         const user = { name: username };
@@ -94,29 +94,44 @@ module.exports = (router) => {
         res.json({ accessToken });
     });
 
-    router.get('/authentication', async ({ headers }, res) => {
+    router.get('/authentication', authenticated, async (req, res) => {
         try {
-            const { session } = headers;
-            const user = await db.User.findOne({ session });
-
-            if (!user || session.length !== 36) {
-                res.status(200).send({ isAuthenticated: false });
-                return;
-            }
-
+            const user = await db.User.findById({ _id: req.user.id });
             res.status(200).send({ isAuthenticated: true, name: user.name });
         } catch (err) {
-            console.log('Error checking for logged in state', err);
-            res.status(500).send({ error: 'Something has gone wrong checking the login state' });
+            console.log('Error checking authentication', err);
+            res.status(500).send({ error: 'Server error checking authentication' });
         }
+
+        // try {
+        //     const { authorization } = headers;
+
+        //     if (!authorization) {
+        //         res.status(403).send({ error: 'No authorization token present in request' });
+        //         return;
+        //     }
+
+        //     const user = await db.User.findOne({ session });
+
+        //     if (!user || session.length !== 36) {
+        //         res.status(200).send({ isAuthenticated: false });
+        //         return;
+        //     }
+
+        //     res.status(200).send({ isAuthenticated: true, name: user.name });
+        // } catch (err) {
+        //     console.log('Error checking for logged in state', err);
+        //     res.status(500).send({ error: 'Something has gone wrong checking the login state' });
+        // }
     });
 
-    router.post('/logout', async ({ body, headers }, req) => {
-        const user = db.User.findOneAndUpdate({ session: headers.session }, { session: '' });
-        console.log('user', user);
-        if (!user) {
+    router.post('/logout', authenticated, async (req, res) => {
+        if (!req.user.id) {
             console.log('Logout attempted for null user');
+            res.status(403).send({ error: 'Logout attempted for null user' });
+            return;
         }
-        req.status(200).send({ message: 'Log out successful' });
+        const user = db.User.findByIdAndUpdate({ _id: req.user.id }, { refreshToken: '' });
+        res.status(200).send({ message: 'Log out successful' });
     });
 };
