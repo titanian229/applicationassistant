@@ -113,7 +113,7 @@ const UserEntry = (props) => {
     useEffect(() => {
         setValues({ ...values, tab: props.location.pathname === '/login/register' ? 1 : 0 });
         //eslint-disable-next-line
-    }, [props.location.pathname])
+    }, [props.location.pathname]);
 
     // TODO implement grabbing stored settings from server for this user
 
@@ -146,8 +146,9 @@ const UserEntry = (props) => {
         dispatch({ do: 'setLoading', loading: false });
         if (!serverUp) return;
 
-        if (serverResponse.session) {
-            saveToLocal('session', serverResponse.session);
+        if (serverResponse.accessToken && serverResponse.refreshToken) {
+            saveToLocal('accessToken', serverResponse.accessToken);
+            saveToLocal('refreshToken', serverResponse.refreshToken);
             dispatch({ do: 'login', name: serverResponse.name });
         }
     };
@@ -199,8 +200,9 @@ const UserEntry = (props) => {
         dispatch({ do: 'setLoading', loading: false });
         if (!serverUp) return;
 
-        if (serverResponse.session) {
-            saveToLocal('session', serverResponse.session);
+        if (serverResponse.accessToken && serverResponse.refreshToken) {
+            saveToLocal('accessToken', serverResponse.accessToken);
+            saveToLocal('refreshToken', serverResponse.refreshToken);
             dispatch({ do: 'login', name: serverResponse.name });
         }
     };
@@ -214,8 +216,9 @@ const UserEntry = (props) => {
         const serverUp = processServerResponse(returnedData);
         if (serverUp === false) return;
 
-        if (returnedData.session) {
-            saveToLocal('session', returnedData.session);
+        if (returnedData.accessToken && returnedData.refreshToken) {
+            saveToLocal('accessToken', returnedData.accessToken);
+            saveToLocal('refreshToken', returnedData.refreshToken);
             dispatch({ do: 'login', name: returnedData.name });
         }
     };

@@ -23,7 +23,10 @@ const userSchema = new Schema(
             type: String,
         },
         session: {
-            type: String
+            type: String,
+        },
+        refreshToken: {
+            type: String,
         },
         applications: [
             {

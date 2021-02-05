@@ -2,16 +2,15 @@ const db = require('../models');
 const authenticated = require('./middleware/authenticated');
 
 module.exports = (router) => {
-    router.get('/api/contacts', authenticated, async ({ headers }, res) => {
+    router.get('/api/contacts', authenticated, async ({ user: authenticatedUser }, res) => {
         try {
-            const { session } = headers;
-            const user = await db.User.findOne({ session }).populate({
+            const user = await db.User.findById({ _id: authenticatedUser.id }).populate({
                 path: 'contacts',
                 populate: {
                     path: 'associatedTodos',
                 },
             });
-            // const contacts = await db.Contact.find().populate('associatedTodos');
+
             const contacts = user.contacts;
 
             res.status(200).send({ contacts });
@@ -20,9 +19,9 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.get('/api/contacts/:_id', authenticated, async ({ headers, params: { _id } }, res) => {
+    router.get('/api/contacts/:_id', authenticated, async ({ params: { _id } }, res) => {
         try {
-            // const { session } = headers;
+
             const contact = await db.Contact.findById({ _id }).populate('associatedTodos');
             res.status(200).send({ contact });
         } catch (err) {
@@ -30,10 +29,10 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.post('/api/contacts', authenticated, async ({ headers, body }, res) => {
+    router.post('/api/contacts', authenticated, async ({ user: authenticatedUser, body }, res) => {
         const { name, roleTitle, businessName, contactMethods, notes } = body;
         try {
-            const { session } = headers;
+
             if (!name) {
                 res.status(400).send({ error: 'Contact must have a name' });
                 return;
@@ -41,7 +40,7 @@ module.exports = (router) => {
 
             try {
                 const contact = await db.Contact.create({ name, roleTitle, businessName, contactMethods, notes });
-                await db.User.findOneAndUpdate({ session }, { $push: { contacts: contact._id } });
+                await db.User.findByIdAndUpdate({ _id: authenticatedUser.id }, { $push: { contacts: contact._id } });
                 res.status(200).send({ message: 'Successfully added contact', contact });
                 return;
             } catch (err) {
@@ -55,9 +54,9 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.put('/api/contacts/:_id', authenticated, async ({ headers, params: { _id }, body }, res) => {
+    router.put('/api/contacts/:_id', authenticated, async ({ params: { _id }, body }, res) => {
         try {
-            // const { session } = headers;
+
             if (!body) {
                 res.status(400).send({ error: 'No body included with the contact update' });
                 return;
@@ -71,9 +70,9 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    router.delete('/api/contacts/:_id', authenticated, async ({ headers, params: { _id } }, res) => {
+    router.delete('/api/contacts/:_id', authenticated, async ({ params: { _id } }, res) => {
         try {
-            // const { session } = headers;
+
             await db.Contact.findByIdAndDelete({ _id });
 
             // await db.Application.findByIdAndUpdate({ _id: applicationID }, { $pull: { contacts: _id } });
@@ -85,14 +84,5 @@ module.exports = (router) => {
             res.status(500).send({ error: 'Something went wrong with the server' });
         }
     });
-    // router.get('/api/applications', async ({ headers }, res) => {
-    //     try {
-    //         // const { session } = headers;
-
-    //         res.status(200).send('Route not yet implemented');
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).send({ error: 'Something went wrong with the server' });
-    //     }
-    // });
+    
 };
