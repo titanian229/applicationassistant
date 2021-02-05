@@ -7,16 +7,21 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
 // const uuid = require('uuid').v4;
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'https://applicationassistant.herokuapp.com' : 'http://localhost:3001';
+const baseURL =
+    process.env.NODE_ENV === 'production' ? 'https://applicationassistant.herokuapp.com' : 'http://localhost:3001';
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/applicationassistant';
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
-
+if (process.env.NODE_ENV !== 'test') {
+    mongoose
+        .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+        .then(() => console.log('Successfully connected to mongodb'))
+        .catch((e) => console.error(e));
+}
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(logger('dev'));
@@ -39,7 +44,9 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-app.listen(PORT, () => {
+server = app.listen(PORT, () => {
     // eslint-disable-next-line no-console
     console.log(`App listening on PORT ${PORT}`);
 });
+
+module.exports = { app, server };
